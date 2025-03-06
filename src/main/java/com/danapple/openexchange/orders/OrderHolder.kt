@@ -5,7 +5,7 @@ import java.util.*
 
 internal class OrderHolder(val order: Order)
 {
-    private var _remainingQuantity: Int = order.quantity()
+    private var _remainingQuantity: Int = order.quantity
     private val tradeLegs: MutableList<TradeLeg> = LinkedList()
     internal val remainingQuantity
         get() = this._remainingQuantity
