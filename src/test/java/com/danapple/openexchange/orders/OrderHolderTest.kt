@@ -8,7 +8,7 @@ import java.math.BigDecimal
 
 class OrderHolderTest
 {
-    private val ORDER = Order.createOrder("C", Side.BUY, 5, BigDecimal.ONE)
+    private val ORDER = Order.createOrder("C", "Order 1", Side.BUY, 5, BigDecimal.ONE)
     private val ORDER_HOLDER = OrderHolder(ORDER)
 
     @Test

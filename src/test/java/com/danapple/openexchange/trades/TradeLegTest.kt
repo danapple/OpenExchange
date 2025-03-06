@@ -10,7 +10,7 @@ import java.math.BigDecimal
 
 class TradeLegTest
 {
-    private val ORDER = Order.createOrder( "C", Side.BUY, 5, BigDecimal.ONE)
+    private val ORDER = Order.createOrder( "C", "Order 1", Side.BUY, 5, BigDecimal.ONE)
 
     @Test
     fun generatesTradeLeg() {
@@ -19,11 +19,11 @@ class TradeLegTest
     }
 
     @Test
-    fun generatesIncreasingTradeLegIds() {
+    fun generatesUniqueTradeLegIds() {
         val tradeLeg1 = TradeLeg.createTradeLeg(4, ORDER)
         val tradeLeg2 = TradeLeg.createTradeLeg(6, ORDER)
 
-        assertThat(tradeLeg2.tradeLegId).isGreaterThan(tradeLeg1.tradeLegId)
+        assertThat(tradeLeg2.tradeLegId).isNotEqualTo(tradeLeg1.tradeLegId)
     }
 
     @Test

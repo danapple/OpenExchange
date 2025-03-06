@@ -1,14 +1,13 @@
 package com.danapple.openexchange.orders
 
 import java.math.BigDecimal
+import java.util.*
 
-data class Order private constructor(val orderId: Long, val symbol: String, val side: Side, val quantity: Int, val price: BigDecimal)
+data class Order private constructor(val orderId: String, val clientOrderId: String, val symbol: String, val side: Side, val quantity: Int, val price: BigDecimal)
 {
     companion object OrderFactory
     {
-        private var nextOrderId: Long = 0
-
-        fun createOrder(symbol: String, side: Side, quantity: Int, price: BigDecimal): Order
+        fun createOrder(clientOrderId: String, symbol: String, side: Side, quantity: Int, price: BigDecimal): Order
         {
             if (quantity <= 0)
             {
@@ -22,7 +21,7 @@ data class Order private constructor(val orderId: Long, val symbol: String, val 
             {
                 throw IllegalArgumentException("Symbol must not be blank")
             }
-            return Order(nextOrderId++, symbol, side, quantity, price )
+            return Order(UUID.randomUUID().toString(), clientOrderId, symbol, side, quantity, price )
         }
     }
 }
