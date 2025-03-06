@@ -1,6 +1,5 @@
 package com.danapple.openexchange.ledger
 
-import com.danapple.openexchange.Ledger.Ledger
 import com.danapple.openexchange.trades.Trade
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

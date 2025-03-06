@@ -1,4 +1,4 @@
-package com.danapple.openexchange.Ledger
+package com.danapple.openexchange.ledger
 
 import com.danapple.openexchange.trades.Trade
 import java.util.*

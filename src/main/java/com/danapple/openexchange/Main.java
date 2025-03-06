@@ -1,6 +1,6 @@
 package com.danapple.openexchange;
 
-import com.danapple.openexchange.Ledger.Ledger;
+import com.danapple.openexchange.ledger.Ledger;
 import com.danapple.openexchange.trades.Trade;
 import java.util.List;
 
