@@ -4,7 +4,7 @@ import com.danapple.openexchange.orders.Side
 import java.math.BigDecimal
 import java.util.*
 
-data class Trade private constructor(val tradeId: String, val price: BigDecimal, val tradeLegs: Set<TradeLeg>)
+data class Trade private constructor(val tradeId: String, val timestamp: Long, val price: BigDecimal, val tradeLegs: Set<TradeLeg>)
 {
     companion object TradeFactory
     {
@@ -15,7 +15,7 @@ data class Trade private constructor(val tradeId: String, val price: BigDecimal,
             {
                 throw IllegalArgumentException(String.format("Trade net quantity must be 0, not %d", netQuantity))
             }
-            return Trade(UUID.randomUUID().toString(), price, tradeLegs)
+            return Trade(UUID.randomUUID().toString(), System.currentTimeMillis(), price, tradeLegs)
         }
     }
 }

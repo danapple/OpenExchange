@@ -3,7 +3,8 @@ package com.danapple.openexchange.orders
 import java.math.BigDecimal
 import java.util.*
 
-data class Order private constructor(val orderId: String, val clientOrderId: String, val symbol: String, val side: Side, val quantity: Int, val price: BigDecimal)
+data class Order private constructor(val orderId: String, val timeStamp: Long, val clientOrderId: String, val symbol:
+String, val side: Side, val quantity: Int, val price: BigDecimal)
 {
     companion object OrderFactory
     {
@@ -21,7 +22,8 @@ data class Order private constructor(val orderId: String, val clientOrderId: Str
             {
                 throw IllegalArgumentException("Symbol must not be blank")
             }
-            return Order(UUID.randomUUID().toString(), clientOrderId, symbol, side, quantity, price )
+            return Order(UUID.randomUUID().toString(), System.currentTimeMillis(), clientOrderId, symbol, side,
+                quantity, price )
         }
     }
 }
