@@ -3,17 +3,14 @@ package com.danapple.openexchange.ledger
 import com.danapple.openexchange.trades.Trade
 import java.util.*
 
-class Ledger
-{
+class Ledger {
     private val trades: MutableList<Trade> = LinkedList()
 
-    internal fun addTrade(trade: Trade)
-    {
+    internal fun addTrade(trade: Trade) {
         trades.add(trade)
     }
 
-    fun getTrades(): List<Trade>
-    {
+    fun getTrades(): List<Trade> {
         return trades
     }
 }

@@ -1,5 +1,8 @@
 package com.danapple.openexchange.orders
 
+import com.danapple.openexchange.TestConstants.Companion.CL_ORD_1
+import com.danapple.openexchange.TestConstants.Companion.EQUITY_1
+import com.danapple.openexchange.TestConstants.Companion.ORDER_1
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -10,49 +13,46 @@ class OrderTest
 {
     @Test
     fun generatesOrder() {
-        val order = Order.createOrder("ClOrdId 1", "IBM", Side.BUY, 5, BigDecimal.TEN)
-        assertThat(order).isNotNull()
-        assertThat(order.symbol).isEqualTo("IBM")
-        assertThat(order.side).isEqualTo(Side.BUY)
+        val order = Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.TEN, 5)
+        assertThat(ORDER_1).isNotNull()
         assertThat(order.quantity).isEqualTo(5)
         assertThat(order.price).isEqualTo(BigDecimal.TEN)
     }
 
     @Test
-    fun generatesOrdersWithIncreasingOrderIds() {
-        val order1 = Order.createOrder("ClOrdId 1", "IBM", Side.BUY, 5, BigDecimal.TEN)
-        val order2 = Order.createOrder("ClOrdId 1", "IBM", Side.BUY, 8, BigDecimal.ONE)
+    fun generatesOrdersWithDistinctOrderIds() {
+        val order1 = Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ONE, 5)
+        val order2 = Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ONE, 5)
 
         assertThat(order2.orderId).isNotEqualTo(order1.orderId)
     }
 
     @Test
     fun refusesToGenerateOrderWithZeroQuantity() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1", "IBM", Side.BUY, 0, BigDecimal.TEN) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("not 0")
-    }
-
-    @Test
-    fun refusesToGenerateOrderWithNegativeQuantity() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1","IBM", Side.BUY, -4, BigDecimal.TEN) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("not -4")
+        assertThatThrownBy { Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ONE, 0)}.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("must be non-zero")
     }
 
     @Test
     fun refusesToGenerateOrderWithZeroPrice() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1","IBM", Side.BUY, 1, BigDecimal.ZERO) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("not 0")
+        assertThatThrownBy { Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ZERO, 3)}.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("must be positive")
     }
 
     @Test
     fun refusesToGenerateOrderWithNegativePrice() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1","IBM", Side.BUY, -4, BigDecimal.TEN.negate()) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("not -4")
+        assertThatThrownBy { Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.TEN.negate(), 4)}.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("must be positive")
     }
 
     @Test
-    fun refusesToGenerateOrderWithEmptySymbol() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1","", Side.BUY, 3, BigDecimal.TEN) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("blank")
+    fun indicatesBuyOrderNotSellOrderForPositiveQuantity () {
+        val order1 = Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ONE, 5)
+        assertThat(order1.isBuyOrder()).isTrue()
+        assertThat(order1.isSellOrder()).isFalse()
     }
 
     @Test
-    fun refusesToGenerateOrderWithWhitespaceSymbol() {
-        assertThatThrownBy { Order.createOrder("ClOrdId 1","   ", Side.BUY, 11, BigDecimal.ONE) }.isInstanceOf(IllegalArgumentException::class.java).hasMessageContaining("blank")
+    fun indicatesSellOrderNotBuyOrderForPositiveQuantity () {
+        val order1 = Order.createOrder(CL_ORD_1, EQUITY_1, BigDecimal.ONE, -7)
+        assertThat(order1.isSellOrder()).isTrue()
+        assertThat(order1.isBuyOrder()).isFalse()
     }
 }

@@ -1,16 +1,12 @@
 package com.danapple.openexchange.ledger
 
-import com.danapple.openexchange.trades.Trade
+import com.danapple.openexchange.TestConstants.Companion.EMPTY_TRADE_1
+import com.danapple.openexchange.TestConstants.Companion.EMPTY_TRADE_2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.math.BigDecimal
 
 class LedgerTest
 {
-
-    private val EMPTY_TRADE_1 = Trade.createTrade(BigDecimal.ONE, HashSet())
-    private val EMPTY_TRADE_2 = Trade.createTrade(BigDecimal.TWO, HashSet())
-
     private val LEDGER = Ledger()
 
     @Test
@@ -22,7 +18,6 @@ class LedgerTest
     @Test
     fun returnsAddedTrades()
     {
-
         LEDGER.addTrade(EMPTY_TRADE_1);
         LEDGER.addTrade(EMPTY_TRADE_2);
 
