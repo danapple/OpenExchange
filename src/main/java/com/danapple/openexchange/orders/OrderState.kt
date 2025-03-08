@@ -3,7 +3,7 @@ package com.danapple.openexchange.orders
 import com.danapple.openexchange.trades.TradeLeg
 import java.util.*
 
-internal class OrderHolder(val order: Order) {
+class OrderState(val order: Order) {
     private var _remainingQuantity: Int = order.quantity
     var orderStatus = OrderStatus.OPEN
     private val tradeLegs: MutableList<TradeLeg> = LinkedList()

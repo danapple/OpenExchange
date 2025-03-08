@@ -3,10 +3,10 @@ package com.danapple.openexchange.orders
 import com.danapple.openexchange.instruments.Instrument
 import java.math.BigDecimal
 import java.time.Clock
-import java.util.*
 
-data class Order private constructor(
-    val orderId: String,
+data class Order internal constructor(
+    val orderId: Long,
+    val customerId: Long,
     val timeStamp: Long,
     val clientOrderId: String,
     val instrument: Instrument,
@@ -15,16 +15,14 @@ data class Order private constructor(
 ) {
     companion object OrderFactory {
         var clock: Clock = Clock.systemDefaultZone()
-
-        fun createOrder(clientOrderId: String, instrument: Instrument, price: BigDecimal, quantity: Int): Order {
+        fun createOrder(orderId: Long, customerId: Long, clientOrderId: String, instrument: Instrument, price: BigDecimal, quantity: Int): Order {
             if (quantity == 0) {
                 throw IllegalArgumentException(String.format("Quantity must be non-zero for order %s", clientOrderId))
             }
             if (price <= BigDecimal.ZERO) {
                 throw IllegalArgumentException(String.format("Price must be positive for order %s", clientOrderId))
             }
-            val orderId = UUID.randomUUID().toString()
-            return Order(orderId, clock.millis(), clientOrderId, instrument, price, quantity)
+            return Order(orderId, customerId, clock.millis(), clientOrderId, instrument, price, quantity)
         }
     }
 
