@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
-class NewOrderStateTest {
+class OrderStateTest {
     private val orderState1 = OrderState(ORDER_1)
 
     @Test
