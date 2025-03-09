@@ -1,7 +1,14 @@
 #!/usr/bin/python3.8
 import requests
 
-req = { "originalClientOrderId": "asdf", "price": 4.3, "quantity": 4, "instrumentId": 34 }
+req = { "behavior": "ALWAYS", \
+    "originalClientOrderId": "asdf", \
+    "price": 4.3, \
+    "quantity": 6, \
+    "legs": [ \
+        {"ratio": -1, "instrumentId": 34} \
+        ]\
+    }
 
 cookies = { "customerId": "danapple" }
 

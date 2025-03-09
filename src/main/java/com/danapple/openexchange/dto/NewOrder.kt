@@ -2,8 +2,8 @@ package com.danapple.openexchange.dto
 
 import java.math.BigDecimal
 
-data class NewOrderSingle (
-    val instrumentId: Long,
+data class NewOrder (
     val price: BigDecimal,
-    val quantity: Int
+    val quantity: Int,
+    val legs: List<OrderLeg>
 )

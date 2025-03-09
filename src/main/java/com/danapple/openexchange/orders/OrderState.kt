@@ -4,15 +4,16 @@ import com.danapple.openexchange.trades.TradeLeg
 import java.util.*
 
 class OrderState(val order: Order) {
-    private var _remainingQuantity: Int = order.quantity
     var orderStatus = OrderStatus.OPEN
-    private val tradeLegs: MutableList<TradeLeg> = LinkedList()
+
+    private var _remainingQuantity = order.quantity
+    private val tradeLegs = LinkedList<TradeLeg>()
     internal val remainingQuantity
         get() = this._remainingQuantity
 
     fun addTradeLeg(tradeLeg: TradeLeg) {
         if (tradeLeg.quantity > _remainingQuantity) {
-            throw IllegalArgumentException("TradeLeg quantity exceeds order remaining quantity")
+            throw IllegalArgumentException("TradeLeg quantity ${tradeLeg.quantity} exceeds order remaining quantity $_remainingQuantity")
         }
         tradeLegs.add(tradeLeg)
         _remainingQuantity -= tradeLeg.quantity

@@ -1,15 +1,25 @@
 package com.danapple.openexchange
 
+import com.danapple.openexchange.customers.Customer
 import com.danapple.openexchange.instruments.Equity
 import com.danapple.openexchange.instruments.TradingExchange
-import com.danapple.openexchange.orders.Order
-import com.danapple.openexchange.orders.OrderState
-import com.danapple.openexchange.trades.Trade
+import com.danapple.openexchange.orders.OrderFactory
+import com.danapple.openexchange.orders.OrderIdGenerator
+import com.danapple.openexchange.trades.*
 import java.math.BigDecimal
 import java.util.*
 
 class TestConstants {
     companion object {
+        private val ORDER_ID_GENERATOR = OrderIdGenerator()
+        val ORDER_FACTORY = OrderFactory(ORDER_ID_GENERATOR)
+
+        private val tradeIdGenerator = TradeIdGenerator()
+        val TRADE_FACTORY = TradeFactory(tradeIdGenerator)
+
+        private val tradeLegIdGenerator = TradeLegIdGenerator()
+        val TRADE_LEG_FACTORY = TradeLegFactory(tradeLegIdGenerator)
+
         val TRADING_EXCHANGE_NAME_1 = "Trading Exchange 1"
         val TRADING_EXCHANGE_ID_1 = 2L
         val TRADING_EXCHANGE_1 = TradingExchange(TRADING_EXCHANGE_ID_1, TRADING_EXCHANGE_NAME_1, TimeZone.getDefault())
@@ -18,15 +28,19 @@ class TestConstants {
         val EQUITY_ID_1 = 3L
         val EQUITY_1  = Equity(EQUITY_ID_1, EQUITY_NAME_1, TRADING_EXCHANGE_1)
 
-        val CUSTOMER_ID_1 = 4L
+        val CUSTOMER_ID_1 = "Customer 1"
+        val CUSTOMER = Customer(CUSTOMER_ID_1)
         val CL_ORD_1 = "ClOrd1"
 
         val ORDER_QUANTITY_1 = 5
         val ORDER_ID_1 = 18L
-        val ORDER_1 = Order.createOrder(ORDER_ID_1, CUSTOMER_ID_1, CL_ORD_1, EQUITY_1, BigDecimal.ONE, ORDER_QUANTITY_1)
-        internal val ORDER_STATE_1 = OrderState(ORDER_1)
+        val ORDER_TIMESTAMP_1 = 300303L
+        val ORDER_1 = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_1, CL_ORD_1, EQUITY_1, BigDecimal.ONE, ORDER_QUANTITY_1)
 
-        val EMPTY_TRADE_1 = Trade.createTrade(BigDecimal.ONE, HashSet())
-        val EMPTY_TRADE_2 = Trade.createTrade(BigDecimal.TWO, HashSet())
+        val TRADE_TIMESTAMP_1 = 300303L
+        val TRADE_TIMESTAMP_2 = 400404L
+
+        val EMPTY_TRADE_1 = TRADE_FACTORY.createTrade(TRADE_TIMESTAMP_1, BigDecimal.ONE, HashSet())
+        val EMPTY_TRADE_2 = TRADE_FACTORY.createTrade(TRADE_TIMESTAMP_2, BigDecimal.TWO, HashSet())
     }
 }

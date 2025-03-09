@@ -1,7 +1,12 @@
 #!/usr/bin/python3.8
 import requests
 
-req = { "price": 4.3, "quantity": 4, "instrumentId": 34 }
+req = { "price": 4.3, \
+    "quantity": 5, \
+    "legs": [ \
+    {"ratio": 1, "instrumentId": 34} \
+    ]\
+ }
 
 cookies = { "customerId": "danapple" }
 
