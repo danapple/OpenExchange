@@ -1,5 +1,6 @@
-package com.danapple.openexchange.sequencers
+package com.danapple.openexchange.memoryimplementations
 
+import com.danapple.openexchange.sequencers.IdGenerator
 import java.util.concurrent.atomic.AtomicLong
 
 abstract class MemoryIdGenerator: IdGenerator {

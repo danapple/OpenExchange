@@ -1,18 +1,21 @@
 package com.danapple.openexchange
 
 import com.danapple.openexchange.customers.Customer
+import com.danapple.openexchange.memoryimplementations.MemoryCustomerDao
+import com.danapple.openexchange.memoryimplementations.MemoryInstrumentDao
 import com.danapple.openexchange.instruments.Equity
 import com.danapple.openexchange.instruments.TradingExchange
 import com.danapple.openexchange.orders.OrderFactory
 import com.danapple.openexchange.orders.OrderIdGenerator
 import com.danapple.openexchange.trades.*
 import java.math.BigDecimal
+import java.time.Clock
 import java.util.*
 
 class TestConstants {
     companion object {
         private val ORDER_ID_GENERATOR = OrderIdGenerator()
-        val ORDER_FACTORY = OrderFactory(ORDER_ID_GENERATOR)
+        val ORDER_FACTORY = OrderFactory(Clock.systemDefaultZone(), ORDER_ID_GENERATOR, MemoryInstrumentDao(), MemoryCustomerDao())
 
         private val tradeIdGenerator = TradeIdGenerator()
         val TRADE_FACTORY = TradeFactory(tradeIdGenerator)

@@ -1,5 +1,6 @@
 package com.danapple.openexchange.sequencers
 
+import com.danapple.openexchange.memoryimplementations.MemoryIdGenerator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

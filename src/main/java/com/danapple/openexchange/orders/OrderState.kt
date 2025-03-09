@@ -2,6 +2,7 @@ package com.danapple.openexchange.orders
 
 import com.danapple.openexchange.trades.TradeLeg
 import java.util.*
+import kotlin.math.absoluteValue
 
 class OrderState(val order: Order) {
     var orderStatus = OrderStatus.OPEN
@@ -12,7 +13,7 @@ class OrderState(val order: Order) {
         get() = this._remainingQuantity
 
     fun addTradeLeg(tradeLeg: TradeLeg) {
-        if (tradeLeg.quantity > _remainingQuantity) {
+        if (tradeLeg.quantity.absoluteValue > _remainingQuantity.absoluteValue) {
             throw IllegalArgumentException("TradeLeg quantity ${tradeLeg.quantity} exceeds order remaining quantity $_remainingQuantity")
         }
         tradeLegs.add(tradeLeg)

@@ -1,6 +1,5 @@
 #!/usr/bin/python3.8
 import requests
-import requests
 import sys, getopt
 
 def main(argv):
@@ -20,12 +19,11 @@ def main(argv):
         cookies = { "customerId": customerId }
 
     path="http://localhost:8080/order/" + clientOrderId
-    r = requests.get(path, cookies=cookies, verify=False)
+    r = requests.delete(path , cookies=cookies, verify=False)
 
-    print ('Response')
+    print ('Response code')
     print(r)
     print(r.json())
-    print ('End of response')
 
 if __name__ == "__main__":
     main(sys.argv[1:])
