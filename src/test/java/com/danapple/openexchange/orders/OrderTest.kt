@@ -11,8 +11,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
-class NewOrderTest
-{
+class OrderTest {
     @Test
     fun generatesOrder() {
         val order = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_1, CL_ORD_1, EQUITY_1, BigDecimal.TEN, 5)
