@@ -35,16 +35,18 @@ def main(argv):
     req = { "behavior": behavior, \
             "capping": capping,
             "originalClientOrderId": originalClientOrderId, \
-            "price": price, \
-            "quantity": quantity, \
-            "legs": [ \
-                {"ratio": 1, "instrumentId": instrumentId} \
-                ] \
+            "order": { "price": price, \
+                       "clientOrderId": clientOrderId, \
+                       "quantity": quantity, \
+                       "legs": [ \
+                           {"ratio": 1, "instrumentId": instrumentId} \
+                           ] \
+                       }
             }
 
     cookies = { "customerId": customerId }
 
-    path="http://localhost:8080/order/" + clientOrderId
+    path="http://localhost:5000/order/" + clientOrderId
     print ('Requesting at path', path)
     print ('req', req)
 

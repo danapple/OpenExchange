@@ -19,4 +19,8 @@ class MemoryOrderDao : OrderDao {
     override fun getOrder(customer: Customer, clientOrderId: String): OrderState? {
         return orders[customer]?.get(clientOrderId)
     }
+
+    override fun getOrders(customer: Customer): Collection<OrderState> {
+        return orders[customer]?.values ?: emptySet()
+    }
 }

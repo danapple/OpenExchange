@@ -4,8 +4,8 @@ import com.danapple.openexchange.trades.TradeLeg
 import java.util.*
 import kotlin.math.absoluteValue
 
-class OrderState(val order: Order) {
-    var orderStatus = OrderStatus.OPEN
+class OrderState(val order: Order, passedOrderStatus : OrderStatus = OrderStatus.OPEN) {
+    var orderStatus = passedOrderStatus
 
     private var _remainingQuantity = order.quantity
     private val tradeLegs = LinkedList<TradeLeg>()

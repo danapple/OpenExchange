@@ -26,16 +26,21 @@ def main(argv):
          if opt == '--instrumentId':
              instrumentId=arg
 
-    req = { "price": price, \
-         "quantity": quantity, \
-         "legs": [ \
-         {"ratio": 1, "instrumentId": instrumentId} \
-         ]\
-    }
+
+    req = { "orders" : [ { "clientOrderId" : clientOrderId, \
+                           "price": price, \
+                           "quantity": quantity, \
+                           "legs": [ \
+                               {"ratio": 1, "instrumentId": instrumentId} \
+                               ]\
+                           }
+                         ] }
 
     cookies = { "customerId": customerId }
 
-    path="http://localhost:8080/order/" + clientOrderId
+    #path="http://openexchange.eu-central-1.elasticbeanstalk.com/order/" + clientOrderId
+    path="http://localhost:5000/orders"
+
     print ('Requesting at path', path)
     print ('req', req)
 

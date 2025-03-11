@@ -18,7 +18,7 @@ def main(argv):
 
         cookies = { "customerId": customerId }
 
-    path="http://localhost:8080/order/" + clientOrderId
+    path="http://localhost:5000/order/" + clientOrderId
     r = requests.delete(path , cookies=cookies, verify=False)
 
     print ('Response code')

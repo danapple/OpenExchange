@@ -4,7 +4,6 @@ import com.danapple.openexchange.customers.Customer
 import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dto.CancelReplace
-import com.danapple.openexchange.dto.NewOrder
 import com.danapple.openexchange.instruments.Instrument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -24,7 +23,7 @@ class OrderFactory (@Autowired val clock : Clock, @Autowired val orderIdGenerato
         return Order(orderIdGenerator.getId(), customer, timestamp, clientOrderId, instrument, price, quantity)
     }
 
-    fun createOrder(customerId: String, clientOrderId: String, newOrder: NewOrder) : Order {
+    fun createOrder(customerId: String, clientOrderId: String, newOrder: com.danapple.openexchange.dto.Order) : Order {
         if (newOrder.legs.size != 1) {
             throw IllegalArgumentException("Order must have exactly one leg, not $newOrder.legs.size legs")
         }
@@ -36,13 +35,13 @@ class OrderFactory (@Autowired val clock : Clock, @Autowired val orderIdGenerato
     }
 
     fun createOrder(customerId: String, clientOrderId: String, cancelReplace: CancelReplace) : Order {
-        if (cancelReplace.legs.size != 1) {
+        if (cancelReplace.order.legs.size != 1) {
             throw IllegalArgumentException("Order must have exactly one leg, not $cancelReplace.legs.size legs")
         }
-        val leg0 = cancelReplace.legs[0];
+        val leg0 = cancelReplace.order.legs[0]
         if (leg0.ratio != 1) {
             throw IllegalArgumentException("Order leg, must have a ratio of 1 not $leg0.ratio")
         }
-        return createOrder(customerDao.getCustomer(customerId), clock.millis(), clientOrderId, instrumentDao.getInstrument(leg0.instrumentId), cancelReplace.price, cancelReplace.quantity * leg0.ratio)
+        return createOrder(customerDao.getCustomer(customerId), clock.millis(), clientOrderId, instrumentDao.getInstrument(leg0.instrumentId), cancelReplace.order.price, cancelReplace.order.quantity * leg0.ratio)
     }
 }

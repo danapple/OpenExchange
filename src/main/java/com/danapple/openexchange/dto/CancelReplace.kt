@@ -1,14 +1,10 @@
 package com.danapple.openexchange.dto
 
-import java.math.BigDecimal
-
 data class CancelReplace (
     val behavior: BEHAVIOR,
     val capping: CAPPING,
     val originalClientOrderId: String,
-    val price: BigDecimal,
-    val quantity: Int,
-    val legs: List<OrderLeg>
+    val order: Order
 ) {
     enum class CAPPING {
         CAP_AT_REMAINING_QUANTITY,

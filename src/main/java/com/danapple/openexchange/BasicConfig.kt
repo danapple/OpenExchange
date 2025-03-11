@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration
 import java.time.Clock
 
 @Configuration
-open class BasicConfig() {
+open class BasicConfig {
     @Bean
     open fun clock() : Clock {
         return Clock.systemDefaultZone()

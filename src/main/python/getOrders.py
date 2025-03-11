@@ -5,21 +5,18 @@ import sys, getopt
 
 def main(argv):
     customerId=''
-    clientOrderId=''
     try:
-        opts, args = getopt.getopt(argv, "", ["clientOrderId=","customerId="])
+        opts, args = getopt.getopt(argv, "", ["customerId="])
     except getopt.GetoptError:
         print ('oops')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '--customerId':
             customerId=arg
-        if opt == '--clientOrderId':
-            clientOrderId=arg
 
-        cookies = { "customerId": customerId }
+    cookies = { "customerId": customerId }
 
-    path="http://localhost:5000/order/" + clientOrderId
+    path="http://localhost:5000/orders"
     r = requests.get(path, cookies=cookies, verify=False)
 
     print ('Response')

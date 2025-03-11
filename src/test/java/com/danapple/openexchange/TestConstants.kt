@@ -1,6 +1,7 @@
 package com.danapple.openexchange
 
 import com.danapple.openexchange.customers.Customer
+import com.danapple.openexchange.engine.EngineFactory
 import com.danapple.openexchange.memoryimplementations.MemoryCustomerDao
 import com.danapple.openexchange.memoryimplementations.MemoryInstrumentDao
 import com.danapple.openexchange.instruments.Equity
@@ -36,14 +37,11 @@ class TestConstants {
         val CL_ORD_1 = "ClOrd1"
 
         val ORDER_QUANTITY_1 = 5
-        val ORDER_ID_1 = 18L
         val ORDER_TIMESTAMP_1 = 300303L
         val ORDER_1 = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_1, CL_ORD_1, EQUITY_1, BigDecimal.ONE, ORDER_QUANTITY_1)
 
         val TRADE_TIMESTAMP_1 = 300303L
-        val TRADE_TIMESTAMP_2 = 400404L
 
-        val EMPTY_TRADE_1 = TRADE_FACTORY.createTrade(TRADE_TIMESTAMP_1, BigDecimal.ONE, HashSet())
-        val EMPTY_TRADE_2 = TRADE_FACTORY.createTrade(TRADE_TIMESTAMP_2, BigDecimal.TWO, HashSet())
+        val ENGINE_FACTORY = EngineFactory(Clock.systemDefaultZone(), TRADE_FACTORY, TRADE_LEG_FACTORY)
     }
 }
