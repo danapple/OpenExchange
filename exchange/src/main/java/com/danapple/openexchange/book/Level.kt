@@ -22,5 +22,4 @@ internal class Level
         orders.remove(orderState)
         return orders.size == 0
     }
-
 }

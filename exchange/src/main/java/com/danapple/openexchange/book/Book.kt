@@ -27,8 +27,8 @@ class Book {
             orderState.orderStatus = newOrderStatus
         }
         val book = if (orderState.order.isBuyOrder()) buySide else sellSide
-        val removeLevel = book[orderState.order.price]?.removeOrder(orderState) ?: false
-        if (removeLevel) {
+        val levelIsEmpty = book[orderState.order.price]?.removeOrder(orderState) ?: false
+        if (levelIsEmpty) {
             book.remove(orderState.order.price)
         }
     }
@@ -37,7 +37,8 @@ class Book {
         if (orderState.order.isBuyOrder()) {
             return sellSide.headMap(orderState.order.price, true).sequencedValues()
         } else {
-            return buySide.tailMap(orderState.order.price, true).sequencedValues().reversed()
+            val tailMap = buySide.tailMap(orderState.order.price, true)
+            return tailMap.sequencedValues().reversed()
         }
     }
 }

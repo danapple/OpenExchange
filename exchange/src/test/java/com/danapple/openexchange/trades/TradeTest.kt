@@ -1,6 +1,6 @@
 package com.danapple.openexchange.trades
 
-import com.danapple.openexchange.TestConstants.Companion.ORDER_1
+import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
 import com.danapple.openexchange.TestConstants.Companion.TRADE_FACTORY
 import com.danapple.openexchange.TestConstants.Companion.TRADE_LEG_FACTORY
 import com.danapple.openexchange.TestConstants.Companion.TRADE_TIMESTAMP_1
@@ -11,15 +11,15 @@ import java.math.BigDecimal
 class TradeTest {
     @Test
     fun createsBalancedTrade() {
-        val tradeLeg1 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_1, 1)
-        val tradeLeg2 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_1, -1)
+        val tradeLeg1 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_BUY_1, 1)
+        val tradeLeg2 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_BUY_1, -1)
         TRADE_FACTORY.createTrade(TRADE_TIMESTAMP_1, BigDecimal.ONE, setOf(tradeLeg1, tradeLeg2))
     }
 
     @Test
     fun rejectsUnbalancedTrade() {
-        val tradeLeg1 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_1, 2)
-        val tradeLeg2 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_1, -1)
+        val tradeLeg1 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_BUY_1, 2)
+        val tradeLeg2 = TRADE_LEG_FACTORY.createTradeLeg(ORDER_BUY_1, -1)
         AssertionsForClassTypes.assertThatThrownBy {
             TRADE_FACTORY.createTrade(
                 TRADE_TIMESTAMP_1,
