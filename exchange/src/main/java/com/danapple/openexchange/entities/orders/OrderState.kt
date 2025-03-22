@@ -9,7 +9,7 @@ class OrderState(val order: Order, passedOrderStatus : OrderStatus = OrderStatus
     var orderStatus = passedOrderStatus
 
     private var _remainingQuantity = order.quantity
-    private val tradeLegs = LinkedList<TradeLeg>()
+    val tradeLegs = LinkedList<TradeLeg>()
     internal val remainingQuantity
         get() = this._remainingQuantity
 

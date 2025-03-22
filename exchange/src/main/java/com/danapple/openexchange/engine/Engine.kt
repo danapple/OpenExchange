@@ -3,10 +3,10 @@ package com.danapple.openexchange.engine
 import com.danapple.openexchange.book.Book
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dto.OrderStatus
-import com.danapple.openexchange.orders.OrderState
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLeg
 import com.danapple.openexchange.entities.trades.TradeLegFactory
+import com.danapple.openexchange.orders.OrderState
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,7 +61,6 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
     @Synchronized internal fun cancelReplace(originalOrderState: OrderState, newOrderState: OrderState) {
         cancelOrder(originalOrderState)
         newOrder(newOrderState)
-        orderDao.saveOrder(newOrderState)
     }
 
     private fun matchOrderStates(
