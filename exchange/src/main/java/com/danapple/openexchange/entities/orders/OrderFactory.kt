@@ -1,13 +1,12 @@
 package com.danapple.openexchange.orders
 
-import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dto.CancelReplace
+import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.entities.instruments.Instrument
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.lang.Exception
 import java.math.BigDecimal
 import java.time.Clock
 

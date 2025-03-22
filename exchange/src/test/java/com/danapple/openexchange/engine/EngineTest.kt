@@ -3,7 +3,7 @@ package com.danapple.openexchange.engine
 import com.danapple.openexchange.TestConstants.Companion.CL_ORD_BUY_1
 import com.danapple.openexchange.TestConstants.Companion.CL_ORD_SELL_1
 import com.danapple.openexchange.TestConstants.Companion.CUSTOMER
-import com.danapple.openexchange.TestConstants.Companion.EQUITY_1
+import com.danapple.openexchange.TestConstants.Companion.INSTRUMENT_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_2
 import com.danapple.openexchange.TestConstants.Companion.ORDER_FACTORY
@@ -34,10 +34,10 @@ class EngineTest {
     private val orderStateSell1 = OrderState(ORDER_SELL_1)
     private val orderStateSell2 = OrderState(ORDER_SELL_2)
 
-    private val orderBuy1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_BUY_1, EQUITY_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
+    private val orderBuy1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
     private val orderStateBuy1Big = OrderState(orderBuy1Big)
 
-    private val orderSell1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_SELL_1, EQUITY_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
+    private val orderSell1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
     private val orderStateSell1Big = OrderState(orderSell1Big)
 
     private var orderDao = mockk<OrderDao>()
