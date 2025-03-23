@@ -1,6 +1,7 @@
 package com.danapple.openexchange.book
 
 import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
+import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_2
 import com.danapple.openexchange.orders.OrderState
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -9,7 +10,7 @@ class LevelTest {
 
     private val level = Level()
     private val orderState1 = OrderState(ORDER_BUY_1)
-    private val orderState2 = OrderState(ORDER_BUY_1)
+    private val orderState2 = OrderState(ORDER_BUY_2)
 
     @Test
     fun emptyLevelReturnsEmptyList() {

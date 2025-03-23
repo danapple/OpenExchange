@@ -9,22 +9,21 @@ import com.danapple.openexchange.orders.OrderFactory
 import com.danapple.openexchange.orders.OrderState
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/orders")
-class OrdersApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val orderFactory: OrderFactory,
-                @Autowired val customerDao: CustomerDao, @Autowired val orderQueryDao: OrderQueryDao) : BaseApi() {
+class OrdersApi(private val engines : Map<Instrument, Engine>, private val orderFactory: OrderFactory,
+                private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
 
     @PostMapping
-    fun submitOrders(@RequestBody submitOrders: SubmitOrders, @CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
+    fun submitOrders(@RequestBody submitOrders: SubmitOrders, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
         val orderStates = submitOrders.orders.map { submittedOrder ->
-            logger.info("New Order for customerId $customerId, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
+            logger.info("New Order for customerKey $customerKey, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
             try {
-                val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+                val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
                 val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
@@ -34,6 +33,7 @@ class OrdersApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val
                 convertOrderState(orderState)
             }
             catch (e : Exception) {
+                logger.warn("Unable to handle new order $submittedOrder", e)
                 OrderState(0, OrderStatus.REJECTED, 0, submittedOrder)
             }
         }.toTypedArray()
@@ -41,17 +41,17 @@ class OrdersApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val
     }
 
     @GetMapping
-    fun getOrders(@CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
-        OrderApi.logger.info("getOrders for customerId $customerId")
-        val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun getOrders(@CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
+        OrderApi.logger.info("getOrders for customerKey $customerKey")
+        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
         val orderStates = orderQueryDao.getOrders(customer)
         return createOrderStatesResponse(orderStates = orderStates.toTypedArray(), HttpStatus.OK)
     }
 
     @DeleteMapping
-    fun cancelOrders(@CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
-        OrderApi.logger.info("cancelOrders for customerId $customerId")
-        val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun cancelOrders(@CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
+        OrderApi.logger.info("cancelOrders for customerKey $customerKey")
+        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
         val orderStatesToCancel = orderQueryDao.getOrders(customer)
         val resultingOrderStates = orderStatesToCancel.map{ orderState ->
             try {

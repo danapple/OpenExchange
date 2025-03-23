@@ -1,20 +1,22 @@
 #!/usr/bin/python3.8
+import getopt
 import requests
 import requests
-import sys, getopt
+import sys
+
 
 def main(argv):
-    customerId=''
+    customerKey=''
     try:
-        opts, args = getopt.getopt(argv, "", ["customerId="])
+        opts, args = getopt.getopt(argv, "", ["customerKey="])
     except getopt.GetoptError:
         print ('oops')
         sys.exit(2)
     for opt, arg in opts:
-        if opt == '--customerId':
-            customerId=arg
+        if opt == '--customerKey':
+            customerKey=arg
 
-    cookies = { "customerId": customerId }
+    cookies = { "customerKey": customerKey }
 
     path="http://localhost:5000/orders"
     r = requests.get(path, cookies=cookies, verify=False)

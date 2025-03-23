@@ -8,4 +8,5 @@ interface OrderQueryDao {
 
     fun getOrders(customer: Customer): Collection<OrderState>
 
+    fun getOpenOrders(): Collection<OrderState>
 }

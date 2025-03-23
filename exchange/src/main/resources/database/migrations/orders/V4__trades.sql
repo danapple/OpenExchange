@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS trades (
+  tradeId BIGINT PRIMARY KEY,
+  createTime BIGINT NOT NULL,
+  price FLOAT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS trade_legs (
+  tradeLegId BIGINT PRIMARY KEY,
+  tradeId BIGINT NOT NULL REFERENCES trades,
+  orderId BIGINT NOT NULL REFERENCES orders,
+  quantity INT NOT NULL
+);

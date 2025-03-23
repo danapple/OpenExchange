@@ -1,0 +1,30 @@
+package com.danapple.openexchange.dao.jdbcdao
+
+import com.danapple.openexchange.dao.CustomerDao
+import com.danapple.openexchange.entities.customers.Customer
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.jdbc.core.simple.JdbcClient
+import org.springframework.stereotype.Component
+import java.util.concurrent.ConcurrentHashMap
+
+@Component
+open class CustomerDaoJdbcImpl(@Qualifier("customerJdbcClient") private val jdbcClient : JdbcClient) : CustomerDao {
+    private val customersById = ConcurrentHashMap<Long, Customer>()
+    private val customersByKey = ConcurrentHashMap<String, Customer>()
+
+    init {
+        setOf(Customer(0, "BrokerA"),
+             Customer(1, "BrokerB")).forEach({ customer ->
+            customersById[customer.customerId] = customer
+            customersByKey[customer.customerKey] = customer
+        })
+    }
+
+    override fun getCustomer(customerId: Long): Customer? {
+       return customersById[customerId]
+    }
+
+    override fun getCustomer(customerKey: String): Customer? {
+        return customersByKey[customerKey]
+    }
+}

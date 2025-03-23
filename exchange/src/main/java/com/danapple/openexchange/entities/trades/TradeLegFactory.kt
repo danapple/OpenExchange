@@ -1,15 +1,17 @@
 package com.danapple.openexchange.entities.trades
 
-import com.danapple.openexchange.orders.Order
-import org.springframework.beans.factory.annotation.Autowired
+import com.danapple.openexchange.orders.OrderState
 import org.springframework.stereotype.Service
 
 @Service
-class TradeLegFactory(@Autowired val tradeLegIdGenerator: TradeLegIdGenerator) {
-    fun createTradeLeg(order: Order, quantity: Int): TradeLeg {
+class TradeLegFactory(private val tradeLegIdGenerator: TradeLegIdGenerator) {
+    fun createTradeLeg(orderState: OrderState, trade: Trade, quantity: Int): TradeLeg {
         if (quantity == 0) {
             throw IllegalArgumentException("Quantity must be non-zero")
         }
-        return TradeLeg(tradeLegIdGenerator.getId(), order, quantity)
+        val tradeLeg = TradeLeg(tradeLegIdGenerator.getId(), trade, orderState, quantity)
+        orderState.addTradeLeg(tradeLeg)
+        trade.addTradeLeg(tradeLeg)
+        return tradeLeg
     }
 }

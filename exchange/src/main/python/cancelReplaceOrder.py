@@ -1,24 +1,26 @@
 #!/usr/bin/python3.8
+import getopt
 import requests
-import sys, getopt
+import sys
+
 
 def main(argv):
 
-    customerId=''
+    customerKey=''
     price=''
     quantity=''
     instrumentId=''
     clientOrderId=''
     try:
-        opts, args = getopt.getopt(argv, "", ["clientOrderId=","customerId=","instrumentId=","price=","quantity=","behavior=","capping=","originalClientOrderId="])
+        opts, args = getopt.getopt(argv, "", ["clientOrderId=","customerKey=","instrumentId=","price=","quantity=","behavior=","capping=","originalClientOrderId="])
     except getopt.GetoptError:
         print ('oops')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '--price':
             price = arg
-        if opt == '--customerId':
-            customerId=arg
+        if opt == '--customerKey':
+            customerKey=arg
         if opt == '--quantity':
             quantity=arg
         if opt == '--clientOrderId':
@@ -44,7 +46,7 @@ def main(argv):
                        }
             }
 
-    cookies = { "customerId": customerId }
+    cookies = { "customerKey": customerKey }
 
     path="http://localhost:5000/order/" + clientOrderId
     print ('Requesting at path', path)

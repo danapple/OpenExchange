@@ -2,14 +2,15 @@ package com.danapple.openexchange.api
 
 import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.OrderQueryDao
-import com.danapple.openexchange.dto.*
+import com.danapple.openexchange.dto.CancelReplace
+import com.danapple.openexchange.dto.OrderStates
+import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.engine.Engine
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.orders.OrderFactory
 import com.danapple.openexchange.orders.OrderState
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,14 +18,15 @@ import kotlin.math.min
 
 @RestController
 @RequestMapping("/order")
-class OrderApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val orderFactory: OrderFactory,
-               @Autowired val customerDao: CustomerDao, @Autowired val orderQueryDao: OrderQueryDao) : BaseApi() {
+class OrderApi(private val engines : Map<Instrument, Engine>, private val orderFactory: OrderFactory,
+               private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
 
     @PutMapping("/{clientOrderId}")
-    fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace, @CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
-        logger.info("cancelReplace for customerId $customerId, clientOrderId $clientOrderId: $cancelReplace")
+    fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace, @CookieValue(value = "customerKey") customerKey: String):
+            ResponseEntity<OrderStates> {
+        logger.info("cancelReplace for customerKey $customerKey, clientOrderId $clientOrderId: $cancelReplace")
 
-        val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
 
         val originalOrderState = orderQueryDao.getOrder(customer, cancelReplace.originalClientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -63,9 +65,9 @@ class OrderApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val 
     }
 
     @GetMapping("/{clientOrderId}")
-    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String, @CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
-        logger.info("getOrder for customerId $customerId, clientOrderId $clientOrderId")
-        val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
+        logger.info("getOrder for customerKey $customerKey, clientOrderId $clientOrderId")
+        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
 
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -74,9 +76,9 @@ class OrderApi(@Autowired val engines : Map<Instrument, Engine>, @Autowired val 
     }
 
     @DeleteMapping("/{clientOrderId}")
-    fun cancelOrder(@PathVariable clientOrderId: String, @CookieValue(value = "customerId") customerId: String) : ResponseEntity<OrderStates> {
-        logger.info("cancelOrder for customerId $customerId, clientOrderId $clientOrderId")
-        val customer = customerDao.getCustomer(customerId) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun cancelOrder(@PathVariable clientOrderId: String, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
+        logger.info("cancelOrder for customerKey $customerKey, clientOrderId $clientOrderId")
+        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
         val engine = engines[orderState.order.instrument]

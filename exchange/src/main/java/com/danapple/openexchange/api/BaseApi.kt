@@ -17,7 +17,7 @@ abstract class BaseApi {
                 listOf(OrderLeg(orderState.order.instrument.instrumentId, 1))
             )
             com.danapple.openexchange.dto.OrderState(
-                orderState.order.timeStamp,
+                orderState.order.createTime,
                 orderState.orderStatus,
                 orderState.remainingQuantity,
                 returningOrder
@@ -40,7 +40,7 @@ abstract class BaseApi {
             listOf(OrderLeg(orderState.order.instrument.instrumentId, 1))
         )
         return com.danapple.openexchange.dto.OrderState(
-            orderState.order.timeStamp,
+            orderState.order.createTime,
             orderState.orderStatus,
             orderState.remainingQuantity,
             returningOrder)

@@ -1,22 +1,44 @@
 package com.danapple.openexchange.engine
 
 import com.danapple.openexchange.book.Book
+import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dao.OrderDao
+import com.danapple.openexchange.dao.OrderQueryDao
+import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLegFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import java.time.Clock
 
-@Service
-class EngineFactory(@Autowired private val clock : Clock, @Autowired private val tradeFactory: TradeFactory, @Autowired private val tradeLegFactory : TradeLegFactory, @Autowired private val orderDao : OrderDao) {
-    private fun createEngine() : Engine {
-        val book = Book()
-        return Engine(book, clock, tradeFactory, tradeLegFactory, orderDao)
+@Configuration
+open class EngineFactory(private val clock : Clock, private val tradeFactory: TradeFactory,
+                         private val tradeLegFactory : TradeLegFactory, private val orderQueryDao : OrderQueryDao,
+                         private val orderDao : OrderDao, private val instrumentDao : InstrumentDao,
+                         private val tradeDao : TradeDao) {
+
+    @Bean
+    open fun createEngines(instruments: Set<Instrument>): Map<Instrument, Engine> {
+        val ordersByInstrument = orderQueryDao.getOpenOrders().groupBy { orderState ->
+            logger.info("Loaded order $orderState")
+            orderState.order.instrument
+        }
+
+        val instrumentsM = instrumentDao.getInstruments()
+        val engines = instrumentsM.associateWith { instrument ->
+            val book = Book()
+            ordersByInstrument.getOrDefault(instrument, emptyList()).forEach({ orderState ->
+                book.addOrder(orderState)
+            })
+            Engine(book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao)
+        }
+        return engines
     }
 
-    fun createEngines(instruments: Set<Instrument>): Map<Instrument, Engine> {
-        return instruments.associateWith { createEngine() }
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(EngineFactory::class.java)
     }
 }

@@ -6,11 +6,11 @@ import com.danapple.openexchange.TestConstants.Companion.CUSTOMER
 import com.danapple.openexchange.TestConstants.Companion.INSTRUMENT_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_2
+import com.danapple.openexchange.TestConstants.Companion.ORDER_CREATETIME_2
 import com.danapple.openexchange.TestConstants.Companion.ORDER_FACTORY
 import com.danapple.openexchange.TestConstants.Companion.ORDER_QUANTITY_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_1
 import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_2
-import com.danapple.openexchange.TestConstants.Companion.ORDER_TIMESTAMP_2
 import com.danapple.openexchange.TestConstants.Companion.TRADE_FACTORY
 import com.danapple.openexchange.TestConstants.Companion.TRADE_LEG_FACTORY
 import com.danapple.openexchange.book.Book
@@ -34,10 +34,10 @@ class EngineTest {
     private val orderStateSell1 = OrderState(ORDER_SELL_1)
     private val orderStateSell2 = OrderState(ORDER_SELL_2)
 
-    private val orderBuy1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
+    private val orderBuy1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
     private val orderStateBuy1Big = OrderState(orderBuy1Big)
 
-    private val orderSell1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_TIMESTAMP_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
+    private val orderSell1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
     private val orderStateSell1Big = OrderState(orderSell1Big)
 
     private var orderDao = mockk<OrderDao>()
@@ -114,8 +114,8 @@ class EngineTest {
         assertThat(orderStateBuy2.tradeLegs).hasSize(1)
         assertThat(orderStateSell2.tradeLegs).hasSize(1)
 
-        assertThat(orderStateBuy2.tradeLegs.first.order).isEqualTo(orderStateBuy2.order)
-        assertThat(orderStateSell2.tradeLegs.first.order).isEqualTo(orderStateSell2.order)
+        assertThat(orderStateBuy2.tradeLegs.first.orderState).isEqualTo(orderStateBuy2)
+        assertThat(orderStateSell2.tradeLegs.first.orderState).isEqualTo(orderStateSell2)
 
         assertThat(orderStateBuy2.tradeLegs.first.quantity).isEqualTo(orderStateBuy2.order.quantity)
         assertThat(orderStateSell2.tradeLegs.first.quantity).isEqualTo(orderStateSell2.order.quantity)
@@ -151,8 +151,8 @@ class EngineTest {
         assertThat(orderStateBuy1.tradeLegs).hasSize(1)
         assertThat(orderStateSell1Big.tradeLegs).hasSize(1)
 
-        assertThat(orderStateBuy1.tradeLegs.first.order).isEqualTo(orderStateBuy1.order)
-        assertThat(orderStateSell1Big.tradeLegs.first.order).isEqualTo(orderStateSell1Big.order)
+        assertThat(orderStateBuy1.tradeLegs.first.orderState).isEqualTo(orderStateBuy1)
+        assertThat(orderStateSell1Big.tradeLegs.first.orderState).isEqualTo(orderStateSell1Big)
 
         assertThat(orderStateBuy1.tradeLegs.first.quantity).isEqualTo(orderStateBuy1.order.quantity)
         assertThat(orderStateSell1Big.tradeLegs.first.quantity).isEqualTo(-orderStateBuy1.order.quantity)
@@ -172,8 +172,8 @@ class EngineTest {
         assertThat(orderStateSell1Big.tradeLegs).hasSize(1)
         assertThat(orderStateBuy1.tradeLegs).hasSize(1)
 
-        assertThat(orderStateSell1Big.tradeLegs.first.order).isEqualTo(orderStateSell1Big.order)
-        assertThat(orderStateBuy1.tradeLegs.first.order).isEqualTo(orderStateBuy1.order)
+        assertThat(orderStateSell1Big.tradeLegs.first.orderState).isEqualTo(orderStateSell1Big)
+        assertThat(orderStateBuy1.tradeLegs.first.orderState).isEqualTo(orderStateBuy1)
 
         assertThat(orderStateSell1Big.tradeLegs.first.quantity).isEqualTo(-orderStateBuy1.order.quantity)
         assertThat(orderStateBuy1.tradeLegs.first.quantity).isEqualTo(orderStateBuy1.order.quantity)
@@ -199,10 +199,10 @@ class EngineTest {
         assertThat(orderStateBuy1.tradeLegs).hasSize(1)
         assertThat(orderStateBuy1Big.tradeLegs).hasSize(1)
 
-        assertThat(orderStateSell1Big.tradeLegs[0].order).isEqualTo(orderStateSell1Big.order)
-        assertThat(orderStateSell1Big.tradeLegs[1].order).isEqualTo(orderStateSell1Big.order)
-        assertThat(orderStateBuy1.tradeLegs.first.order).isEqualTo(orderStateBuy1.order)
-        assertThat(orderStateBuy1Big.tradeLegs.first.order).isEqualTo(orderStateBuy1Big.order)
+        assertThat(orderStateSell1Big.tradeLegs[0].orderState).isEqualTo(orderStateSell1Big)
+        assertThat(orderStateSell1Big.tradeLegs[1].orderState).isEqualTo(orderStateSell1Big)
+        assertThat(orderStateBuy1.tradeLegs.first.orderState).isEqualTo(orderStateBuy1)
+        assertThat(orderStateBuy1Big.tradeLegs.first.orderState).isEqualTo(orderStateBuy1Big)
 
         assertThat(orderStateSell1Big.tradeLegs[0].quantity).isEqualTo(-orderStateBuy1.order.quantity)
         assertThat(orderStateSell1Big.tradeLegs[1].quantity).isEqualTo(-orderStateBuy1Big.tradeLegs.first.quantity)
