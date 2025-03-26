@@ -15,7 +15,9 @@ import com.danapple.openexchange.TestConstants.Companion.TRADE_FACTORY
 import com.danapple.openexchange.TestConstants.Companion.TRADE_LEG_FACTORY
 import com.danapple.openexchange.book.Book
 import com.danapple.openexchange.dao.OrderDao
+import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.dto.OrderStatus
+import com.danapple.openexchange.entities.trades.Trade
 import com.danapple.openexchange.orders.OrderState
 import io.mockk.*
 import io.mockk.junit5.MockKExtension
@@ -42,13 +44,21 @@ class EngineTest {
 
     private var orderDao = mockk<OrderDao>()
 
+    private var tradeDao = mockk<TradeDao>()
+
     private val book = Book()
 
-    private val engine = Engine(book, Clock.systemDefaultZone(), TRADE_FACTORY, TRADE_LEG_FACTORY, orderDao)
+    private val engine = Engine(book, Clock.systemDefaultZone(), TRADE_FACTORY, TRADE_LEG_FACTORY, orderDao, tradeDao)
+
+    val tradeSlot = slot<Trade>()
 
     @BeforeEach
     fun beforeEach() {
         every { orderDao.saveOrder(any())} just runs
+        every { orderDao.updateOrder(any())} just runs
+
+
+        every { tradeDao.saveTrade(capture(tradeSlot))} just runs
     }
 
     @Test
@@ -98,6 +108,43 @@ class EngineTest {
         engine.newOrder(orderStateBuy2)
 
         verify { orderDao.saveOrder(orderStateBuy2) }
+    }
+
+    @Test
+    fun updatesCanceledOrder() {
+        engine.newOrder(orderStateBuy2)
+        engine.cancelOrder(orderStateBuy2)
+
+        verify { orderDao.updateOrder(orderStateBuy2) }
+    }
+
+    @Test
+    fun updatesFilledRestingOrder() {
+        engine.newOrder(orderStateBuy1)
+        engine.newOrder(orderStateSell1)
+
+        verify { orderDao.updateOrder(orderStateBuy1) }
+    }
+
+    @Test
+    fun updatesFilledNewOrder() {
+        engine.newOrder(orderStateBuy1)
+        engine.newOrder(orderStateSell1)
+
+        verify { orderDao.updateOrder(orderStateSell1) }
+    }
+
+    @Test
+    fun savesTradeForFill() {
+        engine.newOrder(orderStateBuy1)
+        engine.newOrder(orderStateSell1)
+
+        val capturedTrade = tradeSlot.captured
+        assertThat(capturedTrade.tradeLegs).hasSize(2)
+        val tradeLegsByOrderState = capturedTrade.tradeLegs.associateBy { it.orderState }
+
+        assertThat(tradeLegsByOrderState[orderStateBuy1]?.quantity).isEqualTo(orderStateBuy1.filledQuantity())
+        assertThat(tradeLegsByOrderState[orderStateSell1]?.quantity).isEqualTo(orderStateSell1.filledQuantity())
     }
 
     @Test
@@ -236,6 +283,5 @@ class EngineTest {
 
         engine.cancelReplace(orderStateBuy2, orderStateBuy1)
         assertThat(orderStateBuy2.orderStatus).isEqualTo(OrderStatus.FILLED)
-
     }
 }

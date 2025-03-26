@@ -25,8 +25,8 @@ class OrderState(val order: Order, passedOrderStatus : OrderStatus = OrderStatus
         }
     }
 
-    fun fill(quantity : Int) {
-        _remainingQuantity -= quantity
+    fun filledQuantity() : Int {
+        return order.quantity - _remainingQuantity
     }
 
     override fun toString(): String {

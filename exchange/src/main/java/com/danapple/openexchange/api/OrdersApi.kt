@@ -5,6 +5,7 @@ import com.danapple.openexchange.dao.OrderQueryDao
 import com.danapple.openexchange.dto.*
 import com.danapple.openexchange.engine.Engine
 import com.danapple.openexchange.entities.instruments.Instrument
+import com.danapple.openexchange.entities.orders.toDto
 import com.danapple.openexchange.orders.OrderFactory
 import com.danapple.openexchange.orders.OrderState
 import org.slf4j.Logger
@@ -30,7 +31,7 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
                     OrderState(createdOrder, if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN)
                 logger.info("OrderState $orderState")
                 engine?.newOrder(orderState)
-                convertOrderState(orderState)
+                orderState.toDto()
             }
             catch (e : Exception) {
                 logger.warn("Unable to handle new order $submittedOrder", e)
@@ -59,7 +60,7 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
             } catch (e: Exception) {
                 logger.warn("Unable to cancel order $orderState", e);
             }
-            convertOrderState(orderState)
+            orderState.toDto()
         }.toTypedArray()
         return createOrderStatesResponse(orderStates = resultingOrderStates, HttpStatus.OK)
     }

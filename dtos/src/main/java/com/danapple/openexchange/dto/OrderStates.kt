@@ -1,5 +1,7 @@
 package com.danapple.openexchange.dto
 
-data class OrderStates(
+import com.fasterxml.jackson.annotation.JsonCreator
+
+data class OrderStates @JsonCreator constructor(
     val orderStates : List<OrderState>
 )

@@ -1,7 +1,6 @@
 package com.danapple.openexchange
 
 import com.danapple.openexchange.dao.jdbcdao.*
-import com.danapple.openexchange.engine.EngineFactory
 import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.TradeFactory
@@ -18,6 +17,7 @@ import java.time.Clock
 class TestConstants {
     companion object {
         val CLOCK = Clock.systemDefaultZone()
+        val now = CLOCK.millis()
         private val ORDER_ID_GENERATOR = OrderIdGenerator()
         val ORDER_CACHE = OrderCache()
         val ORDER_DAO = OrderDaoJdbcImpl(ArrayList(), ORDER_CACHE)
@@ -26,7 +26,7 @@ class TestConstants {
         val INSTRUMENT_DAO = InstrumentDaoJdbcImpl(JDBC_CLIENT)
 
         val ORDER_QUERY_DAO = OrderQueryDaoJdbcImpl(ArrayList(), CUSTOMER_DAO, INSTRUMENT_DAO, ORDER_CACHE)
-        val ORDER_FACTORY = OrderFactory(Clock.systemDefaultZone(), ORDER_ID_GENERATOR, INSTRUMENT_DAO, CUSTOMER_DAO)
+        val ORDER_FACTORY = OrderFactory(Clock.systemDefaultZone(), ORDER_ID_GENERATOR, INSTRUMENT_DAO)
 
         private val tradeIdGenerator = TradeIdGenerator()
         val TRADE_FACTORY = TradeFactory(tradeIdGenerator)
@@ -34,17 +34,17 @@ class TestConstants {
         private val tradeLegIdGenerator = TradeLegIdGenerator()
         val TRADE_LEG_FACTORY = TradeLegFactory(tradeLegIdGenerator)
 
-        val INSTRUMENT_ID_1 = 3L
+        val INSTRUMENT_ID_1 = 0L
         val INSTRUMENT_1  = Instrument(INSTRUMENT_ID_1)
 
         val CUSTOMER_ID_1 = 1L
-        val CUSTOMER_KEY_1 = "Customer 1"
+        val CUSTOMER_KEY_1 = "BrokerA"
         val CUSTOMER = Customer(CUSTOMER_ID_1, CUSTOMER_KEY_1)
-        val CL_ORD_BUY_1 = "ClOrdBuy1"
-        val CL_ORD_BUY_2 = "ClOrdBuy2"
+        val CL_ORD_BUY_1 = "ClOrdBuy1.$now"
+        val CL_ORD_BUY_2 = "ClOrdBuy2.$now"
 
-        val CL_ORD_SELL_1 = "ClOrdSell1"
-        val CL_ORD_SELL_2 = "ClOrdSell2"
+        val CL_ORD_SELL_1 = "ClOrdSell1.$now"
+        val CL_ORD_SELL_2 = "ClOrdSell2.$now"
 
         val ORDER_QUANTITY_1 = 10
         val ORDER_QUANTITY_2 = 20
@@ -57,9 +57,5 @@ class TestConstants {
 
         val ORDER_SELL_1 = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_1, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1)
         val ORDER_SELL_2 = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_2, INSTRUMENT_1, BigDecimal.TWO, -ORDER_QUANTITY_2)
-
-        val TRADE_CREATETIME_1 = 300303L
-
-        val ENGINE_FACTORY = EngineFactory(Clock.systemDefaultZone(), TRADE_FACTORY, TRADE_LEG_FACTORY, ORDER_QUERY_DAO, ORDER_DAO, INSTRUMENT_DAO)
     }
 }

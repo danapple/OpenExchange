@@ -1,0 +1,40 @@
+spring:
+  h2:
+    console:
+        enabled: true
+  flyway:
+        enabled: false
+  datasource:
+    instrument:
+        jdbcUrl: jdbc:h2:mem:instrument
+        username: OE
+        password: OEpassword
+        driverClassname: org.h2.Driver
+    id:
+        jdbcUrl: jdbc:h2:mem:id
+        username: OE
+        password: OEpassword
+        driverClassname: org.h2.Driver
+    customer:
+        jdbcUrl: jdbc:h2:mem:customer
+        username: OE
+        password: OEpassword
+        driverClassname: org.h2.Driver
+    order:
+        username: OE
+        password: OEpassword
+        driverClassname: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+openexchange:
+    database:
+        order:
+            jdbcUrlTemplate: jdbc:h2:mem:order
+            shardCount: 4
+            migrationsLocation: database/migrations/order
+        instrument:
+            migrationsLocation: database/migrations/instrument
+        id:
+            migrationsLocation: database/migrations/id
+        customer:
+            migrationsLocation: database/migrations/customer
+

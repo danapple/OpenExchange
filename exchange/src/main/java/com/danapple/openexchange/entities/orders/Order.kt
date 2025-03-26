@@ -1,5 +1,6 @@
 package com.danapple.openexchange.orders
 
+import com.danapple.openexchange.dto.OrderLeg
 import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.entities.instruments.Instrument
 import java.math.BigDecimal
@@ -18,6 +19,15 @@ data class Order internal constructor(
 
     fun isSellOrder(): Boolean {
         return quantity < 0
+    }
+
+    fun toDtoOrder() : com.danapple.openexchange.dto.Order {
+        return com.danapple.openexchange.dto.Order(
+            clientOrderId,
+            price,
+            quantity,
+            listOf(OrderLeg(instrument.instrumentId, 1))
+        )
     }
 
     override fun equals(other: Any?): Boolean {

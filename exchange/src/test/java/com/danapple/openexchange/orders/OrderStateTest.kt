@@ -27,6 +27,12 @@ class OrderStateTest {
     }
 
     @Test
+    fun filledQuantityIsIncreasedByTradeLeg() {
+        TRADE_LEG_FACTORY.createTradeLeg(orderState1, trade1, 3)
+        assertThat(orderState1.filledQuantity()).isEqualTo(3)
+    }
+
+    @Test
     fun rejectsTradeLegWithExcessiveQuantity() {
         assertThatThrownBy {TRADE_LEG_FACTORY.createTradeLeg(orderState1, trade1, ORDER_QUANTITY_1 + 2) }.isInstanceOf(IllegalArgumentException::class.java)
     }

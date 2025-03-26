@@ -31,18 +31,4 @@ abstract class BaseApi {
 
         return ResponseEntity(OrderStates(orderStates.toList()), httpStatus)
     }
-
-    internal fun convertOrderState(orderState : OrderState) : com.danapple.openexchange.dto.OrderState {
-        val returningOrder = Order(
-            orderState.order.clientOrderId,
-            orderState.order.price,
-            orderState.order.quantity,
-            listOf(OrderLeg(orderState.order.instrument.instrumentId, 1))
-        )
-        return com.danapple.openexchange.dto.OrderState(
-            orderState.order.createTime,
-            orderState.orderStatus,
-            orderState.remainingQuantity,
-            returningOrder)
-    }
 }
