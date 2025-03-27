@@ -8,7 +8,8 @@ import com.danapple.openexchange.orders.OrderState
 import org.springframework.jdbc.core.RowCallbackHandler
 import java.sql.ResultSet
 
-class OrderRowMapper(private val orderStates : MutableList<OrderState>, private val customerDao : CustomerDao, private val instrumentDao : InstrumentDao) : RowCallbackHandler {
+class OrderRowCallbackHandler(private val orderStates : MutableList<OrderState>, private val customerDao : CustomerDao,
+                              private val instrumentDao : InstrumentDao) : RowCallbackHandler {
     var count : Int = 0
     override fun processRow(rs: ResultSet) {
         val order = Order(rs.getLong("orderId"),

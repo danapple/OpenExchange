@@ -18,5 +18,5 @@ fun OrderState.toDto() : com.danapple.openexchange.dto.OrderState {
         order.createTime,
         orderStatus,
         remainingQuantity,
-        order.toDtoOrder())
+        order.toDto())
 }

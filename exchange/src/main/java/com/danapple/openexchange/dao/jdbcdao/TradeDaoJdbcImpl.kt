@@ -4,17 +4,16 @@ import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.entities.trades.Trade
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.simple.JdbcClient
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Repository
 
-@Service
-class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>) : TradeDao, ShardedDaoJdbcImpl(jdbcClients) {
+@Repository
+open class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>) : TradeDao, ShardedDaoJdbcImpl(jdbcClients) {
     override fun saveTrade(trade: Trade) {
 
         val jdbcClient = getJdbcClient(trade.tradeLegs.first().orderState.order.instrument.instrumentId)
         val tradeStatement = jdbcClient.sql(
             """INSERT INTO trades (tradeId, createTime, price) 
-                VALUES (:tradeId, :createTime, :price)
-            """)
+                VALUES (:tradeId, :createTime, :price)""")
             .param("tradeId", trade.tradeId)
             .param("createTime", trade.createTime )
             .param("price", trade.price)
@@ -24,8 +23,7 @@ class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcCli
             tradeLeg ->
             val tradeLegStatement = jdbcClient.sql(
                 """INSERT INTO trade_legs (tradeLegId, tradeId, orderId, quantity) 
-                VALUES (:tradeLegId, :tradeId, :orderId, :quantity)
-            """)
+                    VALUES (:tradeLegId, :tradeId, :orderId, :quantity)""")
                 .param("tradeLegId", tradeLeg.tradeLegId)
                 .param("tradeId", tradeLeg.trade.tradeId)
                 .param("orderId", tradeLeg.orderState.order.orderId)

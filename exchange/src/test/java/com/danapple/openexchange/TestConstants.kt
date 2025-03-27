@@ -4,11 +4,8 @@ import com.danapple.openexchange.dao.jdbcdao.*
 import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.TradeFactory
-import com.danapple.openexchange.entities.trades.TradeIdGenerator
 import com.danapple.openexchange.entities.trades.TradeLegFactory
-import com.danapple.openexchange.entities.trades.TradeLegIdGenerator
 import com.danapple.openexchange.orders.OrderFactory
-import com.danapple.openexchange.orders.OrderIdGenerator
 import io.mockk.mockk
 import org.springframework.jdbc.core.simple.JdbcClient
 import java.math.BigDecimal
@@ -18,20 +15,20 @@ class TestConstants {
     companion object {
         val CLOCK = Clock.systemDefaultZone()
         val now = CLOCK.millis()
-        private val ORDER_ID_GENERATOR = OrderIdGenerator()
-        val ORDER_CACHE = OrderCache()
-        val ORDER_DAO = OrderDaoJdbcImpl(ArrayList(), ORDER_CACHE)
         val JDBC_CLIENT = mockk<JdbcClient>()
+        private val orderIdGenerator = MemoryIdGenerator()
+        val ORDER_CACHE = OrderCache()
+        val ORDER_DAO = OrderDaoJdbcImpl(listOf(JDBC_CLIENT), ORDER_CACHE)
         val CUSTOMER_DAO = CustomerDaoJdbcImpl(JDBC_CLIENT)
         val INSTRUMENT_DAO = InstrumentDaoJdbcImpl(JDBC_CLIENT)
 
-        val ORDER_QUERY_DAO = OrderQueryDaoJdbcImpl(ArrayList(), CUSTOMER_DAO, INSTRUMENT_DAO, ORDER_CACHE)
-        val ORDER_FACTORY = OrderFactory(Clock.systemDefaultZone(), ORDER_ID_GENERATOR, INSTRUMENT_DAO)
+        val ORDER_QUERY_DAO = OrderQueryDaoJdbcImpl(listOf(JDBC_CLIENT), CUSTOMER_DAO, INSTRUMENT_DAO, ORDER_CACHE)
+        val ORDER_FACTORY = OrderFactory(Clock.systemDefaultZone(), orderIdGenerator, INSTRUMENT_DAO)
 
-        private val tradeIdGenerator = TradeIdGenerator()
+        private val tradeIdGenerator = MemoryIdGenerator()
         val TRADE_FACTORY = TradeFactory(tradeIdGenerator)
 
-        private val tradeLegIdGenerator = TradeLegIdGenerator()
+        private val tradeLegIdGenerator = MemoryIdGenerator()
         val TRADE_LEG_FACTORY = TradeLegFactory(tradeLegIdGenerator)
 
         val INSTRUMENT_ID_1 = 0L

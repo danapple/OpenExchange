@@ -4,10 +4,10 @@ import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.entities.customers.Customer
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.simple.JdbcClient
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
 
-@Component
+@Repository
 open class CustomerDaoJdbcImpl(@Qualifier("customerJdbcClient") private val jdbcClient : JdbcClient) : CustomerDao {
     private val customersById = ConcurrentHashMap<Long, Customer>()
     private val customersByKey = ConcurrentHashMap<String, Customer>()

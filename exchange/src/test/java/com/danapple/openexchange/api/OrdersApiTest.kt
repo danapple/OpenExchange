@@ -34,7 +34,7 @@ class OrdersApiTest : AbstractRestTest() {
 
     @Test
     fun getAllOrdersReturnsSingleSubmittedOrder() {
-        template!!.postForEntity("/orders", SubmitOrders(listOf(ORDER_BUY_1.toDtoOrder())), OrderStates::class.java)
+        template!!.postForEntity("/orders", SubmitOrders(listOf(ORDER_BUY_1.toDto())), OrderStates::class.java)
 
         val getResponse: ResponseEntity<OrderStates> =
             template!!.getForEntity("/orders", OrderStates::class.java)
@@ -51,7 +51,7 @@ class OrdersApiTest : AbstractRestTest() {
     fun getAllOrdersReturnsMultipleSubmittedOrders() {
         template!!.postForEntity(
             "/orders",
-            SubmitOrders(listOf(ORDER_BUY_1.toDto(), ORDER_SELL_1.toDtoOrder())),
+            SubmitOrders(listOf(ORDER_BUY_1.toDto(), ORDER_SELL_1.toDto())),
             OrderStates::class.java
         )
 
@@ -70,7 +70,7 @@ class OrdersApiTest : AbstractRestTest() {
     @Test
     fun submitOrdersReturnsSingleSubmittedOrder() {
         val submitResponse: ResponseEntity<OrderStates> =
-            template!!.postForEntity("/orders", SubmitOrders(listOf(ORDER_BUY_1.toDtoOrder())), OrderStates::class.java)
+            template!!.postForEntity("/orders", SubmitOrders(listOf(ORDER_BUY_1.toDto())), OrderStates::class.java)
 
         Assertions.assertEquals(HttpStatus.OK, submitResponse.statusCode)
         Assertions.assertNotNull(submitResponse.body)

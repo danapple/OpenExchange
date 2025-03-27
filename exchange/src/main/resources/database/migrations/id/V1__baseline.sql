@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS ids (
+  idKey VARCHAR PRIMARY KEY,
+  lastReservedId BIGINT
+);

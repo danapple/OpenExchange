@@ -7,10 +7,10 @@ import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.orders.OrderState
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.simple.JdbcClient
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
-@Component("orderQueryDao")
+@Repository("orderQueryDao")
 @Transactional
 open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
                                  private val customerDao : CustomerDao,
@@ -31,7 +31,7 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
 
     override fun getOpenOrders(): Collection<OrderState> {
         val orders = ArrayList<OrderState>()
-        val orderRowMapper = OrderRowMapper(orders, customerDao, instrumentDao)
+        val orderRowCallbackHandler = OrderRowCallbackHandler(orders, customerDao, instrumentDao)
         jdbcClients.forEach( { jdbcClient ->
             val statement = jdbcClient.sql(
                 """SELECT ords.orderId, ords.customerId, ords.createtime, ords.clientOrderId, ords.instrumentId, ords.price, ords.quantity, states.orderStatus,
@@ -42,7 +42,7 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
                     WHERE states.orderStatus = 'OPEN'
                     GROUP BY ords.orderId
                     """);
-            statement.query(orderRowMapper)
+            statement.query(orderRowCallbackHandler)
         })
         orders.forEach { orderState -> orderCache.addOrder(orderState) }
         return orders

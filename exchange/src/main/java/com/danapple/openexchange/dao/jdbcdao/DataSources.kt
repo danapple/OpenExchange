@@ -43,8 +43,11 @@ open class DataSources {
                 .dataSource(shardDataSource)
                 .locations(databaseConfiguration.migrationsLocation)
 
+
             val flyway = Flyway(flywayConfig)
-            flyway.repair()
+            if (databaseConfiguration.repair) {
+                flyway.repair()
+            }
             flyway.migrate()
 
             dataSources.add(shardDataSource)
@@ -67,11 +70,14 @@ open class DataSources {
     @Bean("idJdbcClient")
     @Primary
     open fun getIdJdbcClient(@Qualifier("idDataSource") dataSource : DataSource,
-                             @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
+                             @Qualifier("idDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
         val flywayConfig = org.flywaydb.core.api.configuration.FluentConfiguration()
             .dataSource(dataSource)
             .locations(databaseConfiguration.migrationsLocation)
         val flyway = Flyway(flywayConfig)
+        if (databaseConfiguration.repair) {
+            flyway.repair()
+        }
         flyway.migrate()
 
         return JdbcClient.create(dataSource)
@@ -97,6 +103,9 @@ open class DataSources {
             .dataSource(dataSource)
             .locations(databaseConfiguration.migrationsLocation)
         val flyway = Flyway(flywayConfig)
+        if (databaseConfiguration.repair) {
+            flyway.repair()
+        }
         flyway.migrate()
         return JdbcClient.create(dataSource)
     }
@@ -121,6 +130,9 @@ open class DataSources {
             .dataSource(dataSource)
             .locations(databaseConfiguration.migrationsLocation)
         val flyway = Flyway(flywayConfig)
+        if (databaseConfiguration.repair) {
+            flyway.repair()
+        }
         flyway.migrate()
         return JdbcClient.create(dataSource)
     }
