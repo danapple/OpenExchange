@@ -1,18 +1,6 @@
 package com.danapple.openexchange.engine
 
-import com.danapple.openexchange.TestConstants.Companion.CL_ORD_BUY_1
-import com.danapple.openexchange.TestConstants.Companion.CL_ORD_SELL_1
-import com.danapple.openexchange.TestConstants.Companion.CUSTOMER
-import com.danapple.openexchange.TestConstants.Companion.INSTRUMENT_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_2
-import com.danapple.openexchange.TestConstants.Companion.ORDER_CREATETIME_2
-import com.danapple.openexchange.TestConstants.Companion.ORDER_FACTORY
-import com.danapple.openexchange.TestConstants.Companion.ORDER_QUANTITY_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_2
-import com.danapple.openexchange.TestConstants.Companion.TRADE_FACTORY
-import com.danapple.openexchange.TestConstants.Companion.TRADE_LEG_FACTORY
+import com.danapple.openexchange.UnitTest
 import com.danapple.openexchange.book.Book
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.TradeDao
@@ -20,26 +8,23 @@ import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.entities.trades.Trade
 import com.danapple.openexchange.orders.OrderState
 import io.mockk.*
-import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
 import java.math.BigDecimal
 import java.time.Clock
 
-@ExtendWith(MockKExtension::class)
-class EngineTest {
+class EngineTest  : UnitTest(){
     private val orderStateBuy1 = OrderState(ORDER_BUY_1)
     private val orderStateBuy2 = OrderState(ORDER_BUY_2)
 
     private val orderStateSell1 = OrderState(ORDER_SELL_1)
     private val orderStateSell2 = OrderState(ORDER_SELL_2)
 
-    private val orderBuy1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
+    private val orderBuy1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
     private val orderStateBuy1Big = OrderState(orderBuy1Big)
 
-    private val orderSell1Big = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
+    private val orderSell1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
     private val orderStateSell1Big = OrderState(orderSell1Big)
 
     private var orderDao = mockk<OrderDao>()
@@ -48,7 +33,7 @@ class EngineTest {
 
     private val book = Book()
 
-    private val engine = Engine(book, Clock.systemDefaultZone(), TRADE_FACTORY, TRADE_LEG_FACTORY, orderDao, tradeDao)
+    private val engine = Engine(book, Clock.systemDefaultZone(), tradeFactory, tradeLegFactory, orderDao, tradeDao)
 
     val tradeSlot = slot<Trade>()
 

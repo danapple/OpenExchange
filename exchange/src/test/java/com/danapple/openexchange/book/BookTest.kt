@@ -1,23 +1,14 @@
 package com.danapple.openexchange.book
 
-import com.danapple.openexchange.TestConstants.Companion.CL_ORD_BUY_1
-import com.danapple.openexchange.TestConstants.Companion.CL_ORD_SELL_1
-import com.danapple.openexchange.TestConstants.Companion.CUSTOMER
-import com.danapple.openexchange.TestConstants.Companion.INSTRUMENT_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_BUY_2
-import com.danapple.openexchange.TestConstants.Companion.ORDER_FACTORY
-import com.danapple.openexchange.TestConstants.Companion.ORDER_QUANTITY_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_1
-import com.danapple.openexchange.TestConstants.Companion.ORDER_SELL_2
-import com.danapple.openexchange.TestConstants.Companion.ORDER_CREATETIME_2
+
+import com.danapple.openexchange.UnitTest
 import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.orders.OrderState
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
-class BookTest {
+class BookTest : UnitTest() {
     private val book = Book()
     private val orderStateBuy1 = OrderState(ORDER_BUY_1)
     private val orderStateBuy2 = OrderState(ORDER_BUY_2)
@@ -25,10 +16,10 @@ class BookTest {
     private val orderStateSell1 = OrderState(ORDER_SELL_1)
     private val orderStateSell2 = OrderState(ORDER_SELL_2)
 
-    private val orderBuy1A = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1)
+    private val orderBuy1A = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1)
     private val orderStateBuy1A = OrderState(orderBuy1A)
 
-    private val orderSell1A = ORDER_FACTORY.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1)
+    private val orderSell1A = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1)
     private val orderStateSell1A = OrderState(orderSell1A)
 
     @Test
