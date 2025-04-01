@@ -1,0 +1,1 @@
+ALTER TABLE order_states ADD COLUMN versionNumber INT NOT NULL;

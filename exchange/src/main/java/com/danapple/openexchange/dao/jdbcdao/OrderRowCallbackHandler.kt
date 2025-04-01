@@ -20,6 +20,7 @@ class OrderRowCallbackHandler(private val orderStates : MutableList<OrderState>,
             rs.getBigDecimal("price"),
             rs.getInt("quantity"))
         count++
-        orderStates.add(OrderState(order, OrderStatus.valueOf(rs.getString("orderStatus")), filledQty = rs.getInt("filledQuantity")))
+        orderStates.add(OrderState(order, OrderStatus.valueOf(rs.getString("orderStatus")),
+            filledQty = rs.getInt("filledQuantity"), versionNumber = rs.getInt("versionNumber")))
     }
 }

@@ -2,6 +2,7 @@ package com.danapple.openexchange.dao.jdbcdao
 
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.orders.OrderState
+import jakarta.persistence.OptimisticLockException
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
@@ -27,10 +28,11 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
 
         if (update == 1) {
             val orderStateStatement = jdbcClient.sql(
-                """INSERT INTO order_states (orderId, orderStatus) 
-                    VALUES (:orderId, :orderStatus)""")
+                """INSERT INTO order_states (orderId, orderStatus, versionNumber) 
+                    VALUES (:orderId, :orderStatus, :versionNumber)""")
                 .param("orderId", orderState.order.orderId)
                 .param("orderStatus", orderState.orderStatus.toString())
+                .param("versionNumber", orderState.versionNumber)
             orderStateStatement.update()
         }
         orderCache.addOrder(orderState)
@@ -41,11 +43,18 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
 
         val orderStateStatement = jdbcClient.sql(
                 """UPDATE order_states
-                    set orderStatus = :orderStatus
-                    where orderId = :orderId""")
+                    set orderStatus = :orderStatus,
+                        versionNumber = :versionNumber + 1
+                    where orderId = :orderId
+                        and versionNumber = :versionNumber""")
                 .param("orderId", orderState.order.orderId)
                 .param("orderStatus", orderState.orderStatus.toString())
-            orderStateStatement.update()
+                .param("versionNumber", orderState.versionNumber)
+        val rowUpdateCount = orderStateStatement.update()
+        if (rowUpdateCount != 1) {
+            throw OptimisticLockException("Optimistic locking exception on OrderState ${orderState.order.orderId}, rowUpdateCount = $rowUpdateCount")
+        }
+        orderState.versionNumber++
 
     }
 }

@@ -34,8 +34,9 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
         val orderRowCallbackHandler = OrderRowCallbackHandler(orders, customerDao, instrumentDao)
         jdbcClients.forEach( { jdbcClient ->
             val statement = jdbcClient.sql(
-                """SELECT ords.orderId, ords.customerId, ords.createtime, ords.clientOrderId, ords.instrumentId, ords.price, ords.quantity, states.orderStatus,
-                    sum(ifNull(legs.quantity, 0)) filledQuantity
+                """SELECT ords.orderId, ords.customerId, ords.createtime, ords.clientOrderId, ords.instrumentId, 
+                        ords.price, ords.quantity, states.orderStatus, states.versionNumber,
+                        sum(ifNull(legs.quantity, 0)) filledQuantity
                     FROM orders ords
                     JOIN order_states states on states.orderId = ords.orderId
                     LEFT OUTER JOIN trade_legs legs on legs.orderId = ords.orderId
