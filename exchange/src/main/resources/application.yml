@@ -35,13 +35,20 @@ openexchange:
             jdbcUrlTemplate: jdbc:h2:file:/tmp/openexchange/order
             shardCount: 4
             migrationsLocation: database/migrations/order
-            repair: true
+           # repair: true
         instrument:
             migrationsLocation: database/migrations/instrument
-            repair: true
+           # repair: true
         id:
             migrationsLocation: database/migrations/id
-            repair: true
+           # repair: true
         customer:
             migrationsLocation: database/migrations/customer
-            repair: true
+           # repair: true
+    marketDataPublisher:
+        numberOfLevelsToPublish: 5
+        multicastGroup: 227.3.3.3
+        depthPort: 3434
+        tradePort: 3436
+        interfaceAddress: wotke.danapple.com
+

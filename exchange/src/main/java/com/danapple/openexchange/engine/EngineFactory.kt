@@ -8,6 +8,7 @@ import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLegFactory
+import com.danapple.openexchange.marketdata.MarketDataPublisherFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -15,10 +16,13 @@ import org.springframework.context.annotation.Configuration
 import java.time.Clock
 
 @Configuration
-open class EngineFactory(private val clock : Clock, private val tradeFactory: TradeFactory,
-                         private val tradeLegFactory : TradeLegFactory, private val orderQueryDao : OrderQueryDao,
-                         private val orderDao : OrderDao, private val instrumentDao : InstrumentDao,
-                         private val tradeDao : TradeDao) {
+open class EngineFactory(
+    private val clock: Clock, private val tradeFactory: TradeFactory,
+    private val tradeLegFactory: TradeLegFactory, private val orderQueryDao: OrderQueryDao,
+    private val orderDao: OrderDao, private val instrumentDao: InstrumentDao,
+    private val tradeDao: TradeDao,
+    private val marketDataPublisherFactory: MarketDataPublisherFactory
+) {
 
     @Bean
     open fun createEngines(instruments: Set<Instrument>): Map<Instrument, Engine> {
@@ -33,7 +37,8 @@ open class EngineFactory(private val clock : Clock, private val tradeFactory: Tr
             ordersByInstrument.getOrDefault(instrument, emptyList()).forEach({ orderState ->
                 book.addOrder(orderState)
             })
-            Engine(book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao)
+            Engine(book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao,
+                marketDataPublisherFactory.createMarketDataPublisher(instrument))
         }
         return engines
     }

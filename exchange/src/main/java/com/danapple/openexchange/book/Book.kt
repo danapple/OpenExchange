@@ -1,6 +1,7 @@
 package com.danapple.openexchange.book
 
 import com.danapple.openexchange.dto.OrderStatus
+import com.danapple.openexchange.dto.PriceLevel
 import com.danapple.openexchange.orders.OrderState
 import java.math.BigDecimal
 import java.util.*
@@ -40,5 +41,17 @@ class Book {
             val tailMap = buySide.tailMap(orderState.order.price, true)
             return tailMap.sequencedValues().reversed()
         }
+    }
+
+    fun getBestBuyPriceLevels(numberOfLevels : Int): List<PriceLevel> {
+        return buySide.descendingMap().entries.take(numberOfLevels).map{ level ->
+            PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity })
+        }.toList()
+    }
+
+    fun getBestSellPriceLevels(numberOfLevels : Int): List<PriceLevel> {
+        return sellSide.entries.take(numberOfLevels).map{ level ->
+            PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity })
+        }.toList()
     }
 }

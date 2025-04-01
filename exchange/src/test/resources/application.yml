@@ -37,4 +37,10 @@ openexchange:
             migrationsLocation: database/migrations/id
         customer:
             migrationsLocation: database/migrations/customer
+    marketDataPublisher:
+        numberOfLevelsToPublish: 5
+        multicastGroup: 227.3.3.3
+        depthPort: 3434
+        tradePort: 3435
+        interfaceAddress: wotke.danapple.com
 

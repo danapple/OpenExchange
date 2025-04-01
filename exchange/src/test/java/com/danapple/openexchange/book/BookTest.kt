@@ -160,4 +160,108 @@ class BookTest : UnitTest() {
         assertThat(levelsArray[0].getOrderStates()).containsExactly(orderStateBuy2)
         assertThat(levelsArray[1].getOrderStates()).containsExactly(orderStateBuy1, orderStateBuy1A)
     }
+
+    @Test
+    fun getsEmptyBestBuyPriceLevels() {
+        assertThat(book.getBestBuyPriceLevels(4)).isEmpty()
+    }
+
+    @Test
+    fun getsEmptyBestSellPriceLevels() {
+        assertThat(book.getBestSellPriceLevels(4)).isEmpty()
+    }
+
+    @Test
+    fun getsEmptyBestBuyPriceLevelsWhenSellsPresent() {
+        book.addOrder(orderStateSell1)
+        assertThat(book.getBestBuyPriceLevels(4)).isEmpty()
+    }
+
+    @Test
+    fun getsEmptyBestSellPriceLevelsWhenBuysPresent() {
+        book.addOrder(orderStateBuy1)
+        assertThat(book.getBestSellPriceLevels(4)).isEmpty()
+    }
+
+    @Test
+    fun getsSingularBestBuyPriceLevels() {
+        book.addOrder(orderStateBuy1)
+        book.addOrder(orderStateBuy1A)
+
+        val bestBuyPriceLevels = book.getBestBuyPriceLevels(4)
+
+        assertThat(bestBuyPriceLevels).hasSize(1)
+        assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateBuy1.order.price)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateBuy1.order.quantity + orderStateBuy1A.order.quantity)
+    }
+
+    @Test
+    fun getsSingularBestSellPriceLevels() {
+        book.addOrder(orderStateSell1)
+        book.addOrder(orderStateSell1A)
+
+        val bestSellPriceLevels = book.getBestSellPriceLevels(4)
+
+        assertThat(bestSellPriceLevels).hasSize(1)
+        assertThat(bestSellPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
+        assertThat(bestSellPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+    }
+
+    @Test
+    fun getsFirstBestBuyPriceLevels() {
+        book.addOrder(orderStateBuy1)
+        book.addOrder(orderStateBuy1A)
+        book.addOrder(orderStateBuy2)
+
+        val bestBuyPriceLevels = book.getBestBuyPriceLevels(1)
+
+        assertThat(bestBuyPriceLevels).hasSize(1)
+        assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateBuy2.order.price)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateBuy2.order.quantity)
+    }
+
+    @Test
+    fun getsFirstBestSellPriceLevels() {
+        book.addOrder(orderStateSell1)
+        book.addOrder(orderStateSell1A)
+        book.addOrder(orderStateSell2)
+
+        val bestBuyPriceLevels = book.getBestSellPriceLevels(1)
+
+        assertThat(bestBuyPriceLevels).hasSize(1)
+        assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+    }
+
+    @Test
+    fun getsAllBestBuyPriceLevels() {
+        book.addOrder(orderStateBuy1)
+        book.addOrder(orderStateBuy1A)
+        book.addOrder(orderStateBuy2)
+
+        val bestBuyPriceLevels = book.getBestBuyPriceLevels(5)
+
+        assertThat(bestBuyPriceLevels).hasSize(2)
+        assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateBuy2.order.price)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateBuy2.order.quantity)
+
+        assertThat(bestBuyPriceLevels.last().price).isEqualTo(orderStateBuy1.order.price)
+        assertThat(bestBuyPriceLevels.last().quantity).isEqualTo(orderStateBuy1.order.quantity + orderStateBuy1A.order.quantity)
+    }
+
+    @Test
+    fun getsAllBestSellPriceLevels() {
+        book.addOrder(orderStateSell1)
+        book.addOrder(orderStateSell1A)
+        book.addOrder(orderStateSell2)
+
+        val bestBuyPriceLevels = book.getBestSellPriceLevels(2)
+
+        assertThat(bestBuyPriceLevels).hasSize(2)
+        assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+
+        assertThat(bestBuyPriceLevels.last().price).isEqualTo(orderStateSell2.order.price)
+        assertThat(bestBuyPriceLevels.last().quantity).isEqualTo(orderStateSell2.order.quantity)
+    }
 }

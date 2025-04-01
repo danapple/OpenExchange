@@ -7,6 +7,7 @@ import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.entities.trades.Trade
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLegFactory
+import com.danapple.openexchange.marketdata.MarketDataPublisher
 import com.danapple.openexchange.orders.OrderState
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,7 +18,8 @@ import kotlin.math.min
 import kotlin.math.sign
 
 class Engine(private val book: Book, private val clock : Clock, private val tradeFactory: TradeFactory,
-             private val tradeLegFactory : TradeLegFactory, private val orderDao: OrderDao, private val tradeDao : TradeDao)
+             private val tradeLegFactory : TradeLegFactory, private val orderDao: OrderDao, private val tradeDao : TradeDao,
+             private val marketDataPublisher : MarketDataPublisher)
 {
     @Synchronized internal fun newOrder(orderState: OrderState) {
         val timestamp = clock.millis()
@@ -44,7 +46,11 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
                 }
             }
         }
-        trades.forEach({ trade -> tradeDao.saveTrade(trade)})
+        marketDataPublisher.publishTopOfBook(timestamp, book)
+        trades.forEach { trade ->
+            tradeDao.saveTrade(trade)
+            marketDataPublisher.publishTrades(timestamp, trade)
+        }
         if (orderState.remainingQuantity != 0) {
             logger.info("Order $orderState has remaining quantity ${orderState.remainingQuantity}, adding to book")
             book.addOrder(orderState)
@@ -56,11 +62,13 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
             book.cancelOrder(orderState)
             orderDao.updateOrder(orderState)
         }
+        marketDataPublisher.publishTopOfBook(clock.millis(), book)
     }
 
     @Synchronized internal fun cancelReplace(originalOrderState: OrderState, newOrderState: OrderState) {
         cancelOrder(originalOrderState)
         newOrder(newOrderState)
+        marketDataPublisher.publishTopOfBook(clock.millis(), book)
     }
 
     private fun matchOrderStates(orderState: OrderState, oppositeOrderState: OrderState, trade: Trade, trades: SequencedSet<Trade>) {

@@ -4,12 +4,13 @@ import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.OrderQueryDao
-import com.danapple.openexchange.dao.jdbcdao.*
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLegFactory
 import com.danapple.openexchange.orders.OrderFactory
+import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
-import org.springframework.jdbc.core.simple.JdbcClient
+import io.mockk.runs
 import java.time.Clock
 
 open class UnitTest :
@@ -19,27 +20,35 @@ open class UnitTest :
     val tradeLegFactory = TradeLegFactory(MemoryIdGenerator())
 
     companion object {
-        private val jdbcClient = mockk<JdbcClient>()
-        private val orderCache = OrderCache()
+//        private val jdbcClient = mockk<JdbcClient>()
+//        private val orderCache = OrderCache()
 
         fun getOrderDao() : OrderDao {
-            return OrderDaoJdbcImpl(listOf(jdbcClient), orderCache)
+            val orderDao = mockk<OrderDao>()
+            every { orderDao.saveOrder(any())} just runs
+            every { orderDao.updateOrder(any())} just runs
+            return orderDao
+//            return OrderDaoJdbcImpl(listOf(jdbcClient), orderCache)
         }
 
         fun getOrderQueryDao() : OrderQueryDao {
-            return OrderQueryDaoJdbcImpl(listOf(jdbcClient), getCustomerDao(), getInstrumentDao(),  orderCache)
+            return mockk<OrderQueryDao>()
+          //  return OrderQueryDaoJdbcImpl(listOf(jdbcClient), getCustomerDao(), getInstrumentDao(),  orderCache)
         }
 
         fun getCustomerDao() : CustomerDao {
-            return CustomerDaoJdbcImpl(jdbcClient)
+            return mockk<CustomerDao>()
+         //   return CustomerDaoJdbcImpl(jdbcClient)
         }
 
         fun getInstrumentDao() : InstrumentDao {
-            return InstrumentDaoJdbcImpl(jdbcClient);
+            return mockk<InstrumentDao>()
+          //  return InstrumentDaoJdbcImpl(jdbcClient);
         }
 
         fun getOrderFactory() : OrderFactory {
             return OrderFactory(Clock.systemDefaultZone(), MemoryIdGenerator(), getInstrumentDao())
         }
+
     }
 }

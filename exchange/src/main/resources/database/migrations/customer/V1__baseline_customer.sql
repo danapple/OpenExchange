@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS customers (
+  customerId BIGINT PRIMARY KEY,
+  customerKey VARCHAR NOT NULL UNIQUE,
+  status ENUM ('ACTIVE', 'INACTIVE') NOT NULL
+);

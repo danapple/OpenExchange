@@ -2,10 +2,10 @@ package com.danapple.openexchange.engine
 
 import com.danapple.openexchange.UnitTest
 import com.danapple.openexchange.book.Book
-import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.entities.trades.Trade
+import com.danapple.openexchange.marketdata.MarketDataPublisher
 import com.danapple.openexchange.orders.OrderState
 import io.mockk.*
 import org.assertj.core.api.Assertions.assertThat
@@ -27,23 +27,21 @@ class EngineTest  : UnitTest(){
     private val orderSell1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
     private val orderStateSell1Big = OrderState(orderSell1Big)
 
-    private var orderDao = mockk<OrderDao>()
-
     private var tradeDao = mockk<TradeDao>()
 
     private val book = Book()
+    private val marketDataPublisher = mockk<MarketDataPublisher>()
 
-    private val engine = Engine(book, Clock.systemDefaultZone(), tradeFactory, tradeLegFactory, orderDao, tradeDao)
+    private val engine = Engine(book, Clock.systemDefaultZone(), tradeFactory, tradeLegFactory, orderDao, tradeDao, marketDataPublisher)
 
     val tradeSlot = slot<Trade>()
 
     @BeforeEach
     fun beforeEach() {
-        every { orderDao.saveOrder(any())} just runs
-        every { orderDao.updateOrder(any())} just runs
-
-
         every { tradeDao.saveTrade(capture(tradeSlot))} just runs
+        every { marketDataPublisher.publishTopOfBook(any(), any()) } just runs
+        every { marketDataPublisher.publishTrades(any(), any()) } just runs
+
     }
 
     @Test

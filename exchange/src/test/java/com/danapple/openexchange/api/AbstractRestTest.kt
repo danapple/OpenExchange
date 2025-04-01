@@ -39,5 +39,11 @@ abstract class AbstractRestTest(orderDao : OrderDao,
             }
 
         template?.restTemplate?.interceptors = arrayListOf(interceptor)
+
+        // Create user for test
+        // customerKey = customerDao.createUser(this.javaClass.simpleName)
+
+        // Create instrument for test
+        // instrumentId = instrumentDao.createInstrument()
     }
 }

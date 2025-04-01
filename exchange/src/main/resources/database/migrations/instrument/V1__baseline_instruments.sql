@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS instruments (
+  instrumentId BIGINT PRIMARY KEY,
+  status ENUM ('ACTIVE', 'INACTIVE') NOT NULL
+);

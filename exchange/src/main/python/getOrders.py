@@ -1,4 +1,5 @@
-#!/usr/bin/python3.8
+#!/usr/bin/python3.12
+
 import getopt
 import requests
 import requests
