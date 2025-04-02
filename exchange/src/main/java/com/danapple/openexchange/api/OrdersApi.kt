@@ -20,11 +20,11 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
                 private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
 
     @PostMapping
-    fun submitOrders(@RequestBody submitOrders: SubmitOrders, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
+    fun submitOrders(@RequestBody submitOrders: SubmitOrders) : ResponseEntity<OrderStates> {
         val orderStates = submitOrders.orders.map { submittedOrder ->
-            logger.info("New Order for customerKey $customerKey, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
             try {
-                val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+                val customer = getCustomer()
+                logger.info("New Order for customerId ${customer.customerId}, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
                 val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
@@ -42,17 +42,18 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
     }
 
     @GetMapping
-    fun getOrders(@CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
-        OrderApi.logger.info("getOrders for customerKey $customerKey")
-        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun getOrders() : ResponseEntity<OrderStates> {
+        val customer = getCustomer()
+        logger.info("getOrders for customerId ${customer.customerId}")
         val orderStates = orderQueryDao.getOrders(customer)
         return createOrderStatesResponse(orderStates = orderStates.toTypedArray(), HttpStatus.OK)
     }
 
     @DeleteMapping
-    fun cancelOrders(@CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
-        OrderApi.logger.info("cancelOrders for customerKey $customerKey")
-        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun cancelOrders() : ResponseEntity<OrderStates> {
+        val customer = getCustomer()
+        logger.info("cancelOrders for customerId ${customer.customerId}")
+
         val orderStatesToCancel = orderQueryDao.getOrders(customer)
         val resultingOrderStates = orderStatesToCancel.map{ orderState ->
             try {

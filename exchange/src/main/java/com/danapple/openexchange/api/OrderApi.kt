@@ -22,12 +22,10 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
                private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
 
     @PutMapping("/{clientOrderId}")
-    fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace, @CookieValue(value = "customerKey") customerKey: String):
+    fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace):
             ResponseEntity<OrderStates> {
-        logger.info("cancelReplace for customerKey $customerKey, clientOrderId $clientOrderId: $cancelReplace")
-
-        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
-
+        val customer = getCustomer()
+        logger.info("cancelReplace for customerId ${customer.customerId}, clientOrderId $clientOrderId: $cancelReplace")
         val originalOrderState = orderQueryDao.getOrder(customer, cancelReplace.originalClientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
@@ -65,9 +63,9 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     }
 
     @GetMapping("/{clientOrderId}")
-    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
-        logger.info("getOrder for customerKey $customerKey, clientOrderId $clientOrderId")
-        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String) : ResponseEntity<OrderStates> {
+        val customer = getCustomer()
+        logger.info("getOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
 
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -76,9 +74,9 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     }
 
     @DeleteMapping("/{clientOrderId}")
-    fun cancelOrder(@PathVariable clientOrderId: String, @CookieValue(value = "customerKey") customerKey: String) : ResponseEntity<OrderStates> {
-        logger.info("cancelOrder for customerKey $customerKey, clientOrderId $clientOrderId")
-        val customer = customerDao.getCustomer(customerKey) ?: return ResponseEntity(HttpStatus.FORBIDDEN)
+    fun cancelOrder(@PathVariable clientOrderId: String) : ResponseEntity<OrderStates> {
+        val customer = getCustomer()
+        logger.info("cancelOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
         val engine = engines[orderState.order.instrument]
