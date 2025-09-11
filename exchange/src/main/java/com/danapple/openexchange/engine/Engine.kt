@@ -1,6 +1,7 @@
 package com.danapple.openexchange.engine
 
 import com.danapple.openexchange.book.Book
+import com.danapple.openexchange.customerupdates.CustomerUpdateSender
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.dto.OrderStatus
@@ -17,15 +18,20 @@ import kotlin.math.absoluteValue
 import kotlin.math.min
 import kotlin.math.sign
 
-class Engine(private val book: Book, private val clock : Clock, private val tradeFactory: TradeFactory,
-             private val tradeLegFactory : TradeLegFactory, private val orderDao: OrderDao, private val tradeDao : TradeDao,
-             private val marketDataPublisher : MarketDataPublisher)
+class Engine(
+    private val book: Book, private val clock: Clock, private val tradeFactory: TradeFactory,
+    private val tradeLegFactory: TradeLegFactory, private val orderDao: OrderDao, private val tradeDao: TradeDao,
+    private val marketDataPublisher: MarketDataPublisher,
+    private val customerUpdateSender: CustomerUpdateSender
+)
 {
     @Synchronized internal fun newOrder(orderState: OrderState) {
         val timestamp = clock.millis()
         orderDao.saveOrder(orderState)
         val matchingOppositeLevels = book.getMatchingOppositeLevels(orderState)
-        logger.info("matchingOppositeLevels = $matchingOppositeLevels")
+        if (logger.isDebugEnabled) {
+            logger.debug("matchingOppositeLevels = $matchingOppositeLevels")
+        }
         val trades = LinkedHashSet<Trade>()
         run fullyMatched@
         {
@@ -36,7 +42,9 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
                     matchOrderStates(orderState, oppositeOrderState, trade, trades)
                     if (oppositeOrderState.remainingQuantity == 0)
                     {
-                        logger.info("oppositeOrderState $oppositeOrderState is filled, removing from book")
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("oppositeOrderState $oppositeOrderState is filled, removing from book")
+                        }
                         book.fillOrder(oppositeOrderState)
                     }
                     if (orderState.remainingQuantity == 0)
@@ -50,9 +58,12 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
         trades.forEach { trade ->
             tradeDao.saveTrade(trade)
             marketDataPublisher.publishTrades(timestamp, trade)
+            customerUpdateSender.sendTrade(trade)
         }
         if (orderState.remainingQuantity != 0) {
-            logger.info("Order $orderState has remaining quantity ${orderState.remainingQuantity}, adding to book")
+            if (logger.isDebugEnabled) {
+                logger.debug("Order $orderState has remaining quantity ${orderState.remainingQuantity}, adding to book")
+            }
             book.addOrder(orderState)
         }
     }
@@ -61,6 +72,7 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
         if (orderState.orderStatus.viability == OrderStatus.Viability.ALIVE) {
             book.cancelOrder(orderState)
             orderDao.updateOrder(orderState)
+            customerUpdateSender.sendOrderState(orderState)
         }
         marketDataPublisher.publishTopOfBook(clock.millis(), book)
     }
@@ -77,7 +89,10 @@ class Engine(private val book: Book, private val clock : Clock, private val trad
             tradeLegFactory.createTradeLeg(orderState, trade, matchQuantity * orderState.order.quantity.sign)
             tradeLegFactory.createTradeLeg(oppositeOrderState, trade, matchQuantity * oppositeOrderState.order.quantity.sign)
             orderDao.updateOrder(orderState)
+            customerUpdateSender.sendOrderState(orderState)
             orderDao.updateOrder(oppositeOrderState)
+            customerUpdateSender.sendOrderState(oppositeOrderState)
+            customerUpdateSender.sendOrderState(orderState)
             trades.add(trade)
         }
     }

@@ -2,6 +2,7 @@ package com.danapple.openexchange.engine
 
 import com.danapple.openexchange.UnitTest
 import com.danapple.openexchange.book.Book
+import com.danapple.openexchange.customerupdates.CustomerUpdateSender
 import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.entities.trades.Trade
@@ -29,10 +30,21 @@ class EngineTest  : UnitTest(){
 
     private var tradeDao = mockk<TradeDao>()
 
-    private val book = Book()
+    private val book = Book(INSTRUMENT_1)
     private val marketDataPublisher = mockk<MarketDataPublisher>()
 
-    private val engine = Engine(book, Clock.systemDefaultZone(), tradeFactory, tradeLegFactory, orderDao, tradeDao, marketDataPublisher)
+    private val customerUpdateSender = mockk<CustomerUpdateSender>()
+
+    private val engine = Engine(
+        book,
+        Clock.systemDefaultZone(),
+        tradeFactory,
+        tradeLegFactory,
+        orderDao,
+        tradeDao,
+        marketDataPublisher,
+        customerUpdateSender
+    )
 
     val tradeSlot = slot<Trade>()
 
@@ -41,7 +53,8 @@ class EngineTest  : UnitTest(){
         every { tradeDao.saveTrade(capture(tradeSlot))} just runs
         every { marketDataPublisher.publishTopOfBook(any(), any()) } just runs
         every { marketDataPublisher.publishTrades(any(), any()) } just runs
-
+        every { customerUpdateSender.sendOrderState(any()) }  just runs
+        every { customerUpdateSender.sendTrade(any()) }  just runs
     }
 
     @Test

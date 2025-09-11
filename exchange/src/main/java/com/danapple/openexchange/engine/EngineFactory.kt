@@ -1,6 +1,7 @@
 package com.danapple.openexchange.engine
 
 import com.danapple.openexchange.book.Book
+import com.danapple.openexchange.customerupdates.CustomerUpdateSender
 import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.OrderQueryDao
@@ -8,7 +9,7 @@ import com.danapple.openexchange.dao.TradeDao
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.TradeFactory
 import com.danapple.openexchange.entities.trades.TradeLegFactory
-import com.danapple.openexchange.marketdata.MarketDataPublisherFactory
+import com.danapple.openexchange.marketdata.MarketDataPublisher
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Bean
@@ -21,7 +22,8 @@ open class EngineFactory(
     private val tradeLegFactory: TradeLegFactory, private val orderQueryDao: OrderQueryDao,
     private val orderDao: OrderDao, private val instrumentDao: InstrumentDao,
     private val tradeDao: TradeDao,
-    private val marketDataPublisherFactory: MarketDataPublisherFactory
+    private val marketDataPublisher: MarketDataPublisher,
+    private val customerUpdateSender: CustomerUpdateSender
 ) {
 
     @Bean
@@ -33,12 +35,15 @@ open class EngineFactory(
 
         val instrumentsM = instrumentDao.getInstruments()
         val engines = instrumentsM.associateWith { instrument ->
-            val book = Book()
+            val book = Book(instrument)
             ordersByInstrument.getOrDefault(instrument, emptyList()).forEach({ orderState ->
                 book.addOrder(orderState)
             })
-            Engine(book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao,
-                marketDataPublisherFactory.createMarketDataPublisher(instrument))
+            Engine(
+                book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao,
+                marketDataPublisher,
+                customerUpdateSender
+            )
         }
         return engines
     }

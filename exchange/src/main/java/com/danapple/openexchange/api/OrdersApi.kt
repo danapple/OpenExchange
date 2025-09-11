@@ -24,12 +24,16 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
         val orderStates = submitOrders.orders.map { submittedOrder ->
             try {
                 val customer = getCustomer()
-                logger.info("New Order for customerId ${customer.customerId}, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
+                if (logger.isDebugEnabled) {
+                    logger.debug("New Order for customerId ${customer.customerId}, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
+                }
                 val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
                     OrderState(createdOrder, if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN)
-                logger.info("OrderState $orderState")
+                if (logger.isDebugEnabled) {
+                    logger.debug("OrderState $orderState")
+                }
                 engine?.newOrder(orderState)
                 orderState.toDto()
             }
@@ -44,7 +48,9 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
     @GetMapping
     fun getOrders() : ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.info("getOrders for customerId ${customer.customerId}")
+        if (logger.isDebugEnabled) {
+            logger.debug("getOrders for customerId ${customer.customerId}")
+        }
         val orderStates = orderQueryDao.getOrders(customer)
         return createOrderStatesResponse(orderStates = orderStates.toTypedArray(), HttpStatus.OK)
     }
@@ -52,8 +58,9 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
     @DeleteMapping
     fun cancelOrders() : ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.info("cancelOrders for customerId ${customer.customerId}")
-
+        if (logger.isDebugEnabled) {
+            logger.debug("cancelOrders for customerId ${customer.customerId}")
+        }
         val orderStatesToCancel = orderQueryDao.getOrders(customer)
         val resultingOrderStates = orderStatesToCancel.map{ orderState ->
             try {

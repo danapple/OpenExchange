@@ -11,9 +11,13 @@ import org.springframework.stereotype.Repository
 open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : JdbcClient) : IdDao {
     override fun reserveIdBlock(idType: IdDao.IdType, blockSize: Int) : IdDao.ReservedBlock {
         var lastReservedId = getLastReservedId(idType)
-        logger.info("First attempt ID get for $idType retrieved $lastReservedId")
+        if (logger.isTraceEnabled) {
+            logger.trace("First attempt ID get for $idType retrieved $lastReservedId")
+        }
         if (lastReservedId == null) {
-            logger.info("No ID for $idType, inserting new row")
+            if (logger.isTraceEnabled) {
+                logger.trace("No ID for $idType, inserting new row")
+            }
             val insertSql = jdbcClient.sql("INSERT INTO ids (idKey, lastReservedId) VALUES (:idKey, 0)")
                 .param("idKey", idType.toString())
             val insertedRowCount = insertSql.update()
@@ -21,11 +25,15 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
                 throw RuntimeException("No rows inserted for $idType")
             }
             lastReservedId = getLastReservedId(idType) ?: throw RuntimeException("Could not set up ID range for $idType")
-            logger.info("Second attempt ID get for $idType retrieved $lastReservedId")
+            if (logger.isTraceEnabled) {
+                logger.trace("Second attempt ID get for $idType retrieved $lastReservedId")
+            }
         }
         advanceReservedId(idType, blockSize)
         val nextReservedId = getLastReservedId(idType) ?: throw RuntimeException("Could not get new ID range for $idType")
-        logger.info("Issuing id $lastReservedId + 1 for  $idType")
+        if (logger.isTraceEnabled) {
+            logger.trace("Issuing id $lastReservedId + 1 for  $idType")
+        }
 
         return IdDao.ReservedBlock(lastReservedId + 1, nextReservedId)
     }

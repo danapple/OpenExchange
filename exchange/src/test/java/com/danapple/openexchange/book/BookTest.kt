@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class BookTest : UnitTest() {
-    private val book = Book()
+    private val book = Book(INSTRUMENT_1)
     private val orderStateBuy1 = OrderState(ORDER_BUY_1)
     private val orderStateBuy2 = OrderState(ORDER_BUY_2)
 

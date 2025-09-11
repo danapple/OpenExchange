@@ -3,7 +3,6 @@ package com.danapple.openexchange.marketdata
 import LastTrade
 import com.danapple.openexchange.book.Book
 import com.danapple.openexchange.dto.MarketDepth
-import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.entities.trades.Trade
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
@@ -12,16 +11,14 @@ import java.net.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 
-
-class MarketDataPublisher(
+class MarketDataPublisherMulticast(
     private val objectMapper: ObjectMapper,
-    private val instrument: Instrument,
     interfaceAddress: String,
     multicastGroup: String,
     private val depthPort: Int,
     private val tradePort: Int,
     private val numberOfLevelsToPublish: Int
-) {
+) : MarketDataPublisher {
     private val depthSocket : MulticastSocket
     private val tradeSocket : MulticastSocket
     private val multicastGroupAddress : InetAddress
@@ -37,18 +34,18 @@ class MarketDataPublisher(
         val tradeGroup = InetSocketAddress(multicastGroupAddress, tradePort)
         tradeSocket = MulticastSocket()
         tradeSocket.reuseAddress = true
-        tradeSocket.joinGroup(tradeGroup, netInterface);
+        tradeSocket.joinGroup(tradeGroup, netInterface)
     }
     private val senderId = UUID.randomUUID().toString()
     private val sequenceNumber = AtomicLong()
 
-    fun publishTopOfBook(timestamp: Long, book: Book) {
+    override fun publishTopOfBook(timestamp: Long, book: Book) {
         val bestBuyPriceLevels = book.getBestBuyPriceLevels(numberOfLevelsToPublish)
         val bestSellPriceLevels = book.getBestSellPriceLevels(numberOfLevelsToPublish)
         val marketDepth = MarketDepth(
             senderId,
             sequenceNumber.getAndIncrement(),
-            instrument.instrumentId,
+            book.instrument.instrumentId,
             timestamp,
             bestBuyPriceLevels,
             bestSellPriceLevels
@@ -61,10 +58,11 @@ class MarketDataPublisher(
         depthSocket.send(packet)
     }
 
-    fun publishTrades(timestamp: Long, trade: Trade) {
-        val lastTrade = LastTrade(senderId,
+    override fun publishTrades(timestamp: Long, trade: Trade) {
+        val lastTrade = LastTrade(
+            senderId,
             sequenceNumber.getAndIncrement(),
-            instrument.instrumentId,
+            trade.tradeLegs.first().orderState.order.instrument.instrumentId,
             timestamp,
             trade.price,
             trade.tradeLegs.filter { tradeLeg -> tradeLeg.quantity > 0  }.sumOf { tradeLeg -> tradeLeg.quantity })
@@ -78,6 +76,6 @@ class MarketDataPublisher(
     }
 
     companion object {
-        val logger: Logger = LoggerFactory.getLogger(MarketDataPublisher::class.java)
+        val logger: Logger = LoggerFactory.getLogger(MarketDataPublisherMulticast::class.java)
     }
 }

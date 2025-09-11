@@ -26,6 +26,9 @@ open class SecurityConfig (private val authenticationFilter : AuthenticationFilt
                 authorizationManagerRequestMatcherRegistry.requestMatchers(
                     "/orders"
                 ).hasAuthority(Authorities.CUSTOMER.authority)
+                authorizationManagerRequestMatcherRegistry.requestMatchers(
+                    "/exchangewebsockets"
+                ).hasAuthority(Authorities.CUSTOMER.authority)
             }
             .httpBasic(Customizer.withDefaults())
             .sessionManagement { httpSecuritySessionManagementConfigurer: SessionManagementConfigurer<HttpSecurity?> ->

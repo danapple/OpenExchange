@@ -1,4 +1,9 @@
 package com.danapple.openexchange.entities.trades
 
-class DtoConverters {
+fun TradeLeg.toExecution() : com.danapple.openexchange.dto.Execution {
+    return com.danapple.openexchange.dto.Execution(
+        orderState.order.clientOrderId,
+        trade.createTime,
+        trade.price,
+        quantity)
 }

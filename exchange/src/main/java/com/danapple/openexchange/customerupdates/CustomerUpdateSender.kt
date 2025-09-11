@@ -1,4 +1,4 @@
-package com.danapple.openexchange.push
+package com.danapple.openexchange.customerupdates
 
 import com.danapple.openexchange.entities.orders.toDto
 import com.danapple.openexchange.entities.trades.Trade
@@ -12,14 +12,14 @@ class CustomerUpdateSender(private val simpMessagingTemplate: SimpMessagingTempl
     fun sendTrade(trade : Trade) {
         trade.tradeLegs.forEach { tradeLeg ->
             simpMessagingTemplate.convertAndSendToUser(tradeLeg.orderState.order.customer.customerId.toString(),
-                "/topics/trades",
-                tradeLeg.toExecution());
+                "/topics/executions",
+                tradeLeg.toExecution())
         }
     }
 
     fun sendOrderState(orderState : OrderState) {
         simpMessagingTemplate.convertAndSendToUser(orderState.order.customer.customerId.toString(),
             "/topics/orders",
-            orderState.toDto());
+            orderState.toDto())
     }
 }

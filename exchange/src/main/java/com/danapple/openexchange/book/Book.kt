@@ -2,11 +2,12 @@ package com.danapple.openexchange.book
 
 import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.dto.PriceLevel
+import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.orders.OrderState
 import java.math.BigDecimal
 import java.util.*
 
-class Book {
+class Book(val instrument : Instrument) {
     private val buySide = TreeMap<BigDecimal, Level>()
     private val sellSide = TreeMap<BigDecimal, Level>()
 
