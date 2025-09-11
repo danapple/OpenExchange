@@ -9,7 +9,6 @@ import com.danapple.openexchange.dto.SubmitOrders
 import com.danapple.openexchange.entities.orders.toDto
 import com.danapple.openexchange.orders.OrderFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -35,8 +34,8 @@ class OrdersApiTest(
     fun getAllOrdersReturnsEmptyOrders() {
         val getResponse: ResponseEntity<OrderStates> =
             template!!.getForEntity("/orders", OrderStates::class.java)
-        Assertions.assertEquals(HttpStatus.OK, getResponse.statusCode)
-        Assertions.assertNotNull(getResponse.body)
+        assertThat(getResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(getResponse.body).isNotNull
 
         assertThat(getResponse.body.orderStates).isEmpty()
     }
@@ -47,8 +46,8 @@ class OrdersApiTest(
 
         val getResponse: ResponseEntity<OrderStates> =
             template!!.getForEntity("/orders", OrderStates::class.java)
-        Assertions.assertEquals(HttpStatus.OK, getResponse.statusCode)
-        Assertions.assertNotNull(getResponse.body)
+        assertThat(getResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(getResponse.body).isNotNull
 
         assertThat(getResponse.body.orderStates).isNotEmpty
         val returnedOrderStatesByClientOrderId =
@@ -66,8 +65,8 @@ class OrdersApiTest(
 
         val getResponse: ResponseEntity<OrderStates> =
             template!!.getForEntity("/orders", OrderStates::class.java)
-        Assertions.assertEquals(HttpStatus.OK, getResponse.statusCode)
-        Assertions.assertNotNull(getResponse.body)
+        assertThat(getResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(getResponse.body).isNotNull
 
         val returnedOrderStatesByClientOrderId =
             getResponse.body.orderStates.associateBy { orderState -> orderState.order.clientOrderId }
@@ -81,8 +80,8 @@ class OrdersApiTest(
         val submitResponse: ResponseEntity<OrderStates> =
             template!!.postForEntity("/orders", SubmitOrders(listOf(ORDER_BUY_1.toDto())), OrderStates::class.java)
 
-        Assertions.assertEquals(HttpStatus.OK, submitResponse.statusCode)
-        Assertions.assertNotNull(submitResponse.body)
+        assertThat(submitResponse.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(submitResponse.body).isNotNull
 
         assertThat(submitResponse.body!!.orderStates.first().order.clientOrderId).isEqualTo(ORDER_BUY_1.clientOrderId);
     }
