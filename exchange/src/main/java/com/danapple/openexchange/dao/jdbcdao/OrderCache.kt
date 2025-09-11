@@ -11,8 +11,8 @@ class OrderCache {
 
     fun addOrder(orderState : OrderState) {
         ordersByCustomer
-            .computeIfAbsent(orderState.order.customer,
-                { ConcurrentHashMap<String, OrderState>() })[orderState.order.clientOrderId] = orderState
+            .computeIfAbsent(orderState.order.customer
+            ) { ConcurrentHashMap<String, OrderState>() }[orderState.order.clientOrderId] = orderState
     }
 
     fun getOrder(customer : Customer, clientOrderId : String) : OrderState? {

@@ -19,9 +19,7 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
 
     override fun getOrder(customer: Customer, clientOrderId: String): OrderState? {
         val orderState = orderCache.getOrder(customer, clientOrderId)
-        if (orderState == null) {
-            TODO("Retrieving from DB not yet implemented and add to cache")
-        }
+            ?: TODO("Retrieving from DB not yet implemented and add to cache")
         return orderState
     }
 

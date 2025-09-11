@@ -1,6 +1,6 @@
 package com.danapple.openexchange.dao
 
-open interface IdDao {
+interface IdDao {
     fun reserveIdBlock(idType: IdType, blockSize: Int) : ReservedBlock
 
     enum class IdType {

@@ -13,7 +13,7 @@ class Book(val instrument : Instrument) {
 
     internal fun addOrder(orderState: OrderState) {
         val book = if (orderState.order.isBuyOrder()) buySide else sellSide
-        book.computeIfAbsent(orderState.order.price, { Level() }).addOrder(orderState)
+        book.computeIfAbsent(orderState.order.price) { Level() }.addOrder(orderState)
     }
 
     internal fun cancelOrder(orderState: OrderState) {

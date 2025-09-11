@@ -73,14 +73,13 @@ class Engine(
             book.cancelOrder(orderState)
             orderDao.updateOrder(orderState)
             customerUpdateSender.sendOrderState(orderState)
+            marketDataPublisher.publishTopOfBook(clock.millis(), book)
         }
-        marketDataPublisher.publishTopOfBook(clock.millis(), book)
     }
 
     @Synchronized internal fun cancelReplace(originalOrderState: OrderState, newOrderState: OrderState) {
         cancelOrder(originalOrderState)
         newOrder(newOrderState)
-        marketDataPublisher.publishTopOfBook(clock.millis(), book)
     }
 
     private fun matchOrderStates(orderState: OrderState, oppositeOrderState: OrderState, trade: Trade, trades: SequencedSet<Trade>) {

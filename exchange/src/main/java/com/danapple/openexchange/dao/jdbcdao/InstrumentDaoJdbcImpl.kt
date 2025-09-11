@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val jdbcClient : JdbcClient) : InstrumentDao {
     val instruments = ConcurrentHashMap<Long, Instrument>()
     override fun getInstrument(instrumentId: Long): Instrument {
-        return instruments.computeIfAbsent(instrumentId, { Instrument(instrumentId) })
+        return instruments.computeIfAbsent(instrumentId) { Instrument(instrumentId) }
     }
 
     override fun getInstruments(): Set<Instrument> {
