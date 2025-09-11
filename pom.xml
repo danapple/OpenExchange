@@ -18,6 +18,10 @@
         <maven.compiler.target>21</maven.compiler.target>
         <kotlin.version>2.1.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.boot.version>3.3.4</spring.boot.version>
+        <spring.version>6.1.9</spring.version>
+        <spring.security.version>6.3.3</spring.security.version>
+
     </properties>
 
     <distributionManagement>
@@ -26,7 +30,6 @@
             <url>file:///home/danapple/.m2/repository</url>
         </repository>
     </distributionManagement>
-
 
     <build>
         <plugins>
