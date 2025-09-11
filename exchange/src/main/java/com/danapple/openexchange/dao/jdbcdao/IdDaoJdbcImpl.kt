@@ -18,7 +18,7 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
             if (logger.isTraceEnabled) {
                 logger.trace("No ID for $idType, inserting new row")
             }
-            val insertSql = jdbcClient.sql("INSERT INTO ids (idKey, lastReservedId) VALUES (:idKey, 0)")
+            val insertSql = jdbcClient.sql("INSERT INTO id (idKey, lastReservedId) VALUES (:idKey, 0)")
                 .param("idKey", idType.toString())
             val insertedRowCount = insertSql.update()
             if (insertedRowCount == 0) {
@@ -40,7 +40,7 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
 
     private fun getLastReservedId(idType: IdDao.IdType): Long? {
         val queryStatement = jdbcClient.sql(
-            "SELECT idKey, lastReservedId FROM ids WHERE idKey = :idKey FOR UPDATE"
+            "SELECT idKey, lastReservedId FROM id WHERE idKey = :idKey FOR UPDATE"
         ).param("idKey", idType.toString())
         val rowMapper = IdRowMapper()
         val results = queryStatement.query(rowMapper).list()
@@ -51,7 +51,7 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
     }
 
     private fun advanceReservedId(idType: IdDao.IdType, blockSize: Int) {
-        val insertSql = jdbcClient.sql("UPDATE IDS SET LASTRESERVEDID = LASTRESERVEDID + :increment WHERE IDKEY = :idKey")
+        val insertSql = jdbcClient.sql("UPDATE ID SET LASTRESERVEDID = LASTRESERVEDID + :increment WHERE IDKEY = :idKey")
             .param("idKey", idType.toString())
             .param("increment", blockSize)
         val updatedRowCount = insertSql.update()

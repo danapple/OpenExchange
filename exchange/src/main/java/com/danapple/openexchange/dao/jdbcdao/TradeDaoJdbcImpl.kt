@@ -12,7 +12,7 @@ open class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
 
         val jdbcClient = getJdbcClient(trade.tradeLegs.first().orderState.order.instrument.instrumentId)
         val tradeStatement = jdbcClient.sql(
-            """INSERT INTO trades (tradeId, createTime, price) 
+            """INSERT INTO trade (tradeId, createTime, price) 
                 VALUES (:tradeId, :createTime, :price)""")
             .param("tradeId", trade.tradeId)
             .param("createTime", trade.createTime )
@@ -22,7 +22,7 @@ open class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
         trade.tradeLegs.forEach( {
             tradeLeg ->
             val tradeLegStatement = jdbcClient.sql(
-                """INSERT INTO trade_legs (tradeLegId, tradeId, orderId, quantity) 
+                """INSERT INTO trade_leg (tradeLegId, tradeId, orderId, quantity) 
                     VALUES (:tradeLegId, :tradeId, :orderId, :quantity)""")
                 .param("tradeLegId", tradeLeg.tradeLegId)
                 .param("tradeId", tradeLeg.trade.tradeId)

@@ -1,8 +1,11 @@
 # Example:
 # BBOX_PORT=/dev/ttyS0 make run
 
-run: docker
-	docker run openexchange:latest
+run: package
+	java -jar ./exchange/target/openexchange-exchange-1.0-SNAPSHOT.jar
+
+run-docker: docker
+	docker run -p 5213:5213 openexchange:latest
 
 package:
 	mvn package

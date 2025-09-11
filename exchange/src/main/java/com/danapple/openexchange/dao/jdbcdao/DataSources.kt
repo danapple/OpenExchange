@@ -43,7 +43,6 @@ open class DataSources {
                 .dataSource(shardDataSource)
                 .locations(databaseConfiguration.migrationsLocation)
 
-
             val flyway = Flyway(flywayConfig)
             if (databaseConfiguration.repair) {
                 flyway.repair()

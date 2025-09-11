@@ -82,7 +82,7 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
         val engine = engines[orderState.order.instrument]
             ?: return ResponseEntity(HttpStatus.FAILED_DEPENDENCY)
         engine.cancelOrder(orderState)
-        return createOrderStatesResponse(orderStates = arrayOf(orderState), HttpStatus.EXPECTATION_FAILED)
+        return createOrderStatesResponse(orderStates = arrayOf(orderState), HttpStatus.OK)
 
     }
 

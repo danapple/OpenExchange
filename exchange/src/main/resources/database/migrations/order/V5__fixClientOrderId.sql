@@ -1,1 +1,1 @@
-ALTER TABLE orders ALTER COLUMN clientOrderId VARCHAR;
+ALTER TABLE order_base ALTER COLUMN clientOrderId VARCHAR;

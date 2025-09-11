@@ -46,7 +46,7 @@ class EngineTest  : UnitTest(){
         customerUpdateSender
     )
 
-    val tradeSlot = slot<Trade>()
+    private val tradeSlot = slot<Trade>()
 
     @BeforeEach
     fun beforeEach() {

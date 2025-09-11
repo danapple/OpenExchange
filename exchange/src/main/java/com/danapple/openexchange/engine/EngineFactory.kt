@@ -36,14 +36,16 @@ open class EngineFactory(
         val instrumentsM = instrumentDao.getInstruments()
         val engines = instrumentsM.associateWith { instrument ->
             val book = Book(instrument)
-            ordersByInstrument.getOrDefault(instrument, emptyList()).forEach({ orderState ->
+            ordersByInstrument.getOrDefault(instrument, emptyList()).forEach { orderState ->
                 book.addOrder(orderState)
-            })
-            Engine(
+            }
+            val engine = Engine(
                 book, clock, tradeFactory, tradeLegFactory, orderDao, tradeDao,
                 marketDataPublisher,
                 customerUpdateSender
             )
+            engine.publishInitialTopOfBook()
+            engine
         }
         return engines
     }

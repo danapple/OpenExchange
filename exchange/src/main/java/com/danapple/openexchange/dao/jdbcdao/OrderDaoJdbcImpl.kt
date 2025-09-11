@@ -15,7 +15,7 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
     override fun saveOrder(orderState: OrderState) {
         val jdbcClient = getJdbcClient(orderState.order.instrument.instrumentId)
         val orderStatement = jdbcClient.sql(
-            """INSERT INTO orders (orderId, customerId, createTime, clientOrderId, instrumentId, price, quantity) 
+            """INSERT INTO order_base (orderId, customerId, createTime, clientOrderId, instrumentId, price, quantity) 
                 VALUES (:orderId, :customerId, :createTime, :clientOrderId, :instrumentId, :price, :quantity)""")
             .param("orderId", orderState.order.orderId)
             .param("customerId", orderState.order.customer.customerId)
@@ -28,7 +28,7 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
 
         if (update == 1) {
             val orderStateStatement = jdbcClient.sql(
-                """INSERT INTO order_states (orderId, orderStatus, versionNumber) 
+                """INSERT INTO order_state (orderId, orderStatus, versionNumber) 
                     VALUES (:orderId, :orderStatus, :versionNumber)""")
                 .param("orderId", orderState.order.orderId)
                 .param("orderStatus", orderState.orderStatus.toString())
@@ -42,7 +42,7 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
         val jdbcClient = getJdbcClient(orderState.order.instrument.instrumentId)
 
         val orderStateStatement = jdbcClient.sql(
-                """UPDATE order_states
+                """UPDATE order_state
                     set orderStatus = :orderStatus,
                         versionNumber = :versionNumber + 1
                     where orderId = :orderId

@@ -25,6 +25,10 @@ class Engine(
     private val customerUpdateSender: CustomerUpdateSender
 )
 {
+    @Synchronized internal fun publishInitialTopOfBook() {
+        marketDataPublisher.publishTopOfBook(clock.millis(), book)
+    }
+
     @Synchronized internal fun newOrder(orderState: OrderState) {
         val timestamp = clock.millis()
         orderDao.saveOrder(orderState)
@@ -42,7 +46,7 @@ class Engine(
                     matchOrderStates(orderState, oppositeOrderState, trade, trades)
                     if (oppositeOrderState.remainingQuantity == 0)
                     {
-                        if (logger.isDebugEnabled()) {
+                        if (logger.isDebugEnabled) {
                             logger.debug("oppositeOrderState $oppositeOrderState is filled, removing from book")
                         }
                         book.fillOrder(oppositeOrderState)
@@ -54,7 +58,6 @@ class Engine(
                 }
             }
         }
-        marketDataPublisher.publishTopOfBook(timestamp, book)
         trades.forEach { trade ->
             tradeDao.saveTrade(trade)
             marketDataPublisher.publishTrades(timestamp, trade)
@@ -66,6 +69,7 @@ class Engine(
             }
             book.addOrder(orderState)
         }
+        marketDataPublisher.publishTopOfBook(timestamp, book)
     }
 
     @Synchronized internal fun cancelOrder(orderState: OrderState) {

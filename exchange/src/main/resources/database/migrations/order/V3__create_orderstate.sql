@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS order_states (
-  orderId BIGINT PRIMARY KEY REFERENCES orders,
+CREATE TABLE IF NOT EXISTS order_state (
+  orderId BIGINT PRIMARY KEY REFERENCES order_base,
   orderStatus VARCHAR
 );

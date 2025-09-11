@@ -1,9 +1,10 @@
 #!/usr/bin/python3.12
 
 import getopt
-import requests
-import requests
 import sys
+
+import requests
+import requests
 
 
 def main(argv):
@@ -19,7 +20,7 @@ def main(argv):
 
     cookies = { "customerKey": customerKey }
 
-    path="http://localhost:5000/orders"
+    path="http://localhost:5213/orders"
     r = requests.get(path, cookies=cookies, verify=False)
 
     print ('Response')

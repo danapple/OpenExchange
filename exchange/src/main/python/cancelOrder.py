@@ -1,7 +1,8 @@
 #!/usr/bin/python3.8
 import getopt
-import requests
 import sys
+
+import requests
 
 
 def main(argv):
@@ -20,7 +21,7 @@ def main(argv):
 
         cookies = { "customerKey": customerKey }
 
-    path="http://localhost:5000/order/" + clientOrderId
+    path="http://localhost:5213/order/" + clientOrderId
     r = requests.delete(path , cookies=cookies, verify=False)
 
     print ('Response code')

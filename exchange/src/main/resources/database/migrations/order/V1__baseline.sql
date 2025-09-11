@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS orders (
+CREATE TABLE IF NOT EXISTS order_base (
   orderId BIGINT PRIMARY KEY,
   customerId BIGINT NOT NULL,
   clientOrderId BIGINT NOT NULL,
@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS orders (
   quantity INT NOT NULL
 );
 
-CREATE UNIQUE INDEX unq_customer_order ON orders (customerId, clientOrderId);
+CREATE UNIQUE INDEX unq_customer_order ON order_base (customerId, clientOrderId);

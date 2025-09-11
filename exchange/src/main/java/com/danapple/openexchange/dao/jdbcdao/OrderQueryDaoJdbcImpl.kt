@@ -19,7 +19,7 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
 
     override fun getOrder(customer: Customer, clientOrderId: String): OrderState? {
         val orderState = orderCache.getOrder(customer, clientOrderId)
-            ?: TODO("Retrieving from DB not yet implemented and add to cache")
+            ?: TODO("Retrieving from DB not yet implemented")
         return orderState
     }
 
@@ -32,14 +32,14 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
         val orderRowCallbackHandler = OrderRowCallbackHandler(orders, customerDao, instrumentDao)
         jdbcClients.forEach( { jdbcClient ->
             val statement = jdbcClient.sql(
-                """SELECT ords.orderId, ords.customerId, ords.createtime, ords.clientOrderId, ords.instrumentId, 
-                        ords.price, ords.quantity, states.orderStatus, states.versionNumber,
-                        sum(ifNull(legs.quantity, 0)) filledQuantity
-                    FROM orders ords
-                    JOIN order_states states on states.orderId = ords.orderId
-                    LEFT OUTER JOIN trade_legs legs on legs.orderId = ords.orderId
-                    WHERE states.orderStatus = 'OPEN'
-                    GROUP BY ords.orderId
+                """SELECT base.orderId, base.customerId, base.createTime, base.clientOrderId, base.instrumentId, 
+                        base.price, base.quantity, state.orderStatus, state.versionNumber,
+                        sum(ifNull(leg.quantity, 0)) filledQuantity
+                    FROM order_base base
+                    JOIN order_state state on state.orderId = base.orderId
+                    LEFT OUTER JOIN trade_leg leg on leg.orderId = base.orderId
+                    WHERE state.orderStatus = 'OPEN'
+                    GROUP BY base.orderId
                     """);
             statement.query(orderRowCallbackHandler)
         })
