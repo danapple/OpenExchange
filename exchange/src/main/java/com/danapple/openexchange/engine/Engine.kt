@@ -44,13 +44,6 @@ class Engine(
 
                 level.getOrderStates().forEach { oppositeOrderState ->
                     matchOrderStates(orderState, oppositeOrderState, trade, trades)
-                    if (oppositeOrderState.remainingQuantity == 0)
-                    {
-                        if (logger.isDebugEnabled) {
-                            logger.debug("oppositeOrderState $oppositeOrderState is filled, removing from book")
-                        }
-                        book.fillOrder(oppositeOrderState)
-                    }
                     if (orderState.remainingQuantity == 0)
                     {
                         return@fullyMatched
@@ -69,6 +62,11 @@ class Engine(
             }
             book.addOrder(orderState)
         }
+        else {
+            orderState.orderStatus = OrderStatus.FILLED
+            orderDao.updateOrder(orderState)
+        }
+        customerUpdateSender.sendOrderState(orderState)
         marketDataPublisher.publishTopOfBook(timestamp, book)
     }
 
@@ -93,9 +91,16 @@ class Engine(
             tradeLegFactory.createTradeLeg(oppositeOrderState, trade, matchQuantity * oppositeOrderState.order.quantity.sign)
             orderDao.updateOrder(orderState)
             customerUpdateSender.sendOrderState(orderState)
+
+            if (oppositeOrderState.remainingQuantity == 0)
+            {
+                if (logger.isDebugEnabled) {
+                    logger.debug("oppositeOrderState $oppositeOrderState is filled, removing from book")
+                }
+                book.fillOrder(oppositeOrderState)
+            }
             orderDao.updateOrder(oppositeOrderState)
             customerUpdateSender.sendOrderState(oppositeOrderState)
-            customerUpdateSender.sendOrderState(orderState)
             trades.add(trade)
         }
     }

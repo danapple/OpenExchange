@@ -54,7 +54,7 @@ class BookTest : UnitTest() {
     }
 
     @Test
-    fun doesNotMatchSellForSameSideBetterProce() {
+    fun doesNotMatchSellForSameSideBetterPrice() {
         book.addOrder(orderStateBuy2)
         assertThat(book.getMatchingOppositeLevels(orderStateBuy1)).isEmpty()
     }

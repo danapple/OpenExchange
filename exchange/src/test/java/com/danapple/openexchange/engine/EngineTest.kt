@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.Clock
 
-class EngineTest  : UnitTest(){
+class EngineTest  : UnitTest() {
     private val orderStateBuy1 = OrderState(ORDER_BUY_1)
     private val orderStateBuy2 = OrderState(ORDER_BUY_2)
 

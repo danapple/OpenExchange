@@ -37,7 +37,7 @@ class OrdersApiTest(
         assertThat(getResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(getResponse.body).isNotNull
 
-        assertThat(getResponse.body.orderStates).isEmpty()
+        assertThat(getResponse.body!!.orderStates).isEmpty()
     }
 
     @Test
@@ -49,9 +49,9 @@ class OrdersApiTest(
         assertThat(getResponse.statusCode).isEqualTo(HttpStatus.OK)
         assertThat(getResponse.body).isNotNull
 
-        assertThat(getResponse.body.orderStates).isNotEmpty
+        assertThat(getResponse.body!!.orderStates).isNotEmpty
         val returnedOrderStatesByClientOrderId =
-            getResponse.body.orderStates.associateBy { orderState -> orderState.order.clientOrderId }
+            getResponse.body!!.orderStates.associateBy { orderState -> orderState.order.clientOrderId }
         assertThat(returnedOrderStatesByClientOrderId[ORDER_BUY_1.clientOrderId]).isNotNull
     }
 
@@ -69,7 +69,7 @@ class OrdersApiTest(
         assertThat(getResponse.body).isNotNull
 
         val returnedOrderStatesByClientOrderId =
-            getResponse.body.orderStates.associateBy { orderState -> orderState.order.clientOrderId }
+            getResponse.body!!.orderStates.associateBy { orderState -> orderState.order.clientOrderId }
         assertThat(returnedOrderStatesByClientOrderId[ORDER_BUY_1.clientOrderId]).isNotNull
         assertThat(returnedOrderStatesByClientOrderId[ORDER_SELL_1.clientOrderId]).isNotNull
 
