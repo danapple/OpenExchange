@@ -3,7 +3,6 @@ import getopt
 import sys
 
 import requests
-import requests
 
 
 def main(argv):
