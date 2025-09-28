@@ -9,8 +9,7 @@ on:
 jobs:
   approve:
     runs-on: ubuntu-latest
-    permissions:
-       contents: write
+    permissions: write-all
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
