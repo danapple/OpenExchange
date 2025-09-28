@@ -19,4 +19,4 @@ jobs:
         run: |
           gh pr review ${{ inputs.pr_number }} --approve
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CODEOWNER_PR_RW_TOKEN }}
