@@ -1,7 +1,16 @@
 server:
     port: 5213
 
+logging:
+  level:
+    ROOT: DEBUG
+    org:
+      springframework:
+        web: TRACE
+
 spring:
+  mvc:
+    log-request-details: true
   h2:
     console:
         enabled: true

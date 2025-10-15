@@ -19,8 +19,6 @@ class CustomerKeyCookieAuthenticator(private val customerDao: CustomerDao) {
                 }
             }
         }
-
         throw BadCredentialsException("Invalid customerKey")
-
     }
 }

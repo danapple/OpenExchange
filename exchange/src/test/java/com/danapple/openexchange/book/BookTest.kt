@@ -10,17 +10,17 @@ import java.math.BigDecimal
 
 class BookTest : UnitTest() {
     private val book = Book(INSTRUMENT_1)
-    private val orderStateBuy1 = OrderState(ORDER_BUY_1)
-    private val orderStateBuy2 = OrderState(ORDER_BUY_2)
+    private val orderStateBuy1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
+    private val orderStateBuy2 = OrderState(ORDER_BUY_2, ORDER_CREATETIME_2)
 
-    private val orderStateSell1 = OrderState(ORDER_SELL_1)
-    private val orderStateSell2 = OrderState(ORDER_SELL_2)
+    private val orderStateSell1 = OrderState(ORDER_SELL_1, ORDER_CREATETIME_1)
+    private val orderStateSell2 = OrderState(ORDER_SELL_2, ORDER_CREATETIME_2)
 
     private val orderBuy1A = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1)
-    private val orderStateBuy1A = OrderState(orderBuy1A)
+    private val orderStateBuy1A = OrderState(orderBuy1A, ORDER_CREATETIME_1)
 
     private val orderSell1A = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1)
-    private val orderStateSell1A = OrderState(orderSell1A)
+    private val orderStateSell1A = OrderState(orderSell1A, ORDER_CREATETIME_1)
 
     @Test
     fun fillsOrder() {

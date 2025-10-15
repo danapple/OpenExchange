@@ -16,17 +16,17 @@ import java.math.BigDecimal
 import java.time.Clock
 
 class EngineTest  : UnitTest() {
-    private val orderStateBuy1 = OrderState(ORDER_BUY_1)
-    private val orderStateBuy2 = OrderState(ORDER_BUY_2)
+    private val orderStateBuy1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
+    private val orderStateBuy2 = OrderState(ORDER_BUY_2, ORDER_CREATETIME_2)
 
-    private val orderStateSell1 = OrderState(ORDER_SELL_1)
-    private val orderStateSell2 = OrderState(ORDER_SELL_2)
+    private val orderStateSell1 = OrderState(ORDER_SELL_1, ORDER_CREATETIME_1)
+    private val orderStateSell2 = OrderState(ORDER_SELL_2, ORDER_CREATETIME_2)
 
     private val orderBuy1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
-    private val orderStateBuy1Big = OrderState(orderBuy1Big)
+    private val orderStateBuy1Big = OrderState(orderBuy1Big, ORDER_CREATETIME_1)
 
     private val orderSell1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
-    private val orderStateSell1Big = OrderState(orderSell1Big)
+    private val orderStateSell1Big = OrderState(orderSell1Big, ORDER_CREATETIME_1)
 
     private var tradeDao = mockk<TradeDao>()
 

@@ -22,4 +22,9 @@ open class IdGenerators(private val idDao: IdDao) {
     open fun tradeLegIdGenerator() : IdGenerator{
         return DaoIdGenerator(IdDao.IdType.TRADE_LEG, idDao, 1000)
     }
+
+    @Bean("orderStateHistoryIdGenerator")
+    open fun orderStateHistoryIdGenerator() : IdGenerator{
+        return DaoIdGenerator(IdDao.IdType.ORDER_STATE_HISTORY, idDao, 1000)
+    }
 }

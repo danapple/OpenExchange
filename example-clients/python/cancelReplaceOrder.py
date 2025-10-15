@@ -1,8 +1,7 @@
 #!/usr/bin/python3.8
 import getopt
-import sys
-
 import requests
+import sys
 
 
 def main(argv):
@@ -49,7 +48,7 @@ def main(argv):
 
     cookies = { "customerKey": customerKey }
 
-    path="http://localhost:5213/order/" + clientOrderId
+    path="http://localhost:5213/orders/" + clientOrderId
     print ('Requesting at path', path)
     print ('req', req)
 

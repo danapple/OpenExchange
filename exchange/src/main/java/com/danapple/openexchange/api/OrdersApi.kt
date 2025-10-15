@@ -30,7 +30,7 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
                 val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
-                    OrderState(createdOrder, if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN)
+                    OrderState(createdOrder, createdOrder.createTime, if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN)
                 if (logger.isDebugEnabled) {
                     logger.debug("OrderState $orderState")
                 }

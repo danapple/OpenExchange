@@ -5,8 +5,7 @@ import com.danapple.openexchange.entities.trades.TradeLeg
 import java.util.*
 import kotlin.math.absoluteValue
 
-class OrderState(val order: Order, var orderStatus : OrderStatus = OrderStatus.OPEN, filledQty : Int = 0, var versionNumber : Int = 0) {
-
+class OrderState(val order: Order, var updateTime : Long, var orderStatus : OrderStatus = OrderStatus.OPEN, filledQty : Int = 0, var versionNumber : Int = 0) {
     private var _remainingQuantity = order.quantity - filledQty
     val tradeLegs = LinkedList<TradeLeg>()
     internal val remainingQuantity
@@ -29,7 +28,7 @@ class OrderState(val order: Order, var orderStatus : OrderStatus = OrderStatus.O
     }
 
     override fun toString(): String {
-        return "OrderState(order=$order, orderStatus=$orderStatus, _remainingQuantity=$_remainingQuantity, tradeLegs count=$tradeLegs.size, remainingQuantity=$remainingQuantity)"
+        return "OrderState(order=$order, orderStatus=$orderStatus, updateTime=${updateTime}, _remainingQuantity=$_remainingQuantity, tradeLegs count=$tradeLegs.size, remainingQuantity=$remainingQuantity)"
     }
 
     override fun equals(other: Any?): Boolean {

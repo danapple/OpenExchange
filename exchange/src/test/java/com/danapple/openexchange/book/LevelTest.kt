@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test
 class LevelTest : UnitTest() {
 
     private val level = Level()
-    private val orderState1 = OrderState(ORDER_BUY_1)
-    private val orderState2 = OrderState(ORDER_BUY_2)
+    private val orderState1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
+    private val orderState2 = OrderState(ORDER_BUY_2, ORDER_CREATETIME_2)
 
     @Test
     fun emptyLevelReturnsEmptyList() {

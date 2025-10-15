@@ -21,10 +21,16 @@ open class SecurityConfig (private val authenticationFilter : AuthenticationFilt
         http.csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { authorizationManagerRequestMatcherRegistry ->
                 authorizationManagerRequestMatcherRegistry.requestMatchers(
-                    "/order"
+                    "/orders"
                 ).hasAuthority(Authorities.CUSTOMER.authority)
                 authorizationManagerRequestMatcherRegistry.requestMatchers(
-                    "/orders"
+                    "/orders/*"
+                ).hasAuthority(Authorities.CUSTOMER.authority)
+                authorizationManagerRequestMatcherRegistry.requestMatchers(
+                    "/instruments"
+                ).hasAuthority(Authorities.CUSTOMER.authority)
+                authorizationManagerRequestMatcherRegistry.requestMatchers(
+                    "/instruments/*"
                 ).hasAuthority(Authorities.CUSTOMER.authority)
                 authorizationManagerRequestMatcherRegistry.requestMatchers(
                     "/exchangewebsockets"
@@ -40,3 +46,4 @@ open class SecurityConfig (private val authenticationFilter : AuthenticationFilt
         return http.build()
     }
 }
+

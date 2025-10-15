@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
 class TradeTest  : UnitTest() {
-    private val orderState1 = OrderState(ORDER_BUY_1)
+    private val orderState1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
     private val trade1 = tradeFactory.createTrade(CLOCK.millis(), BigDecimal.ONE)
 
     @Test
