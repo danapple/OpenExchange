@@ -7,17 +7,20 @@ import com.danapple.openexchange.entities.trades.Trade
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
 import java.net.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 
+@Service("marketDataPublisherMulticast")
 class MarketDataPublisherMulticast(
     private val objectMapper: ObjectMapper,
-    interfaceAddress: String,
-    multicastGroup: String,
-    private val depthPort: Int,
-    private val tradePort: Int,
-    private val numberOfLevelsToPublish: Int
+    @Value("\${openexchange.marketDataPublisher.interfaceAddress}") private val interfaceAddress : String,
+    @Value("\${openexchange.marketDataPublisher.multicastGroup}") private val multicastGroup : String,
+    @Value("\${openexchange.marketDataPublisher.depthPort}") private val depthPort : Int,
+    @Value("\${openexchange.marketDataPublisher.tradePort}") private val tradePort : Int,
+    @Value("\${openexchange.marketDataPublisher.numberOfLevelsToPublish}") private val numberOfLevelsToPublish : Int
 ) : MarketDataPublisher {
     private val depthSocket : MulticastSocket
     private val tradeSocket : MulticastSocket

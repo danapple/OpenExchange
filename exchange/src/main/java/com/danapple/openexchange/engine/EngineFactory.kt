@@ -12,6 +12,7 @@ import com.danapple.openexchange.entities.trades.TradeLegFactory
 import com.danapple.openexchange.marketdata.MarketDataPublisher
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.time.Clock
@@ -22,7 +23,7 @@ open class EngineFactory(
     private val tradeLegFactory: TradeLegFactory, private val orderQueryDao: OrderQueryDao,
     private val orderDao: OrderDao, private val instrumentDao: InstrumentDao,
     private val tradeDao: TradeDao,
-    private val marketDataPublisher: MarketDataPublisher,
+    @Qualifier("marketDataPublisherMain") private val marketDataPublisher: MarketDataPublisher,
     private val customerUpdateSender: CustomerUpdateSender
 ) {
 

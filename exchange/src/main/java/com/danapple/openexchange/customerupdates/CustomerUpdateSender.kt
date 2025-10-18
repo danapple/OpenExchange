@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service
 class CustomerUpdateSender(private val simpMessagingTemplate: SimpMessagingTemplate) {
     fun sendTrade(trade : Trade) {
         trade.tradeLegs.forEach { tradeLeg ->
-            simpMessagingTemplate.convertAndSendToUser(tradeLeg.orderState.order.customer.customerId.toString(),
-                "/topics/executions",
+            simpMessagingTemplate.convertAndSend(
+                "/topics/executions/%s".format(tradeLeg.orderState.order.customer.customerKey),
                 tradeLeg.toExecution())
         }
     }
 
     fun sendOrderState(orderState : OrderState) {
-        simpMessagingTemplate.convertAndSendToUser(orderState.order.customer.customerId.toString(),
-            "/topics/orders",
+        simpMessagingTemplate.convertAndSend(
+            "/topics/executions/%s".format(orderState.order.customer.customerKey),
             orderState.toDto())
     }
 }
