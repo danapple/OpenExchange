@@ -26,12 +26,6 @@ open class SecurityConfig (private val authenticationFilter : AuthenticationFilt
                 registry.requestMatchers("/instruments/*").hasAuthority(Authorities.CUSTOMER.authority)
                 registry.requestMatchers("/ws").permitAll()//.hasAuthority(Authorities.CUSTOMER.authority)
             }
- //           .httpBasic(Customizer.withDefaults())
-//            .sessionManagement { httpSecuritySessionManagementConfigurer: SessionManagementConfigurer<HttpSecurity?> ->
-//                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-//                    SessionCreationPolicy.STATELESS
-//                )
-//            }
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }

@@ -18,9 +18,9 @@ open class WebSocketSecurityConfig {
         messages: MessageMatcherDelegatingAuthorizationManager.Builder
     ): AuthorizationManager<Message<*>> {
         messages
-            .simpDestMatchers("/app/echotest", "/topics/depth","/topics/trades","/topics/executions/*")
+            .simpDestMatchers("/topics/depth","/topics/trades","/user/queue/executions")
             .hasAuthority(Authorities.CUSTOMER.authority)
-            .simpSubscribeDestMatchers("/topics/depth","/topics/trades","/topics/executions/*")
+            .simpSubscribeDestMatchers("/topics/depth","/topics/trades","/user/queue/executions")
             .hasAuthority(Authorities.CUSTOMER.authority)
             .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT, SimpMessageType.OTHER).permitAll()
             .anyMessage().denyAll()
