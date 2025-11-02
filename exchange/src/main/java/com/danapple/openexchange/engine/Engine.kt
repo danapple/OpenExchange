@@ -32,6 +32,7 @@ class Engine(
     @Synchronized internal fun newOrder(orderState: OrderState) {
         val timestamp = clock.millis()
         orderDao.saveOrder(orderState)
+        customerUpdateSender.sendOrderState(orderState)
         val matchingOppositeLevels = book.getMatchingOppositeLevels(orderState)
         if (logger.isDebugEnabled) {
             logger.debug("matchingOppositeLevels = $matchingOppositeLevels")
@@ -65,8 +66,8 @@ class Engine(
         else {
             orderState.orderStatus = OrderStatus.FILLED
             orderDao.updateOrder(orderState)
+            customerUpdateSender.sendOrderState(orderState)
         }
-        customerUpdateSender.sendOrderState(orderState)
         marketDataPublisher.publishTopOfBook(timestamp, book)
     }
 
@@ -90,7 +91,6 @@ class Engine(
             tradeLegFactory.createTradeLeg(orderState, trade, matchQuantity * orderState.order.quantity.sign)
             tradeLegFactory.createTradeLeg(oppositeOrderState, trade, matchQuantity * oppositeOrderState.order.quantity.sign)
             orderDao.updateOrder(orderState)
-            customerUpdateSender.sendOrderState(orderState)
 
             if (oppositeOrderState.remainingQuantity == 0)
             {
@@ -100,7 +100,6 @@ class Engine(
                 book.fillOrder(oppositeOrderState)
             }
             orderDao.updateOrder(oppositeOrderState)
-            customerUpdateSender.sendOrderState(oppositeOrderState)
             trades.add(trade)
         }
     }

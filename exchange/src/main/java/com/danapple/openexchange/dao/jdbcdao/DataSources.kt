@@ -34,7 +34,7 @@ open class DataSources {
                                  @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration,
                                  @Value("\${openexchange.database.order.jdbcUrlTemplate}") jdbcUrlTemplate: String) : List<JdbcClient> {
         val dataSources = ArrayList<DataSource>()
-        for (i in 0..databaseConfiguration.shardCount!!) {
+        for (i in 0..<databaseConfiguration.shardCount!!) {
             val dataSourceBuilder = DataSourceBuilder.derivedFrom(dataSource)
             dataSourceBuilder.url("${databaseConfiguration.jdbcUrlTemplate}$i")
             val shardDataSource = dataSourceBuilder.build()

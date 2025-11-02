@@ -9,12 +9,35 @@ import java.util.concurrent.ConcurrentHashMap
 
 @Repository
 open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val jdbcClient : JdbcClient) : InstrumentDao {
-    val instruments = ConcurrentHashMap<Long, Instrument>()
-    override fun getInstrument(instrumentId: Long): Instrument {
-        return instruments.computeIfAbsent(instrumentId) { Instrument(instrumentId) }
+    private val instrumentCache = ConcurrentHashMap<Long, Instrument>()
+    override fun getInstrument(instrumentId: Long): Instrument? {
+        return instrumentCache[instrumentId];
     }
 
-    override fun getInstruments(): Set<Instrument> {
-        return setOf( getInstrument(0), getInstrument(1));
+    override fun getActiveInstruments(): Set<Instrument> {
+        val instruments = HashSet<Instrument>()
+        val instrumentRowCallbackHandler = InstrumentRowCallbackHandler(instruments)
+
+        val statement = jdbcClient.sql(
+            """SELECT instrumentId, status, symbol, assetClass, description, expirationTime
+                FROM instrument
+                WHERE status = 'ACTIVE'
+                """);
+        statement.query(instrumentRowCallbackHandler)
+        instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
+        return instruments
+    }
+
+    override fun getAllInstruments(): Set<Instrument> {
+        val instruments = HashSet<Instrument>()
+        val instrumentRowCallbackHandler = InstrumentRowCallbackHandler(instruments)
+
+        val statement = jdbcClient.sql(
+            """SELECT instrumentId, status, symbol, assetClass, description, expirationTime
+                FROM instrument
+                """);
+        statement.query(instrumentRowCallbackHandler)
+        instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
+        return instruments
     }
 }

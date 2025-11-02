@@ -5,5 +5,6 @@ import com.danapple.openexchange.entities.instruments.Instrument
 interface InstrumentDao {
     fun getInstrument(instrumentId: Long): Instrument?
 
-    fun getInstruments(): Set<Instrument>
+    fun getActiveInstruments(): Set<Instrument>
+    fun getAllInstruments(): Set<Instrument>
 }

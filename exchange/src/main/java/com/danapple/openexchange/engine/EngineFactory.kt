@@ -34,7 +34,7 @@ open class EngineFactory(
             orderState.order.instrument
         }
 
-        val instrumentsM = instrumentDao.getInstruments()
+        val instrumentsM = instrumentDao.getActiveInstruments()
         val engines = instrumentsM.associateWith { instrument ->
             val book = Book(instrument)
             ordersByInstrument.getOrDefault(instrument, emptyList()).forEach { orderState ->

@@ -33,8 +33,8 @@ open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : Li
         jdbcClients.forEach( { jdbcClient ->
             val statement = jdbcClient.sql(
                 """SELECT base.orderId, base.customerId, base.createTime, base.clientOrderId, base.instrumentId, 
-                        base.price, base.quantity, state.orderStatus, state.updateTime, state.versionNumber,
-                        sum(ifNull(leg.quantity, 0)) filledQuantity
+                        base.price, base.quantity, max(state.orderStatus), max(state.updateTime), max(state.versionNumber),
+                        sum(coalesce(leg.quantity, 0)) filledQuantity
                     FROM order_base base
                     JOIN order_state state on state.orderId = base.orderId
                     LEFT OUTER JOIN trade_leg leg on leg.orderId = base.orderId

@@ -1,5 +1,6 @@
 package com.danapple.openexchange.customerupdates
 
+import com.danapple.openexchange.dto.ExecutionsTopicWrapper
 import com.danapple.openexchange.entities.orders.toDto
 import com.danapple.openexchange.entities.trades.Trade
 import com.danapple.openexchange.entities.trades.toExecution
@@ -14,7 +15,8 @@ class CustomerUpdateSender(private val simpMessagingTemplate: SimpMessagingTempl
             simpMessagingTemplate.convertAndSendToUser(
                 tradeLeg.orderState.order.customer.customerId.toString(),
                 "/queue/executions",
-                tradeLeg.toExecution())
+                ExecutionsTopicWrapper(tradeLeg.toExecution()))
+            sendOrderState(tradeLeg.orderState)
         }
     }
 
@@ -22,6 +24,6 @@ class CustomerUpdateSender(private val simpMessagingTemplate: SimpMessagingTempl
         simpMessagingTemplate.convertAndSendToUser(
             orderState.order.customer.customerId.toString(),
             "/queue/executions",
-            orderState.toDto())
+            ExecutionsTopicWrapper(orderState.toDto()))
     }
 }

@@ -1,3 +1,3 @@
 package com.danapple.openexchange.dto
 
-data class Instrument(val instrumentId : Long)
+class Instrument(val instrumentId: Long, val symbol: String, val status: InstrumentStatus, val assetClass: AssetClass, val description: String, val expirationTime: Long)
