@@ -1,9 +1,8 @@
 package com.danapple.openexchange.api
 
-import com.danapple.openexchange.dto.Order
-import com.danapple.openexchange.dto.OrderLeg
 import com.danapple.openexchange.dto.OrderStates
 import com.danapple.openexchange.entities.customers.Customer
+import com.danapple.openexchange.entities.orders.toDto
 import com.danapple.openexchange.orders.OrderState
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -12,18 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder.getContex
 abstract class BaseApi {
     internal fun createOrderStatesResponse(vararg orderStates: OrderState, httpStatus: HttpStatus): ResponseEntity<OrderStates> {
         val returningOrderStates = orderStates.map { orderState: OrderState ->
-            val returningOrder = Order(
-                orderState.order.clientOrderId,
-                orderState.order.price,
-                orderState.order.quantity,
-                listOf(OrderLeg(orderState.order.instrument.instrumentId, 1))
-            )
-            com.danapple.openexchange.dto.OrderState(
-                orderState.order.createTime,
-                orderState.orderStatus,
-                orderState.remainingQuantity,
-                returningOrder
-            )
+            orderState.toDto()
         }.toList()
 
         return ResponseEntity(OrderStates(returningOrderStates), httpStatus)

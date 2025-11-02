@@ -10,7 +10,11 @@ import java.util.concurrent.ConcurrentHashMap
 @Repository
 open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val jdbcClient : JdbcClient) : InstrumentDao {
     private val instrumentCache = ConcurrentHashMap<Long, Instrument>()
+    private var loaded = false
     override fun getInstrument(instrumentId: Long): Instrument? {
+        if (!loaded) {
+            getActiveInstruments();
+        }
         return instrumentCache[instrumentId];
     }
 
@@ -25,6 +29,7 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
                 """);
         statement.query(instrumentRowCallbackHandler)
         instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
+        loaded = true
         return instruments
     }
 
