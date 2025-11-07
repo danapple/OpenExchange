@@ -6,6 +6,7 @@ import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.orders.OrderState
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.absoluteValue
 
 class Book(val instrument : Instrument) {
     private val buySide = TreeMap<BigDecimal, Level>()
@@ -52,7 +53,7 @@ class Book(val instrument : Instrument) {
 
     fun getBestSellPriceLevels(numberOfLevels : Int): List<PriceLevel> {
         return sellSide.entries.take(numberOfLevels).map{ level ->
-            PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity })
+            PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity.absoluteValue })
         }.toList()
     }
 }

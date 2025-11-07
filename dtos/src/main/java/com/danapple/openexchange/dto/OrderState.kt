@@ -4,5 +4,6 @@ data class OrderState (
     val updateTime: Long,
     val orderStatus: OrderStatus,
     val remainingQuantity: Int,
-    val order: Order
+    val versionNumber: Int,
+    val order: Order,
 )

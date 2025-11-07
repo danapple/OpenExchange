@@ -4,6 +4,8 @@ import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.InstrumentDao
 import com.danapple.openexchange.dao.OrderDao
 import com.danapple.openexchange.dao.OrderQueryDao
+import com.danapple.openexchange.dto.AssetClass
+import com.danapple.openexchange.dto.InstrumentStatus
 import com.danapple.openexchange.entities.customers.Customer
 import com.danapple.openexchange.entities.instruments.Instrument
 import com.danapple.openexchange.orders.OrderFactory
@@ -20,7 +22,16 @@ open class ExchangeTest constructor(val orderDao : OrderDao,
     val now = CLOCK.millis()
 
     val INSTRUMENT_ID_1 = 0L
-    val INSTRUMENT_1  = Instrument(INSTRUMENT_ID_1)
+    val INSTRUMENT_SYMBOL_1 = "INS1";
+    val INSTRUMENT_DESCRIPTION_1 = "INS1 Description";
+    val INSTRUMENT_1  = Instrument(
+        INSTRUMENT_ID_1,
+        status = InstrumentStatus.ACTIVE,
+        symbol = INSTRUMENT_SYMBOL_1,
+        assetClass = AssetClass.EQUITY,
+        description = INSTRUMENT_DESCRIPTION_1,
+        expirationTime = System.currentTimeMillis() + 86400 * 1000
+    )
 
     val CUSTOMER_ID_1 = 1L
     val CUSTOMER_KEY_1 = "BrokerA"

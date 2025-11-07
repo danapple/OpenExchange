@@ -39,7 +39,7 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
             }
             catch (e : Exception) {
                 logger.warn("Unable to handle new order $submittedOrder", e)
-                OrderState(0, OrderStatus.REJECTED, 0, submittedOrder)
+                OrderState(0, OrderStatus.REJECTED, 0, 0, submittedOrder)
             }
         }.toTypedArray()
         return createOrderStatesResponse(orderStates = orderStates, HttpStatus.OK)

@@ -7,6 +7,7 @@ import com.danapple.openexchange.orders.OrderState
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
+import kotlin.math.absoluteValue
 
 class BookTest : UnitTest() {
     private val book = Book(INSTRUMENT_1)
@@ -204,7 +205,7 @@ class BookTest : UnitTest() {
 
         assertThat(bestSellPriceLevels).hasSize(1)
         assertThat(bestSellPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
-        assertThat(bestSellPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+        assertThat(bestSellPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity.absoluteValue + orderStateSell1A.order.quantity.absoluteValue)
     }
 
     @Test
@@ -230,7 +231,7 @@ class BookTest : UnitTest() {
 
         assertThat(bestBuyPriceLevels).hasSize(1)
         assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
-        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity.absoluteValue + orderStateSell1A.order.quantity.absoluteValue)
     }
 
     @Test
@@ -259,9 +260,9 @@ class BookTest : UnitTest() {
 
         assertThat(bestBuyPriceLevels).hasSize(2)
         assertThat(bestBuyPriceLevels.first().price).isEqualTo(orderStateSell1.order.price)
-        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity + orderStateSell1A.order.quantity)
+        assertThat(bestBuyPriceLevels.first().quantity).isEqualTo(orderStateSell1.order.quantity.absoluteValue + orderStateSell1A.order.quantity.absoluteValue)
 
         assertThat(bestBuyPriceLevels.last().price).isEqualTo(orderStateSell2.order.price)
-        assertThat(bestBuyPriceLevels.last().quantity).isEqualTo(orderStateSell2.order.quantity)
+        assertThat(bestBuyPriceLevels.last().quantity).isEqualTo(orderStateSell2.order.quantity.absoluteValue)
     }
 }
