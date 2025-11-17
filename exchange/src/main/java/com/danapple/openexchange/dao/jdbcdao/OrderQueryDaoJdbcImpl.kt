@@ -15,7 +15,11 @@ import org.springframework.transaction.annotation.Transactional
 open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
                                  private val customerDao : CustomerDao,
                                  private val instrumentDao : InstrumentDao,
-                                 private val orderCache : OrderCache) : OrderQueryDao, ShardedDaoJdbcImpl(jdbcClients){
+                                 private val orderCache : OrderCache,
+                                 @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration) : OrderQueryDao, ShardedDaoJdbcImpl(
+    jdbcClients,
+    databaseConfiguration.shardCount
+){
 
     override fun getOrder(customer: Customer, clientOrderId: String): OrderState? {
         val orderState = orderCache.getOrder(customer, clientOrderId)

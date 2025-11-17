@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
 
 @Repository
-open class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>) : TradeDao, ShardedDaoJdbcImpl(jdbcClients) {
+open class TradeDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
+                            @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration) : TradeDao, ShardedDaoJdbcImpl(
+    jdbcClients,
+    databaseConfiguration.shardCount
+) {
     override fun saveTrade(trade: Trade) {
 
         val jdbcClient = getJdbcClient(trade.tradeLegs.first().orderState.order.instrument.instrumentId)

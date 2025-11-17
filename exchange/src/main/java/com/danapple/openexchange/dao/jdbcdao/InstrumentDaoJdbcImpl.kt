@@ -22,11 +22,7 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
         val instruments = HashSet<Instrument>()
         val instrumentRowCallbackHandler = InstrumentRowCallbackHandler(instruments)
 
-        val statement = jdbcClient.sql(
-            """SELECT instrumentId, status, symbol, assetClass, description, expirationTime
-                FROM instrument
-                WHERE status = 'ACTIVE'
-                """);
+        val statement = jdbcClient.sql(INSTRUMENT_QUERY + " WHERE status = 'ACTIVE'");
         statement.query(instrumentRowCallbackHandler)
         instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
         loaded = true
@@ -37,12 +33,24 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
         val instruments = HashSet<Instrument>()
         val instrumentRowCallbackHandler = InstrumentRowCallbackHandler(instruments)
 
-        val statement = jdbcClient.sql(
-            """SELECT instrumentId, status, symbol, assetClass, description, expirationTime
-                FROM instrument
-                """);
+        val statement = jdbcClient.sql(INSTRUMENT_QUERY);
         statement.query(instrumentRowCallbackHandler)
         instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
         return instruments
     }
 }
+
+const val INSTRUMENT_QUERY = """
+ SELECT instrument.instrumentId, status, symbol, assetClass, description, expirationTime, 
+ underlyingInstrumentId, valueFactor,
+ optionType, strike,
+ deliverable.deliverableInstrumentId, deliverable.quantity,
+ cash_deliverable.value
+ 
+ FROM instrument
+ LEFT JOIN derivative on derivative.instrumentId = instrument.instrumentId
+ LEFT JOIN option on option.instrumentId = derivative.instrumentId
+ LEFT JOIN equity on equity.instrumentId = derivative.instrumentId
+ LEFT JOIN deliverable on deliverable.instrumentId = derivative.instrumentId
+ LEFT JOIN cash_deliverable on cash_deliverable.instrumentId = derivative.instrumentId
+"""

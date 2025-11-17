@@ -41,7 +41,8 @@ class Engine(
         run fullyMatched@
         {
             matchingOppositeLevels.forEach { level ->
-                val trade = tradeFactory.createTrade(timestamp, orderState.order.price)
+                val levelPrice = level.getOrderStates().first().order.price;
+                val trade = tradeFactory.createTrade(timestamp, levelPrice)
 
                 level.getOrderStates().forEach { oppositeOrderState ->
                     matchOrderStates(orderState, oppositeOrderState, trade, trades)

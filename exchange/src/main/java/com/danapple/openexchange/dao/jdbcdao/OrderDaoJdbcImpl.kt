@@ -14,8 +14,9 @@ import java.time.Clock
 @Transactional
 open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
                             private val orderCache : OrderCache, private val clock: Clock,
-                            @Qualifier("orderStateHistoryIdGenerator") private val orderStateHistoryIdGenerator: IdGenerator
-) : OrderDao, ShardedDaoJdbcImpl(jdbcClients) {
+                            @Qualifier("orderStateHistoryIdGenerator") private val orderStateHistoryIdGenerator: IdGenerator,
+                            @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration
+) : OrderDao, ShardedDaoJdbcImpl(jdbcClients, databaseConfiguration.shardCount) {
 
     override fun saveOrder(orderState: OrderState) {
         val jdbcClient = getJdbcClient(orderState.order.instrument.instrumentId)
