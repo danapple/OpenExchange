@@ -24,7 +24,8 @@ fun Equity.toDto() : com.danapple.openexchange.dto.Equity {
         status = status,
         assetClass = assetClass,
         description = description,
-        expirationTime = expirationTime
+        expirationTime = expirationTime,
+        currencyCode = currencyCode
     )
 }
 
@@ -38,7 +39,9 @@ fun Option.toDto() : com.danapple.openexchange.dto.Option {
         assetClass = assetClass,
         description = description,
         expirationTime = expirationTime,
+        currencyCode = currencyCode,
         underlyingInstrumentId = underlyingInstrumentId,
+        valueFactor = valueFactor,
         optionType = OptionType.valueOf(optionType.name),
         strike = strike,
         deliverables = deliverables,
@@ -56,7 +59,9 @@ fun Future.toDto() : com.danapple.openexchange.dto.Future {
         assetClass = assetClass,
         description = description,
         expirationTime = expirationTime,
+        currencyCode = currencyCode,
         underlyingInstrumentId = underlyingInstrumentId,
+        valueFactor = valueFactor,
         deliverables = deliverables,
         cashDeliverables = cashDeliverables
     )

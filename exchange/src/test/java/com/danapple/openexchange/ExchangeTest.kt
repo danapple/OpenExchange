@@ -7,7 +7,7 @@ import com.danapple.openexchange.dao.OrderQueryDao
 import com.danapple.openexchange.dto.AssetClass
 import com.danapple.openexchange.dto.InstrumentStatus
 import com.danapple.openexchange.entities.customers.Customer
-import com.danapple.openexchange.entities.instruments.Instrument
+import com.danapple.openexchange.entities.instruments.Equity
 import com.danapple.openexchange.orders.OrderFactory
 import java.math.BigDecimal
 import java.time.Clock
@@ -24,12 +24,14 @@ open class ExchangeTest constructor(val orderDao : OrderDao,
     val INSTRUMENT_ID_1 = 0L
     val INSTRUMENT_SYMBOL_1 = "INS1";
     val INSTRUMENT_DESCRIPTION_1 = "INS1 Description";
-    val INSTRUMENT_1  = Instrument(
+    val CURRENCY_CODE_USD = "USD"
+    val INSTRUMENT_1  = Equity(
         INSTRUMENT_ID_1,
         status = InstrumentStatus.ACTIVE,
         symbol = INSTRUMENT_SYMBOL_1,
         assetClass = AssetClass.EQUITY,
         description = INSTRUMENT_DESCRIPTION_1,
+        currencyCode = CURRENCY_CODE_USD,
         expirationTime = System.currentTimeMillis() + 86400 * 1000
     )
 

@@ -17,6 +17,7 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
         val assetClass = AssetClass.valueOf(rs.getString("assetClass"))
         val description = rs.getString("description")
         val expirationTime = rs.getLong("expirationTime")
+        val currencyCode = rs.getString("currencyCode")
         when (assetClass) {
             AssetClass.EQUITY -> {
                 instruments.add(
@@ -27,6 +28,7 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                         assetClass = assetClass,
                         description = description,
                         expirationTime = expirationTime,
+                        currencyCode = currencyCode,
                     )
                 )
             }
@@ -38,7 +40,6 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                 val quantity = rs.getLong("quantity")
                 val value = rs.getFloat("value")
 
-
                 val underlyingInstrumentId = rs.getLong("underlyingInstrumentId")
                 instruments.add(
                     Option(
@@ -48,6 +49,7 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                         assetClass = assetClass,
                         description = description,
                         expirationTime = expirationTime,
+                        currencyCode = currencyCode,
                         underlyingInstrumentId = underlyingInstrumentId,
                         valueFactor= valueFactor,
                         optionType = optionType,

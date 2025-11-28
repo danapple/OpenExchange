@@ -10,8 +10,9 @@ abstract class Derivative(
     assetClass: AssetClass,
     description: String,
     expirationTime: Long,
+    currencyCode: String,
     val underlyingInstrumentId: Long,
     val valueFactor: Float,
     val deliverables: Set<Deliverable>,
     val cashDeliverables: Set<CashDeliverable>
-) : Instrument(instrumentId, status, symbol, assetClass, description, expirationTime)
+) : Instrument(instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode)

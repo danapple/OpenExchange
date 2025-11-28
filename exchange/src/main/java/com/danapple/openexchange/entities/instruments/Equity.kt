@@ -9,5 +9,6 @@ class Equity(
     symbol: String,
     assetClass: AssetClass,
     description: String,
-    expirationTime: Long
-) : Instrument(instrumentId, status, symbol, assetClass, description, expirationTime)
+    expirationTime: Long,
+    currencyCode: String
+) : Instrument(instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode)

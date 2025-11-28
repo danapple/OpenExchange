@@ -12,11 +12,13 @@ class Option(
     assetClass: AssetClass,
     description: String,
     expirationTime: Long,
+    currencyCode: String,
     underlyingInstrumentId: Long,
+    valueFactor: Float,
     deliverables: Set<Deliverable>,
     cashDeliverables: Set<CashDeliverable>,
     val optionType: OptionType,
     val strike: Float
-) : Derivative(instrumentId, symbol, status, assetClass, description, expirationTime,
-    underlyingInstrumentId, deliverables, cashDeliverables
+) : Derivative(instrumentId, symbol, status, assetClass, description, expirationTime, currencyCode,
+    underlyingInstrumentId, valueFactor, deliverables, cashDeliverables
 )
