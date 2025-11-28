@@ -11,43 +11,49 @@ logging:
 spring:
   mvc:
     log-request-details: true
-  h2:
-    console:
-        enabled: true
   flyway:
         enabled: false
   datasource:
     instrument:
-        jdbcUrl: jdbc:h2:file:/tmp/openexchange/instrument
-        username: OE
-        password: OEpassword
-        driverClassname: org.h2.Driver
+        jdbcUrl: jdbc:postgresql://127.0.0.1/instrument
+        username: instrument_user
+        password: instrument_user_pwd
+        driverClassname: org.postgresql.Driver
+        hikari:
+            initializationFailTimeout: -1
     id:
-        jdbcUrl: jdbc:h2:file:/tmp/openexchange/id
-        username: OE
-        password: OEpassword
-        driverClassname: org.h2.Driver
+        jdbcUrl: jdbc:postgresql://127.0.0.1/id
+        username: id_user
+        password: id_user_pwd
+        driverClassname: org.postgresql.Driver
+        hikari:
+            initializationFailTimeout: -1
     customer:
-        jdbcUrl: jdbc:h2:file:/tmp/openexchange/customer
-        username: OE
-        password: OEpassword
-        driverClassname: org.h2.Driver
+        jdbcUrl: jdbc:postgresql://127.0.0.1/customer
+        username: customer_user
+        password: customer_user_pwd
+        driverClassname: org.postgresql.Driver
+        hikari:
+            initializationFailTimeout: -1
     order:
-        jdbcUrl: jdbc:h2:file:/tmp/openexchange/order
-        username: OE
-        password: OEpassword
-        driverClassname: org.h2.Driver
-    url: jdbc:h2:mem:testdb
+        jdbcUrl: jdbc:postgresql://127.0.0.1/order
+        username: order_user
+        password: order_user_pwd
+        driverClassname: org.postgresql.Driver
+        hikari:
+            initializationFailTimeout: -1
+    hikari:
+      initializationFailTimeout: -1
 openexchange:
     database:
         order:
-            jdbcUrlTemplate: jdbc:h2:file:/tmp/openexchange/order
+            jdbcUrlTemplate: jdbc:postgresql://127.0.0.1/order
             shardCount: 4
             migrationsLocation: database/migrations/order
            # repair: true
         instrument:
             migrationsLocation: database/migrations/instrument
-           # repair: true
+            repair: true
         id:
             migrationsLocation: database/migrations/id
            # repair: true
