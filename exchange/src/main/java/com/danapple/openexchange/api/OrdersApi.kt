@@ -21,9 +21,10 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
 
     @PostMapping
     fun submitOrders(@RequestBody submitOrders: SubmitOrders) : ResponseEntity<OrderStates> {
+        val customer = getCustomer()
+
         val orderStates = submitOrders.orders.map { submittedOrder ->
             try {
-                val customer = getCustomer()
                 if (logger.isDebugEnabled) {
                     logger.debug("New Order for customerId ${customer.customerId}, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
                 }

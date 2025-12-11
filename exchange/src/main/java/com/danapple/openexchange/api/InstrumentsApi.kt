@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/instruments")
-class InstrumentsApi(private val instrumentDao: InstrumentDao) : BaseApi(){
+class InstrumentsApi(private val instrumentDao: InstrumentDao) : BaseApi() {
     @GetMapping
     fun getInstruments() : ResponseEntity<Instruments> {
         val customer = getCustomer()

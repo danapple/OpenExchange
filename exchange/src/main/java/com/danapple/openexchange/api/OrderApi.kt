@@ -25,7 +25,7 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace):
             ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.info("cancelReplace for customerId ${customer.customerId}, clientOrderId $clientOrderId: $cancelReplace")
+        logger.debug("cancelReplace for customerId ${customer.customerId}, clientOrderId $clientOrderId: $cancelReplace")
         val originalOrderState = orderQueryDao.getOrder(customer, cancelReplace.originalClientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
@@ -65,7 +65,7 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     @GetMapping("/{clientOrderId}")
     fun getOrder(@PathVariable("clientOrderId") clientOrderId: String) : ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.info("getOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
+        logger.debug("getOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
 
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
@@ -76,11 +76,13 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     @DeleteMapping("/{clientOrderId}")
     fun cancelOrder(@PathVariable("clientOrderId") clientOrderId: String) : ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.info("cancelOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
+        logger.debug("cancelOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
-        val engine = engines[orderState.order.instrument]
-            ?: return ResponseEntity(HttpStatus.FAILED_DEPENDENCY)
+        logger.trace("Got orderState with instrument {}", orderState.order.instrument.instrumentId)
+        val engine = engines[orderState.order.instrument]?: return ResponseEntity(HttpStatus.FAILED_DEPENDENCY)
+        logger.trace("Got engine")
+
         engine.cancelOrder(orderState)
         return createOrderStatesResponse(orderStates = arrayOf(orderState), HttpStatus.OK)
 

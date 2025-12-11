@@ -2,8 +2,6 @@ spring:
   h2:
     console:
         enabled: true
-  flyway:
-        enabled: false
   datasource:
     instrument:
         jdbcUrl: jdbc:h2:mem:instrument

@@ -29,12 +29,12 @@ open class EngineFactory(
 
     @Bean
     open fun createEngines(instruments: Set<Instrument>): Map<Instrument, Engine> {
-        val ordersByInstrument = orderQueryDao.getOpenOrders().groupBy { orderState ->
-            logger.info("Loaded order $orderState")
-            orderState.order.instrument
-        }
 
         val instrumentsM = instrumentDao.getActiveInstruments()
+        val ordersByInstrument = orderQueryDao.getOpenOrders().groupBy { orderState ->
+//            logger.info("Loaded order $orderState")
+            orderState.order.instrument
+        }
         val engines = instrumentsM.associateWith { instrument ->
             val book = Book(instrument)
             ordersByInstrument.getOrDefault(instrument, emptyList()).forEach { orderState ->

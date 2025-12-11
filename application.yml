@@ -6,13 +6,11 @@ logging:
     ROOT: INFO
     org:
       springframework:
-        web: TRACE
+        web: INFO
 
 spring:
   mvc:
     log-request-details: true
-  flyway:
-        enabled: false
   datasource:
     instrument:
         jdbcUrl: jdbc:postgresql://127.0.0.1/instrument

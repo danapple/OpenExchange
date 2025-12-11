@@ -5,8 +5,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken
 import org.springframework.security.core.GrantedAuthority
 
 class CustomerKeyAuthentication(authorities: Collection<GrantedAuthority?>?,
-                                private val principal : Customer) :
-    AbstractAuthenticationToken(authorities) {
+                                private val principal : Customer) : AbstractAuthenticationToken(authorities) {
     init {
         isAuthenticated = true
     }

@@ -1,7 +1,6 @@
 package com.danapple.openexchange.dao
 
 import com.danapple.openexchange.dao.jdbcdao.DatabaseConfiguration
-import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -15,8 +14,6 @@ import javax.sql.DataSource
 
 @Configuration
 open class DataSources {
-
-
     @Bean("orderDataSource")
     @ConfigurationProperties("spring.datasource.order")
     open fun orderDataSource(): DataSource {
@@ -30,6 +27,7 @@ open class DataSources {
     }
 
     @Bean("orderJdbcClients")
+    @kotlin.ExperimentalStdlibApi
     open fun getOrderJdbcClients(@Qualifier("orderDataSource") dataSource : DataSource,
                                  @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration,
                                  @Value("\${openexchange.database.order.jdbcUrlTemplate}") jdbcUrlTemplate: String) : List<JdbcClient> {
@@ -38,16 +36,6 @@ open class DataSources {
             val dataSourceBuilder = DataSourceBuilder.derivedFrom(dataSource)
             dataSourceBuilder.url("${databaseConfiguration.jdbcUrlTemplate}$i")
             val shardDataSource = dataSourceBuilder.build()
-
-            val flywayConfig = org.flywaydb.core.api.configuration.FluentConfiguration()
-                .dataSource(shardDataSource)
-                .locations(databaseConfiguration.migrationsLocation)
-
-            val flyway = Flyway(flywayConfig)
-            if (databaseConfiguration.repair) {
-                flyway.repair()
-            }
-            flyway.migrate()
 
             dataSources.add(shardDataSource)
         }
@@ -70,15 +58,6 @@ open class DataSources {
     @Primary
     open fun getIdJdbcClient(@Qualifier("idDataSource") dataSource : DataSource,
                              @Qualifier("idDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
-        val flywayConfig = org.flywaydb.core.api.configuration.FluentConfiguration()
-            .dataSource(dataSource)
-            .locations(databaseConfiguration.migrationsLocation)
-        val flyway = Flyway(flywayConfig)
-        if (databaseConfiguration.repair) {
-            flyway.repair()
-        }
-        flyway.migrate()
-
         return JdbcClient.create(dataSource)
     }
 
@@ -98,14 +77,6 @@ open class DataSources {
     @Primary
     open fun getInstrumentJdbcClient(@Qualifier("instrumentDataSource") dataSource : DataSource,
                                      @Qualifier("instrumentDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
-        val flywayConfig = org.flywaydb.core.api.configuration.FluentConfiguration()
-            .dataSource(dataSource)
-            .locations(databaseConfiguration.migrationsLocation)
-        val flyway = Flyway(flywayConfig)
-        if (databaseConfiguration.repair) {
-            flyway.repair()
-        }
-        flyway.migrate()
         return JdbcClient.create(dataSource)
     }
 
@@ -125,14 +96,6 @@ open class DataSources {
     @Bean("customerJdbcClient")
     open fun getCustomerJdbcClient(@Qualifier("customerDataSource") dataSource : DataSource,
                                    @Qualifier("customerDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
-        val flywayConfig = org.flywaydb.core.api.configuration.FluentConfiguration()
-            .dataSource(dataSource)
-            .locations(databaseConfiguration.migrationsLocation)
-        val flyway = Flyway(flywayConfig)
-        if (databaseConfiguration.repair) {
-            flyway.repair()
-        }
-        flyway.migrate()
         return JdbcClient.create(dataSource)
     }
 }
