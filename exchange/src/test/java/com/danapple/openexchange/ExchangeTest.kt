@@ -12,11 +12,13 @@ import com.danapple.openexchange.orders.OrderFactory
 import java.math.BigDecimal
 import java.time.Clock
 
-open class ExchangeTest constructor(val orderDao : OrderDao,
-                                    val orderQueryDao : OrderQueryDao,
-                                    val customerDao : CustomerDao,
-                                    val instrumentDao : InstrumentDao,
-                                    val orderFactory : OrderFactory) {
+open class ExchangeTest constructor(
+    val orderDao: OrderDao,
+    val orderQueryDao: OrderQueryDao,
+    val customerDao: CustomerDao,
+    val instrumentDao: InstrumentDao,
+    val orderFactory: OrderFactory
+) {
 
     val CLOCK = Clock.systemDefaultZone()
     val now = CLOCK.millis()
@@ -25,7 +27,7 @@ open class ExchangeTest constructor(val orderDao : OrderDao,
     val INSTRUMENT_SYMBOL_1 = "INS1";
     val INSTRUMENT_DESCRIPTION_1 = "INS1 Description";
     val CURRENCY_CODE_USD = "USD"
-    val INSTRUMENT_1  = Equity(
+    val INSTRUMENT_1 = Equity(
         INSTRUMENT_ID_1,
         status = InstrumentStatus.ACTIVE,
         symbol = INSTRUMENT_SYMBOL_1,
@@ -50,9 +52,37 @@ open class ExchangeTest constructor(val orderDao : OrderDao,
     val ORDER_CREATETIME_1 = 100101L
     val ORDER_CREATETIME_2 = 200202L
 
-    val ORDER_BUY_1 = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_1, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1)
-    val ORDER_BUY_2 = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_2, INSTRUMENT_1, BigDecimal.TWO, ORDER_QUANTITY_2)
+    val ORDER_BUY_1 = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_1,
+        CL_ORD_BUY_1,
+        INSTRUMENT_1,
+        BigDecimal.ONE,
+        ORDER_QUANTITY_1
+    )
+    val ORDER_BUY_2 = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_2,
+        CL_ORD_BUY_2,
+        INSTRUMENT_1,
+        BigDecimal.TWO,
+        ORDER_QUANTITY_2
+    )
 
-    val ORDER_SELL_1 = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_1, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1)
-    val ORDER_SELL_2 = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_2, INSTRUMENT_1, BigDecimal.TWO, -ORDER_QUANTITY_2)
+    val ORDER_SELL_1 = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_1,
+        CL_ORD_SELL_1,
+        INSTRUMENT_1,
+        BigDecimal.ONE,
+        -ORDER_QUANTITY_1
+    )
+    val ORDER_SELL_2 = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_2,
+        CL_ORD_SELL_2,
+        INSTRUMENT_1,
+        BigDecimal.TWO,
+        -ORDER_QUANTITY_2
+    )
 }

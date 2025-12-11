@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/orders")
-class OrdersApi(private val engines : Map<Instrument, Engine>, private val orderFactory: OrderFactory,
-                private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
+class OrdersApi(
+    private val engines: Map<Instrument, Engine>, private val orderFactory: OrderFactory,
+    private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao
+) : BaseApi() {
 
     @PostMapping
-    fun submitOrders(@RequestBody submitOrders: SubmitOrders) : ResponseEntity<OrderStates> {
+    fun submitOrders(@RequestBody submitOrders: SubmitOrders): ResponseEntity<OrderStates> {
         val customer = getCustomer()
 
         val orderStates = submitOrders.orders.map { submittedOrder ->
@@ -31,14 +33,17 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
                 val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
-                    OrderState(createdOrder, createdOrder.createTime, if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN)
+                    OrderState(
+                        createdOrder,
+                        createdOrder.createTime,
+                        if (engine == null) OrderStatus.REJECTED else OrderStatus.OPEN
+                    )
                 if (logger.isDebugEnabled) {
                     logger.debug("OrderState $orderState")
                 }
                 engine?.newOrder(orderState)
                 orderState.toDto()
-            }
-            catch (e : Exception) {
+            } catch (e: Exception) {
                 logger.warn("Unable to handle new order $submittedOrder", e)
                 OrderState(0, OrderStatus.REJECTED, 0, 0, submittedOrder)
             }
@@ -47,7 +52,7 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
     }
 
     @GetMapping
-    fun getOrders() : ResponseEntity<OrderStates> {
+    fun getOrders(): ResponseEntity<OrderStates> {
         val customer = getCustomer()
         if (logger.isDebugEnabled) {
             logger.debug("getOrders for customerId ${customer.customerId}")
@@ -57,17 +62,17 @@ class OrdersApi(private val engines : Map<Instrument, Engine>, private val order
     }
 
     @DeleteMapping
-    fun cancelOrders() : ResponseEntity<OrderStates> {
+    fun cancelOrders(): ResponseEntity<OrderStates> {
         val customer = getCustomer()
         if (logger.isDebugEnabled) {
             logger.debug("cancelOrders for customerId ${customer.customerId}")
         }
         val orderStatesToCancel = orderQueryDao.getOrders(customer)
-        val resultingOrderStates = orderStatesToCancel.map{ orderState ->
+        val resultingOrderStates = orderStatesToCancel.map { orderState ->
             try {
                 engines[orderState.order.instrument]?.cancelOrder(orderState)
             } catch (e: Exception) {
-                logger.warn("Unable to cancel order $orderState", e);
+                logger.warn("Unable to cancel order $orderState", e)
             }
             orderState.toDto()
         }.toTypedArray()

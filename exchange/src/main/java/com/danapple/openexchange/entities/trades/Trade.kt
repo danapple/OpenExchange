@@ -2,11 +2,12 @@ package com.danapple.openexchange.entities.trades
 
 import java.math.BigDecimal
 
-data class Trade (
+data class Trade(
     val tradeId: Long,
     val createTime: Long,
     val price: BigDecimal,
-    val tradeLegs: MutableSet<TradeLeg>) {
+    val tradeLegs: MutableSet<TradeLeg>
+) {
 
     fun addTradeLeg(tradeLeg: TradeLeg) {
         tradeLegs.add(tradeLeg)

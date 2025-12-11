@@ -9,7 +9,7 @@ import com.danapple.openexchange.entities.instruments.Option
 import org.springframework.jdbc.core.RowCallbackHandler
 import java.sql.ResultSet
 
-class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrument>) : RowCallbackHandler {
+class InstrumentRowCallbackHandler(private val instruments: MutableSet<Instrument>) : RowCallbackHandler {
     override fun processRow(rs: ResultSet) {
         val instrumentId = rs.getLong("instrumentId")
         val status = InstrumentStatus.valueOf(rs.getString("status"))
@@ -32,6 +32,7 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                     )
                 )
             }
+
             AssetClass.OPTION -> {
                 val optionType = OptionType.valueOf(rs.getString("optionType"))
                 val strike = rs.getFloat("strike")
@@ -51,7 +52,7 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                         expirationTime = expirationTime,
                         currencyCode = currencyCode,
                         underlyingInstrumentId = underlyingInstrumentId,
-                        valueFactor= valueFactor,
+                        valueFactor = valueFactor,
                         optionType = optionType,
                         strike = strike,
                         deliverables = emptySet(),
@@ -59,9 +60,11 @@ class InstrumentRowCallbackHandler(private val instruments : MutableSet<Instrume
                     )
                 )
             }
+
             AssetClass.COMMODITY -> {
                 TODO()
             }
+
             AssetClass.FUTURE -> {
                 TODO()
             }

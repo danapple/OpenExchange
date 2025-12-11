@@ -10,20 +10,22 @@ import org.springframework.stereotype.Service
 
 @Service
 class CustomerUpdateSender(private val simpMessagingTemplate: SimpMessagingTemplate) {
-    fun sendTrade(trade : Trade) {
+    fun sendTrade(trade: Trade) {
         trade.tradeLegs.forEach { tradeLeg ->
             simpMessagingTemplate.convertAndSendToUser(
                 tradeLeg.orderState.order.customer.customerId.toString(),
                 "/queue/executions",
-                ExecutionsTopicWrapper(tradeLeg.toExecution()))
+                ExecutionsTopicWrapper(tradeLeg.toExecution())
+            )
             sendOrderState(tradeLeg.orderState)
         }
     }
 
-    fun sendOrderState(orderState : OrderState) {
+    fun sendOrderState(orderState: OrderState) {
         simpMessagingTemplate.convertAndSendToUser(
             orderState.order.customer.customerId.toString(),
             "/queue/executions",
-            ExecutionsTopicWrapper(orderState.toDto()))
+            ExecutionsTopicWrapper(orderState.toDto())
+        )
     }
 }

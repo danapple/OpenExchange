@@ -9,7 +9,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder.getContext
 
 abstract class BaseApi {
-    internal fun createOrderStatesResponse(vararg orderStates: OrderState, httpStatus: HttpStatus): ResponseEntity<OrderStates> {
+    internal fun createOrderStatesResponse(
+        vararg orderStates: OrderState,
+        httpStatus: HttpStatus
+    ): ResponseEntity<OrderStates> {
         val returningOrderStates = orderStates.map { orderState: OrderState ->
             orderState.toDto()
         }.toList()
@@ -17,7 +20,7 @@ abstract class BaseApi {
         return ResponseEntity(OrderStates(returningOrderStates), httpStatus)
     }
 
-    internal fun getCustomer() : Customer {
+    internal fun getCustomer(): Customer {
         val customer = getContext().authentication.principal
         if (customer is Customer) {
             return customer
@@ -26,7 +29,10 @@ abstract class BaseApi {
         }
     }
 
-    internal fun createOrderStatesResponse(vararg orderStates: com.danapple.openexchange.dto.OrderState, httpStatus: HttpStatus): ResponseEntity<OrderStates> {
+    internal fun createOrderStatesResponse(
+        vararg orderStates: com.danapple.openexchange.dto.OrderState,
+        httpStatus: HttpStatus
+    ): ResponseEntity<OrderStates> {
         return ResponseEntity(OrderStates(orderStates.toList()), httpStatus)
     }
 }

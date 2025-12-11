@@ -6,7 +6,7 @@ enum class Authorities : GrantedAuthority {
     CUSTOMER,
     ADMIN;
 
-    override fun getAuthority() : String {
+    override fun getAuthority(): String {
         return name
     }
 }

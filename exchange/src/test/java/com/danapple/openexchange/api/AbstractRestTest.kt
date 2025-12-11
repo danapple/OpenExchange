@@ -16,13 +16,14 @@ import org.springframework.http.client.ClientHttpRequestInterceptor
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class AbstractRestTest(orderDao : OrderDao,
-                                orderQueryDao: OrderQueryDao,
-                                customerDao: CustomerDao,
-                                instrumentDao: InstrumentDao,
-                                orderFactory: OrderFactory) :
-    ExchangeTest(orderDao, orderQueryDao, customerDao, instrumentDao, orderFactory)
-{
+abstract class AbstractRestTest(
+    orderDao: OrderDao,
+    orderQueryDao: OrderQueryDao,
+    customerDao: CustomerDao,
+    instrumentDao: InstrumentDao,
+    orderFactory: OrderFactory
+) :
+    ExchangeTest(orderDao, orderQueryDao, customerDao, instrumentDao, orderFactory) {
     protected var customerKey = "noKey"
 
     @Autowired

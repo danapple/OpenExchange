@@ -12,11 +12,13 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository("orderQueryDao")
 @Transactional
-open class OrderQueryDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
-                                 private val customerDao : CustomerDao,
-                                 private val instrumentDao : InstrumentDao,
-                                 private val orderCache : OrderCache,
-                                 @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration) : OrderQueryDao, ShardedDaoJdbcImpl(
+open class OrderQueryDaoJdbcImpl(
+    @Qualifier("orderJdbcClients") jdbcClients: List<JdbcClient>,
+    private val customerDao: CustomerDao,
+    private val instrumentDao: InstrumentDao,
+    private val orderCache: OrderCache,
+    @Qualifier("orderDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+) : OrderQueryDao, ShardedDaoJdbcImpl(
     jdbcClients,
     databaseConfiguration.shardCount
 ) {

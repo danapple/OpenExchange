@@ -23,30 +23,30 @@ open class UnitTest :
 //        private val jdbcClient = mockk<JdbcClient>()
 //        private val orderCache = OrderCache()
 
-        fun getOrderDao() : OrderDao {
+        fun getOrderDao(): OrderDao {
             val orderDao = mockk<OrderDao>()
-            every { orderDao.saveOrder(any())} just runs
-            every { orderDao.updateOrder(any())} just runs
+            every { orderDao.saveOrder(any()) } just runs
+            every { orderDao.updateOrder(any()) } just runs
             return orderDao
 //            return OrderDaoJdbcImpl(listOf(jdbcClient), orderCache)
         }
 
-        fun getOrderQueryDao() : OrderQueryDao {
+        fun getOrderQueryDao(): OrderQueryDao {
             return mockk<OrderQueryDao>()
-          //  return OrderQueryDaoJdbcImpl(listOf(jdbcClient), getCustomerDao(), getInstrumentDao(),  orderCache)
+            //  return OrderQueryDaoJdbcImpl(listOf(jdbcClient), getCustomerDao(), getInstrumentDao(),  orderCache)
         }
 
-        fun getCustomerDao() : CustomerDao {
+        fun getCustomerDao(): CustomerDao {
             return mockk<CustomerDao>()
-         //   return CustomerDaoJdbcImpl(jdbcClient)
+            //   return CustomerDaoJdbcImpl(jdbcClient)
         }
 
-        fun getInstrumentDao() : InstrumentDao {
+        fun getInstrumentDao(): InstrumentDao {
             return mockk<InstrumentDao>()
-          //  return InstrumentDaoJdbcImpl(jdbcClient);
+            //  return InstrumentDaoJdbcImpl(jdbcClient);
         }
 
-        fun getOrderFactory() : OrderFactory {
+        fun getOrderFactory(): OrderFactory {
             return OrderFactory(Clock.systemDefaultZone(), MemoryIdGenerator(), getInstrumentDao())
         }
 

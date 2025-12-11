@@ -11,20 +11,23 @@ import org.springframework.stereotype.Repository
 import java.util.concurrent.ConcurrentHashMap
 
 @Repository
-open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val jdbcClient : JdbcClient) : InstrumentDao {
+open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val jdbcClient: JdbcClient) :
+    InstrumentDao {
     private val instrumentCache = ConcurrentHashMap<Long, Instrument>()
-    @Volatile private var loaded = false
+
+    @Volatile
+    private var loaded = false
     override fun getInstrument(instrumentId: Long): Instrument? {
         if (!loaded) {
             logger.info("Need to getAllInstruments for instrumentId {}", instrumentId)
-            getAllInstruments();
+            getAllInstruments()
         }
-        return instrumentCache[instrumentId];
+        return instrumentCache[instrumentId]
     }
 
     override fun getActiveInstruments(): Collection<Instrument> {
-        val instruments = getAllInstruments();
-        return instruments.stream().filter( { instrument -> instrument.status == InstrumentStatus.ACTIVE } ).toList();
+        val instruments = getAllInstruments()
+        return instruments.stream().filter({ instrument -> instrument.status == InstrumentStatus.ACTIVE }).toList()
     }
 
     @Synchronized
@@ -35,7 +38,7 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
         val instruments = HashSet<Instrument>()
         val instrumentRowCallbackHandler = InstrumentRowCallbackHandler(instruments)
 
-        val statement = jdbcClient.sql(INSTRUMENT_QUERY);
+        val statement = jdbcClient.sql(INSTRUMENT_QUERY)
         statement.query(instrumentRowCallbackHandler)
         instruments.forEach { instrument -> instrumentCache[instrument.instrumentId] = instrument }
         loaded = true
@@ -46,7 +49,6 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
         val logger: Logger = LoggerFactory.getLogger(InstrumentDaoJdbcImpl::class.java)
     }
 }
-
 
 
 const val INSTRUMENT_QUERY = """

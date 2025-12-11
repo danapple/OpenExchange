@@ -16,15 +16,16 @@ import java.util.concurrent.atomic.AtomicLong
 @Service("marketDataPublisherMulticast")
 class MarketDataPublisherMulticast(
     private val objectMapper: ObjectMapper,
-    @Value("\${openexchange.marketDataPublisher.interfaceAddress}") private val interfaceAddress : String,
-    @Value("\${openexchange.marketDataPublisher.multicastGroup}") private val multicastGroup : String,
-    @Value("\${openexchange.marketDataPublisher.depthPort}") private val depthPort : Int,
-    @Value("\${openexchange.marketDataPublisher.tradePort}") private val tradePort : Int,
-    @Value("\${openexchange.marketDataPublisher.numberOfLevelsToPublish}") private val numberOfLevelsToPublish : Int
+    @Value("\${openexchange.marketDataPublisher.interfaceAddress}") private val interfaceAddress: String,
+    @Value("\${openexchange.marketDataPublisher.multicastGroup}") private val multicastGroup: String,
+    @Value("\${openexchange.marketDataPublisher.depthPort}") private val depthPort: Int,
+    @Value("\${openexchange.marketDataPublisher.tradePort}") private val tradePort: Int,
+    @Value("\${openexchange.marketDataPublisher.numberOfLevelsToPublish}") private val numberOfLevelsToPublish: Int
 ) : MarketDataPublisher {
-    private val depthSocket : MulticastSocket
-    private val tradeSocket : MulticastSocket
-    private val multicastGroupAddress : InetAddress
+    private val depthSocket: MulticastSocket
+    private val tradeSocket: MulticastSocket
+    private val multicastGroupAddress: InetAddress
+
     init {
         multicastGroupAddress = InetAddress.getByName(multicastGroup)
         val netInterface = NetworkInterface.getByName(interfaceAddress)
@@ -32,13 +33,14 @@ class MarketDataPublisherMulticast(
         val depthGroup = InetSocketAddress(multicastGroupAddress, depthPort)
         depthSocket = MulticastSocket()
         depthSocket.reuseAddress = true
-        depthSocket.joinGroup(depthGroup, netInterface);
+        depthSocket.joinGroup(depthGroup, netInterface)
 
         val tradeGroup = InetSocketAddress(multicastGroupAddress, tradePort)
         tradeSocket = MulticastSocket()
         tradeSocket.reuseAddress = true
         tradeSocket.joinGroup(tradeGroup, netInterface)
     }
+
     private val senderId = UUID.randomUUID().toString()
     private val sequenceNumber = AtomicLong()
 
@@ -57,7 +59,7 @@ class MarketDataPublisherMulticast(
         if (logger.isDebugEnabled) {
             logger.debug(marketDepth.toString())
         }
-        val packet = DatagramPacket(bytes, bytes.size, multicastGroupAddress, depthPort);
+        val packet = DatagramPacket(bytes, bytes.size, multicastGroupAddress, depthPort)
         depthSocket.send(packet)
     }
 
@@ -68,13 +70,13 @@ class MarketDataPublisherMulticast(
             trade.tradeLegs.first().orderState.order.instrument.instrumentId,
             timestamp,
             trade.price,
-            trade.tradeLegs.filter { tradeLeg -> tradeLeg.quantity > 0  }.sumOf { tradeLeg -> tradeLeg.quantity })
+            trade.tradeLegs.filter { tradeLeg -> tradeLeg.quantity > 0 }.sumOf { tradeLeg -> tradeLeg.quantity })
 
         val bytes = objectMapper.writeValueAsBytes(lastTrade)
         if (logger.isDebugEnabled) {
             logger.debug(lastTrade.toString())
         }
-        val packet = DatagramPacket(bytes, bytes.size, multicastGroupAddress, tradePort);
+        val packet = DatagramPacket(bytes, bytes.size, multicastGroupAddress, tradePort)
         tradeSocket.send(packet)
     }
 

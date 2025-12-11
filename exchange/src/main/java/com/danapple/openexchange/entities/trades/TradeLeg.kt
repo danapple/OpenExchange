@@ -2,11 +2,12 @@ package com.danapple.openexchange.entities.trades
 
 import com.danapple.openexchange.orders.OrderState
 
-data class TradeLeg (
+data class TradeLeg(
     val tradeLegId: Long,
     val trade: Trade,
     val orderState: OrderState,
-    val quantity: Int) {
+    val quantity: Int
+) {
 
     override fun toString(): String {
         return "TradeLeg(tradeLegId=$tradeLegId, trade=${trade.tradeId}, orderState=${orderState.order.orderId}, quantity=$quantity)"

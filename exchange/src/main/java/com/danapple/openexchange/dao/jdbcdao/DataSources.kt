@@ -22,17 +22,19 @@ open class DataSources {
 
     @Bean("orderDatabaseConfiguration")
     @ConfigurationProperties("openexchange.database.order")
-    open fun getOrderDatabaseConfiguration() : DatabaseConfiguration {
+    open fun getOrderDatabaseConfiguration(): DatabaseConfiguration {
         return DatabaseConfiguration()
     }
 
     @Bean("orderJdbcClients")
-    @kotlin.ExperimentalStdlibApi
-    open fun getOrderJdbcClients(@Qualifier("orderDataSource") dataSource : DataSource,
-                                 @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration,
-                                 @Value("\${openexchange.database.order.jdbcUrlTemplate}") jdbcUrlTemplate: String) : List<JdbcClient> {
+    @ExperimentalStdlibApi
+    open fun getOrderJdbcClients(
+        @Qualifier("orderDataSource") dataSource: DataSource,
+        @Qualifier("orderDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration,
+        @Value("\${openexchange.database.order.jdbcUrlTemplate}") jdbcUrlTemplate: String
+    ): List<JdbcClient> {
         val dataSources = ArrayList<DataSource>()
-        for (i in 0..<databaseConfiguration.shardCount!!) {
+        for (i in 0..<databaseConfiguration.shardCount) {
             val dataSourceBuilder = DataSourceBuilder.derivedFrom(dataSource)
             dataSourceBuilder.url("${databaseConfiguration.jdbcUrlTemplate}$i")
             val shardDataSource = dataSourceBuilder.build()
@@ -50,14 +52,16 @@ open class DataSources {
 
     @Bean("idDatabaseConfiguration")
     @ConfigurationProperties("openexchange.database.id")
-    open fun getIdDatabaseConfiguration() : DatabaseConfiguration {
+    open fun getIdDatabaseConfiguration(): DatabaseConfiguration {
         return DatabaseConfiguration()
     }
 
     @Bean("idJdbcClient")
     @Primary
-    open fun getIdJdbcClient(@Qualifier("idDataSource") dataSource : DataSource,
-                             @Qualifier("idDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
+    open fun getIdJdbcClient(
+        @Qualifier("idDataSource") dataSource: DataSource,
+        @Qualifier("idDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+    ): JdbcClient {
         return JdbcClient.create(dataSource)
     }
 
@@ -69,14 +73,16 @@ open class DataSources {
 
     @Bean("instrumentDatabaseConfiguration")
     @ConfigurationProperties("openexchange.database.instrument")
-    open fun getInstrumentDatabaseConfiguration() : DatabaseConfiguration {
+    open fun getInstrumentDatabaseConfiguration(): DatabaseConfiguration {
         return DatabaseConfiguration()
     }
 
     @Bean("instrumentJdbcClient")
     @Primary
-    open fun getInstrumentJdbcClient(@Qualifier("instrumentDataSource") dataSource : DataSource,
-                                     @Qualifier("instrumentDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
+    open fun getInstrumentJdbcClient(
+        @Qualifier("instrumentDataSource") dataSource: DataSource,
+        @Qualifier("instrumentDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+    ): JdbcClient {
         return JdbcClient.create(dataSource)
     }
 
@@ -89,13 +95,15 @@ open class DataSources {
 
     @Bean("customerDatabaseConfiguration")
     @ConfigurationProperties("openexchange.database.customer")
-    open fun getCustomerDatabaseConfiguration() : DatabaseConfiguration {
+    open fun getCustomerDatabaseConfiguration(): DatabaseConfiguration {
         return DatabaseConfiguration()
     }
 
     @Bean("customerJdbcClient")
-    open fun getCustomerJdbcClient(@Qualifier("customerDataSource") dataSource : DataSource,
-                                   @Qualifier("customerDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration): JdbcClient {
+    open fun getCustomerJdbcClient(
+        @Qualifier("customerDataSource") dataSource: DataSource,
+        @Qualifier("customerDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+    ): JdbcClient {
         return JdbcClient.create(dataSource)
     }
 }

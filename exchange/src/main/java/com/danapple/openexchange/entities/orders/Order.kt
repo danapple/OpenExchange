@@ -11,7 +11,8 @@ data class Order internal constructor(
     val clientOrderId: String,
     val instrument: Instrument,
     val price: BigDecimal,
-    val quantity: Int) {
+    val quantity: Int
+) {
 
     fun isBuyOrder(): Boolean {
         return quantity > 0

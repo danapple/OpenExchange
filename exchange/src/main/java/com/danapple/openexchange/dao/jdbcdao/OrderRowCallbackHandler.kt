@@ -8,19 +8,27 @@ import com.danapple.openexchange.orders.OrderState
 import org.springframework.jdbc.core.RowCallbackHandler
 import java.sql.ResultSet
 
-class OrderRowCallbackHandler(private val orderStates : MutableList<OrderState>, private val customerDao : CustomerDao,
-                              private val instrumentDao : InstrumentDao) : RowCallbackHandler {
-    var count : Int = 0
+class OrderRowCallbackHandler(
+    private val orderStates: MutableList<OrderState>, private val customerDao: CustomerDao,
+    private val instrumentDao: InstrumentDao
+) : RowCallbackHandler {
+    var count: Int = 0
     override fun processRow(rs: ResultSet) {
-        val order = Order(rs.getLong("orderId"),
+        val order = Order(
+            rs.getLong("orderId"),
             customerDao.getCustomer(rs.getLong("customerId")) ?: throw RuntimeException("No customer"),
             rs.getLong("createtime"),
             rs.getString("clientOrderId"),
             instrumentDao.getInstrument(rs.getLong("instrumentId")) ?: throw RuntimeException("No instrument"),
             rs.getBigDecimal("price"),
-            rs.getInt("quantity"))
+            rs.getInt("quantity")
+        )
         count++
-        orderStates.add(OrderState(order, rs.getLong("updateTime"), OrderStatus.valueOf(rs.getString("orderStatus")),
-            filledQty = rs.getInt("filledQuantity"), versionNumber = rs.getInt("versionNumber")))
+        orderStates.add(
+            OrderState(
+                order, rs.getLong("updateTime"), OrderStatus.valueOf(rs.getString("orderStatus")),
+                filledQty = rs.getInt("filledQuantity"), versionNumber = rs.getInt("versionNumber")
+            )
+        )
     }
 }

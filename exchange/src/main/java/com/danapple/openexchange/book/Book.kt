@@ -8,7 +8,7 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.math.absoluteValue
 
-class Book(val instrument : Instrument) {
+class Book(val instrument: Instrument) {
     private val buySide = TreeMap<BigDecimal, Level>()
     private val sellSide = TreeMap<BigDecimal, Level>()
 
@@ -45,15 +45,17 @@ class Book(val instrument : Instrument) {
         }
     }
 
-    fun getBestBuyPriceLevels(numberOfLevels : Int): List<PriceLevel> {
-        return buySide.descendingMap().entries.take(numberOfLevels).map{ level ->
+    fun getBestBuyPriceLevels(numberOfLevels: Int): List<PriceLevel> {
+        return buySide.descendingMap().entries.take(numberOfLevels).map { level ->
             PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity })
         }.toList()
     }
 
-    fun getBestSellPriceLevels(numberOfLevels : Int): List<PriceLevel> {
-        return sellSide.entries.take(numberOfLevels).map{ level ->
-            PriceLevel(level.key, level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity.absoluteValue })
+    fun getBestSellPriceLevels(numberOfLevels: Int): List<PriceLevel> {
+        return sellSide.entries.take(numberOfLevels).map { level ->
+            PriceLevel(
+                level.key,
+                level.value.getOrderStates().sumOf { orderState -> orderState.remainingQuantity.absoluteValue })
         }.toList()
     }
 }

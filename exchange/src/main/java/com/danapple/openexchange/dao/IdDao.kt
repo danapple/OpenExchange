@@ -1,7 +1,7 @@
 package com.danapple.openexchange.dao
 
 interface IdDao {
-    fun reserveIdBlock(idType: IdType, blockSize: Int) : ReservedBlock
+    fun reserveIdBlock(idType: IdType, blockSize: Int): ReservedBlock
 
     enum class IdType {
         ORDER,
@@ -12,5 +12,5 @@ interface IdDao {
         ORDER_STATE_HISTORY,
     }
 
-    data class ReservedBlock(val firstId : Long, val lastId : Long)
+    data class ReservedBlock(val firstId: Long, val lastId: Long)
 }

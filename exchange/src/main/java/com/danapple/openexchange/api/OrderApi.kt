@@ -18,8 +18,10 @@ import kotlin.math.min
 
 @RestController
 @RequestMapping("/orders")
-class OrderApi(private val engines : Map<Instrument, Engine>, private val orderFactory: OrderFactory,
-               private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao) : BaseApi() {
+class OrderApi(
+    private val engines: Map<Instrument, Engine>, private val orderFactory: OrderFactory,
+    private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao
+) : BaseApi() {
 
     @PutMapping("/{clientOrderId}")
     fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace):
@@ -36,12 +38,12 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
         val remainingQuantity = originalOrderState.remainingQuantity
         val originalOrderStatus = originalOrderState.orderStatus
 
-        var newQuantity = when(cancelReplace.capping) {
+        var newQuantity = when (cancelReplace.capping) {
             CancelReplace.CAPPING.CAP_AT_REMAINING_QUANTITY -> min(remainingQuantity, cancelReplace.order.quantity)
             CancelReplace.CAPPING.UNCAPPED -> cancelReplace.order.quantity
         }
 
-        newQuantity = when(cancelReplace.behavior) {
+        newQuantity = when (cancelReplace.behavior) {
             CancelReplace.BEHAVIOR.ONLY_IF_OPEN -> if (originalOrderStatus == OrderStatus.OPEN) newQuantity else 0
             CancelReplace.BEHAVIOR.EVEN_IF_FILLED -> if (originalOrderStatus == OrderStatus.OPEN || originalOrderStatus == OrderStatus.FILLED) newQuantity else 0
         }
@@ -63,7 +65,7 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     }
 
     @GetMapping("/{clientOrderId}")
-    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String) : ResponseEntity<OrderStates> {
+    fun getOrder(@PathVariable("clientOrderId") clientOrderId: String): ResponseEntity<OrderStates> {
         val customer = getCustomer()
         logger.debug("getOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
 
@@ -74,13 +76,13 @@ class OrderApi(private val engines : Map<Instrument, Engine>, private val orderF
     }
 
     @DeleteMapping("/{clientOrderId}")
-    fun cancelOrder(@PathVariable("clientOrderId") clientOrderId: String) : ResponseEntity<OrderStates> {
+    fun cancelOrder(@PathVariable("clientOrderId") clientOrderId: String): ResponseEntity<OrderStates> {
         val customer = getCustomer()
         logger.debug("cancelOrder for customerId ${customer.customerId}, clientOrderId $clientOrderId")
         val orderState = orderQueryDao.getOrder(customer, clientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
         logger.trace("Got orderState with instrument {}", orderState.order.instrument.instrumentId)
-        val engine = engines[orderState.order.instrument]?: return ResponseEntity(HttpStatus.FAILED_DEPENDENCY)
+        val engine = engines[orderState.order.instrument] ?: return ResponseEntity(HttpStatus.FAILED_DEPENDENCY)
         logger.trace("Got engine")
 
         engine.cancelOrder(orderState)

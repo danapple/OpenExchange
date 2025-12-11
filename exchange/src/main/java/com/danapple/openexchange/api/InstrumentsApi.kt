@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/instruments")
 class InstrumentsApi(private val instrumentDao: InstrumentDao) : BaseApi() {
     @GetMapping
-    fun getInstruments() : ResponseEntity<Instruments> {
+    fun getInstruments(): ResponseEntity<Instruments> {
         val customer = getCustomer()
         if (logger.isDebugEnabled) {
             logger.debug("getInstruments for customerId ${customer.customerId}")

@@ -2,8 +2,7 @@ package com.danapple.openexchange.book
 
 import com.danapple.openexchange.orders.OrderState
 
-internal class Level
-{
+internal class Level {
     private val orders = LinkedHashSet<OrderState>()
 
     internal fun addOrder(orderState: OrderState) {

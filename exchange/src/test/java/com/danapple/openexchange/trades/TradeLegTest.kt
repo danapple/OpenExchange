@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 
-class TradeLegTest  : UnitTest() {
+class TradeLegTest : UnitTest() {
     private val orderState1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
     private val trade1 = tradeFactory.createTrade(CLOCK.millis(), BigDecimal.ONE)
 
@@ -31,7 +31,8 @@ class TradeLegTest  : UnitTest() {
 
     @Test
     fun refusesToGenerateTradeLegWithZeroQuantity() {
-        assertThatThrownBy {  tradeLegFactory.createTradeLeg(orderState1, trade1, 0) }.isInstanceOf(
-            IllegalArgumentException::class.java).hasMessageContaining("must be non-zero")
+        assertThatThrownBy { tradeLegFactory.createTradeLeg(orderState1, trade1, 0) }.isInstanceOf(
+            IllegalArgumentException::class.java
+        ).hasMessageContaining("must be non-zero")
     }
 }

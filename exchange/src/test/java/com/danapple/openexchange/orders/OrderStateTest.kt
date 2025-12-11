@@ -30,12 +30,14 @@ class OrderStateTest : UnitTest() {
 
     @Test
     fun rejectsTradeLegWithExcessiveQuantity() {
-        assertThatThrownBy {tradeLegFactory.createTradeLeg(orderState1, trade1, ORDER_QUANTITY_1 + 2) }.isInstanceOf(IllegalArgumentException::class.java)
+        assertThatThrownBy { tradeLegFactory.createTradeLeg(orderState1, trade1, ORDER_QUANTITY_1 + 2) }.isInstanceOf(
+            IllegalArgumentException::class.java
+        )
     }
 
     @Test
     fun partialFillDoesNotChangeOrderStatus() {
-        tradeLegFactory.createTradeLeg(orderState1, trade1,1)
+        tradeLegFactory.createTradeLeg(orderState1, trade1, 1)
         assertThat(orderState1.orderStatus).isEqualTo(OrderStatus.OPEN)
         assertThat(orderState1.orderStatus.viability).isEqualTo(OrderStatus.Viability.ALIVE)
     }

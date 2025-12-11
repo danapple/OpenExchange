@@ -15,17 +15,31 @@ import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.Clock
 
-class EngineTest  : UnitTest() {
+class EngineTest : UnitTest() {
     private val orderStateBuy1 = OrderState(ORDER_BUY_1, ORDER_CREATETIME_1)
     private val orderStateBuy2 = OrderState(ORDER_BUY_2, ORDER_CREATETIME_2)
 
     private val orderStateSell1 = OrderState(ORDER_SELL_1, ORDER_CREATETIME_1)
     private val orderStateSell2 = OrderState(ORDER_SELL_2, ORDER_CREATETIME_2)
 
-    private val orderBuy1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_BUY_1, INSTRUMENT_1, BigDecimal.ONE, ORDER_QUANTITY_1 + 3)
+    private val orderBuy1Big = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_2,
+        CL_ORD_BUY_1,
+        INSTRUMENT_1,
+        BigDecimal.ONE,
+        ORDER_QUANTITY_1 + 3
+    )
     private val orderStateBuy1Big = OrderState(orderBuy1Big, ORDER_CREATETIME_1)
 
-    private val orderSell1Big = orderFactory.createOrder(CUSTOMER, ORDER_CREATETIME_2, CL_ORD_SELL_1, INSTRUMENT_1, BigDecimal.ONE, -ORDER_QUANTITY_1 - 7)
+    private val orderSell1Big = orderFactory.createOrder(
+        CUSTOMER,
+        ORDER_CREATETIME_2,
+        CL_ORD_SELL_1,
+        INSTRUMENT_1,
+        BigDecimal.ONE,
+        -ORDER_QUANTITY_1 - 7
+    )
     private val orderStateSell1Big = OrderState(orderSell1Big, ORDER_CREATETIME_1)
 
     private var tradeDao = mockk<TradeDao>()
@@ -50,11 +64,11 @@ class EngineTest  : UnitTest() {
 
     @BeforeEach
     fun beforeEach() {
-        every { tradeDao.saveTrade(capture(tradeSlot))} just runs
+        every { tradeDao.saveTrade(capture(tradeSlot)) } just runs
         every { marketDataPublisher.publishTopOfBook(any(), any()) } just runs
         every { marketDataPublisher.publishTrades(any(), any()) } just runs
-        every { customerUpdateSender.sendOrderState(any()) }  just runs
-        every { customerUpdateSender.sendTrade(any()) }  just runs
+        every { customerUpdateSender.sendOrderState(any()) } just runs
+        every { customerUpdateSender.sendTrade(any()) } just runs
     }
 
     @Test
@@ -235,7 +249,8 @@ class EngineTest  : UnitTest() {
         assertThat(orderStateSell1Big.remainingQuantity).isEqualTo(0)
         assertThat(orderStateBuy1.remainingQuantity).isEqualTo(0)
 
-        val order1BigRemainingQuantity = orderBuy1Big.quantity + (orderSell1Big.quantity + orderStateBuy1.order.quantity)
+        val order1BigRemainingQuantity =
+            orderBuy1Big.quantity + (orderSell1Big.quantity + orderStateBuy1.order.quantity)
         assertThat(orderStateBuy1Big.remainingQuantity).isEqualTo(order1BigRemainingQuantity)
 
         assertThat(orderStateSell1Big.tradeLegs).hasSize(2)

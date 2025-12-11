@@ -12,17 +12,19 @@ import java.time.Clock
 
 @Repository("orderDao")
 @Transactional
-open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<JdbcClient>,
-                            private val orderCache : OrderCache, private val clock: Clock,
-                            @Qualifier("orderStateHistoryIdGenerator") private val orderStateHistoryIdGenerator: IdGenerator,
-                            @Qualifier("orderDatabaseConfiguration") databaseConfiguration : DatabaseConfiguration
+open class OrderDaoJdbcImpl(
+    @Qualifier("orderJdbcClients") jdbcClients: List<JdbcClient>,
+    private val orderCache: OrderCache, private val clock: Clock,
+    @Qualifier("orderStateHistoryIdGenerator") private val orderStateHistoryIdGenerator: IdGenerator,
+    @Qualifier("orderDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
 ) : OrderDao, ShardedDaoJdbcImpl(jdbcClients, databaseConfiguration.shardCount) {
 
     override fun saveOrder(orderState: OrderState) {
         val jdbcClient = getJdbcClient(orderState.order.instrument.instrumentId)
         val orderStatement = jdbcClient.sql(
             """INSERT INTO order_base (orderId, customerId, createTime, clientOrderId, instrumentId, price, quantity) 
-                VALUES (:orderId, :customerId, :createTime, :clientOrderId, :instrumentId, :price, :quantity)""")
+                VALUES (:orderId, :customerId, :createTime, :clientOrderId, :instrumentId, :price, :quantity)"""
+        )
             .param("orderId", orderState.order.orderId)
             .param("customerId", orderState.order.customer.customerId)
             .param("createTime", orderState.order.createTime)
@@ -35,7 +37,8 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
         if (update == 1) {
             val orderStateStatement = jdbcClient.sql(
                 """INSERT INTO order_state (orderId, orderStatus, updateTime, versionNumber) 
-                    VALUES (:orderId, :orderStatus, :updateTime, :versionNumber)""")
+                    VALUES (:orderId, :orderStatus, :updateTime, :versionNumber)"""
+            )
                 .param("orderId", orderState.order.orderId)
                 .param("orderStatus", orderState.orderStatus.toString())
                 .param("versionNumber", orderState.versionNumber)
@@ -50,16 +53,17 @@ open class OrderDaoJdbcImpl(@Qualifier("orderJdbcClients") jdbcClients : List<Jd
         val jdbcClient = getJdbcClient(orderState.order.instrument.instrumentId)
         val now = clock.millis()
         val orderStateStatement = jdbcClient.sql(
-                """UPDATE order_state
+            """UPDATE order_state
                     set orderStatus = :orderStatus,
                         updateTime = :updateTime,
                         versionNumber = :versionNumber + 1
                     where orderId = :orderId
-                        and versionNumber = :versionNumber""")
-                .param("orderId", orderState.order.orderId)
-                .param("orderStatus", orderState.orderStatus.toString())
-                .param("versionNumber", orderState.versionNumber)
-                .param("updateTime", now)
+                        and versionNumber = :versionNumber"""
+        )
+            .param("orderId", orderState.order.orderId)
+            .param("orderStatus", orderState.orderStatus.toString())
+            .param("versionNumber", orderState.versionNumber)
+            .param("updateTime", now)
 
         val rowUpdateCount = orderStateStatement.update()
         if (rowUpdateCount != 1) {

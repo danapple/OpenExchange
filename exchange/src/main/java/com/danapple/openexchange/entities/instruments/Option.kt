@@ -18,7 +18,8 @@ class Option(
     cashDeliverables: Set<CashDeliverable>,
     val optionType: OptionType,
     val strike: Float,
-) : Derivative(instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode,
+) : Derivative(
+    instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode,
     underlyingInstrumentId, valueFactor,
     deliverables, cashDeliverables
 )

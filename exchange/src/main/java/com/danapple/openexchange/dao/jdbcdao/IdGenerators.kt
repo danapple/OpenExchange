@@ -9,22 +9,22 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 open class IdGenerators(private val idDao: IdDao) {
     @Bean("orderIdGenerator")
-    open fun orderIdGenerator() : IdGenerator{
+    open fun orderIdGenerator(): IdGenerator {
         return DaoIdGenerator(IdDao.IdType.ORDER, idDao, 1000)
     }
 
     @Bean("tradeIdGenerator")
-    open fun tradeIdGenerator() : IdGenerator{
+    open fun tradeIdGenerator(): IdGenerator {
         return DaoIdGenerator(IdDao.IdType.TRADE, idDao, 1000)
     }
 
     @Bean("tradeLegIdGenerator")
-    open fun tradeLegIdGenerator() : IdGenerator{
+    open fun tradeLegIdGenerator(): IdGenerator {
         return DaoIdGenerator(IdDao.IdType.TRADE_LEG, idDao, 1000)
     }
 
     @Bean("orderStateHistoryIdGenerator")
-    open fun orderStateHistoryIdGenerator() : IdGenerator{
+    open fun orderStateHistoryIdGenerator(): IdGenerator {
         return DaoIdGenerator(IdDao.IdType.ORDER_STATE_HISTORY, idDao, 1000)
     }
 }

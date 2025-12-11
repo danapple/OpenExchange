@@ -5,7 +5,13 @@ import com.danapple.openexchange.entities.trades.TradeLeg
 import java.util.*
 import kotlin.math.absoluteValue
 
-class OrderState(val order: Order, var updateTime : Long, var orderStatus : OrderStatus = OrderStatus.OPEN, filledQty : Int = 0, var versionNumber : Int = 0) {
+class OrderState(
+    val order: Order,
+    var updateTime: Long,
+    var orderStatus: OrderStatus = OrderStatus.OPEN,
+    filledQty: Int = 0,
+    var versionNumber: Int = 0
+) {
     private var _remainingQuantity = order.quantity - filledQty
     val tradeLegs = LinkedList<TradeLeg>()
     internal val remainingQuantity
@@ -23,7 +29,7 @@ class OrderState(val order: Order, var updateTime : Long, var orderStatus : Orde
         }
     }
 
-    fun filledQuantity() : Int {
+    fun filledQuantity(): Int {
         return order.quantity - _remainingQuantity
     }
 

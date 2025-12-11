@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 
 class CustomerKeyCookieAuthenticator(private val customerDao: CustomerDao) {
-    val customerAuthorityList : List<GrantedAuthority> = listOf(Authorities.CUSTOMER)
-    val adminAuthorityList : List<GrantedAuthority> = listOf(Authorities.ADMIN)
+    val customerAuthorityList: List<GrantedAuthority> = listOf(Authorities.CUSTOMER)
+    val adminAuthorityList: List<GrantedAuthority> = listOf(Authorities.ADMIN)
 
     fun getAuthentication(request: HttpServletRequest): Authentication {
         for (cookie in request.cookies) {

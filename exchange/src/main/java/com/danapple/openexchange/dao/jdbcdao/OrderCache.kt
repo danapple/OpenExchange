@@ -9,17 +9,18 @@ import java.util.concurrent.ConcurrentHashMap
 class OrderCache {
     private val ordersByCustomer = ConcurrentHashMap<Customer, MutableMap<String, OrderState>>()
 
-    fun addOrder(orderState : OrderState) {
+    fun addOrder(orderState: OrderState) {
         ordersByCustomer
-            .computeIfAbsent(orderState.order.customer
+            .computeIfAbsent(
+                orderState.order.customer
             ) { ConcurrentHashMap<String, OrderState>() }[orderState.order.clientOrderId] = orderState
     }
 
-    fun getOrder(customer : Customer, clientOrderId : String) : OrderState? {
+    fun getOrder(customer: Customer, clientOrderId: String): OrderState? {
         return ordersByCustomer[customer]?.get(clientOrderId)
     }
 
-    fun getOrders(customer : Customer): Collection<OrderState> {
+    fun getOrders(customer: Customer): Collection<OrderState> {
         return ordersByCustomer.getOrDefault(customer, emptyMap()).values
     }
 }

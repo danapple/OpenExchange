@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.simple.JdbcClient
 import org.springframework.stereotype.Repository
 
 @Repository
-open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : JdbcClient) : IdDao {
-    override fun reserveIdBlock(idType: IdDao.IdType, blockSize: Int) : IdDao.ReservedBlock {
+open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient: JdbcClient) : IdDao {
+    override fun reserveIdBlock(idType: IdDao.IdType, blockSize: Int): IdDao.ReservedBlock {
         var lastReservedId = getLastReservedId(idType)
         if (logger.isTraceEnabled) {
             logger.trace("First attempt ID get for $idType retrieved $lastReservedId")
@@ -24,13 +24,15 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
             if (insertedRowCount == 0) {
                 throw RuntimeException("No rows inserted for $idType")
             }
-            lastReservedId = getLastReservedId(idType) ?: throw RuntimeException("Could not set up ID range for $idType")
+            lastReservedId =
+                getLastReservedId(idType) ?: throw RuntimeException("Could not set up ID range for $idType")
             if (logger.isTraceEnabled) {
                 logger.trace("Second attempt ID get for $idType retrieved $lastReservedId")
             }
         }
         advanceReservedId(idType, blockSize)
-        val nextReservedId = getLastReservedId(idType) ?: throw RuntimeException("Could not get new ID range for $idType")
+        val nextReservedId =
+            getLastReservedId(idType) ?: throw RuntimeException("Could not get new ID range for $idType")
         if (logger.isTraceEnabled) {
             logger.trace("Issuing id $lastReservedId + 1 for  $idType")
         }
@@ -51,9 +53,10 @@ open class IdDaoJdbcImpl(@Qualifier("idJdbcClient") private val jdbcClient : Jdb
     }
 
     private fun advanceReservedId(idType: IdDao.IdType, blockSize: Int) {
-        val insertSql = jdbcClient.sql("UPDATE ID SET LASTRESERVEDID = LASTRESERVEDID + :increment WHERE IDKEY = :idKey")
-            .param("idKey", idType.toString())
-            .param("increment", blockSize)
+        val insertSql =
+            jdbcClient.sql("UPDATE ID SET LASTRESERVEDID = LASTRESERVEDID + :increment WHERE IDKEY = :idKey")
+                .param("idKey", idType.toString())
+                .param("increment", blockSize)
         val updatedRowCount = insertSql.update()
         if (updatedRowCount == 0) {
             throw RuntimeException("No rows updated for $idType")

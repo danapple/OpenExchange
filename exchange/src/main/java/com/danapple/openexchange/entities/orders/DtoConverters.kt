@@ -4,7 +4,7 @@ import com.danapple.openexchange.dto.OrderLeg
 import com.danapple.openexchange.orders.Order
 import com.danapple.openexchange.orders.OrderState
 
-fun Order.toDto() : com.danapple.openexchange.dto.Order {
+fun Order.toDto(): com.danapple.openexchange.dto.Order {
     return com.danapple.openexchange.dto.Order(
         clientOrderId,
         price,
@@ -13,11 +13,12 @@ fun Order.toDto() : com.danapple.openexchange.dto.Order {
     )
 }
 
-fun OrderState.toDto() : com.danapple.openexchange.dto.OrderState {
+fun OrderState.toDto(): com.danapple.openexchange.dto.OrderState {
     return com.danapple.openexchange.dto.OrderState(
         order.createTime,
         orderStatus,
         remainingQuantity,
         versionNumber,
-        order.toDto())
+        order.toDto()
+    )
 }

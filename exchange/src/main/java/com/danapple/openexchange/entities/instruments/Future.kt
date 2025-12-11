@@ -15,6 +15,7 @@ class Future(
     valueFactor: Float,
     deliverables: Set<Deliverable>,
     cashDeliverables: Set<CashDeliverable>,
-) : Derivative(instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode,
-    underlyingInstrumentId, valueFactor, deliverables, cashDeliverables) {
-}
+) : Derivative(
+    instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode,
+    underlyingInstrumentId, valueFactor, deliverables, cashDeliverables
+)
