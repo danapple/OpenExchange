@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary
 import org.springframework.jdbc.core.simple.JdbcClient
 import javax.sql.DataSource
 
-
 @Configuration
 open class DataSources {
     @Bean("orderDataSource")
@@ -50,17 +49,10 @@ open class DataSources {
         return DataSourceBuilder.create().build()
     }
 
-    @Bean("idDatabaseConfiguration")
-    @ConfigurationProperties("openexchange.database.id")
-    open fun getIdDatabaseConfiguration(): DatabaseConfiguration {
-        return DatabaseConfiguration()
-    }
-
     @Bean("idJdbcClient")
     @Primary
     open fun getIdJdbcClient(
-        @Qualifier("idDataSource") dataSource: DataSource,
-        @Qualifier("idDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+        @Qualifier("idDataSource") dataSource: DataSource
     ): JdbcClient {
         return JdbcClient.create(dataSource)
     }
@@ -71,17 +63,10 @@ open class DataSources {
         return DataSourceBuilder.create().build()
     }
 
-    @Bean("instrumentDatabaseConfiguration")
-    @ConfigurationProperties("openexchange.database.instrument")
-    open fun getInstrumentDatabaseConfiguration(): DatabaseConfiguration {
-        return DatabaseConfiguration()
-    }
-
     @Bean("instrumentJdbcClient")
     @Primary
     open fun getInstrumentJdbcClient(
-        @Qualifier("instrumentDataSource") dataSource: DataSource,
-        @Qualifier("instrumentDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+        @Qualifier("instrumentDataSource") dataSource: DataSource
     ): JdbcClient {
         return JdbcClient.create(dataSource)
     }
@@ -93,16 +78,9 @@ open class DataSources {
         return DataSourceBuilder.create().build()
     }
 
-    @Bean("customerDatabaseConfiguration")
-    @ConfigurationProperties("openexchange.database.customer")
-    open fun getCustomerDatabaseConfiguration(): DatabaseConfiguration {
-        return DatabaseConfiguration()
-    }
-
     @Bean("customerJdbcClient")
     open fun getCustomerJdbcClient(
-        @Qualifier("customerDataSource") dataSource: DataSource,
-        @Qualifier("customerDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration
+        @Qualifier("customerDataSource") dataSource: DataSource
     ): JdbcClient {
         return JdbcClient.create(dataSource)
     }

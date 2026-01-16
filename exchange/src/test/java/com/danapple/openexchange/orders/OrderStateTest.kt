@@ -25,7 +25,7 @@ class OrderStateTest : UnitTest() {
     @Test
     fun filledQuantityIsIncreasedByTradeLeg() {
         tradeLegFactory.createTradeLeg(orderState1, trade1, 3)
-        assertThat(orderState1.filledQuantity()).isEqualTo(3)
+        assertThat(orderState1.filledQuantity).isEqualTo(3)
     }
 
     @Test

@@ -7,34 +7,33 @@ import kotlin.math.absoluteValue
 
 class OrderState(
     val order: Order,
-    var updateTime: Long,
+    private val updateTime: Long,
     var orderStatus: OrderStatus = OrderStatus.OPEN,
-    filledQty: Int = 0,
+    private var filledQty: Int = 0,
     var versionNumber: Int = 0
 ) {
-    private var _remainingQuantity = order.quantity - filledQty
     val tradeLegs = LinkedList<TradeLeg>()
-    internal val remainingQuantity
-        get() = this._remainingQuantity
 
     fun addTradeLeg(tradeLeg: TradeLeg) {
-        if (tradeLeg.quantity.absoluteValue > _remainingQuantity.absoluteValue) {
-            throw IllegalArgumentException("TradeLeg quantity ${tradeLeg.quantity} exceeds order remaining quantity $_remainingQuantity")
+        if (tradeLeg.quantity.absoluteValue > remainingQuantity.absoluteValue) {
+            throw IllegalArgumentException("TradeLeg quantity ${tradeLeg.quantity} exceeds order remaining quantity $remainingQuantity")
         }
         tradeLegs.add(tradeLeg)
-        _remainingQuantity -= tradeLeg.quantity
+        filledQty += tradeLeg.quantity
 
-        if (_remainingQuantity == 0) {
+        if (remainingQuantity == 0) {
             orderStatus = OrderStatus.FILLED
         }
     }
 
-    fun filledQuantity(): Int {
-        return order.quantity - _remainingQuantity
-    }
+    val remainingQuantity: Int
+        get() = order.quantity - filledQuantity
+
+    val filledQuantity: Int
+        get() = filledQty
 
     override fun toString(): String {
-        return "OrderState(order=$order, orderStatus=$orderStatus, updateTime=${updateTime}, _remainingQuantity=$_remainingQuantity, tradeLegs count=$tradeLegs.size, remainingQuantity=$remainingQuantity)"
+        return "OrderState(order=$order, orderStatus=$orderStatus, updateTime=${updateTime}, _remainingQuantity=$remainingQuantity, tradeLegs count=$tradeLegs.size, remainingQuantity=$remainingQuantity)"
     }
 
     override fun equals(other: Any?): Boolean {

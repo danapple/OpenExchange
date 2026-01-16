@@ -1,7 +1,4 @@
 spring:
-  h2:
-    console:
-        enabled: true
   datasource:
     instrument:
         jdbcUrl: jdbc:h2:mem:instrument

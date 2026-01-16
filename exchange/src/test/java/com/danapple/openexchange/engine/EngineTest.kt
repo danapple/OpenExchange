@@ -153,8 +153,8 @@ class EngineTest : UnitTest() {
         assertThat(capturedTrade.tradeLegs).hasSize(2)
         val tradeLegsByOrderState = capturedTrade.tradeLegs.associateBy { it.orderState }
 
-        assertThat(tradeLegsByOrderState[orderStateBuy1]?.quantity).isEqualTo(orderStateBuy1.filledQuantity())
-        assertThat(tradeLegsByOrderState[orderStateSell1]?.quantity).isEqualTo(orderStateSell1.filledQuantity())
+        assertThat(tradeLegsByOrderState[orderStateBuy1]?.quantity).isEqualTo(orderStateBuy1.filledQuantity)
+        assertThat(tradeLegsByOrderState[orderStateSell1]?.quantity).isEqualTo(orderStateSell1.filledQuantity)
     }
 
     @Test
