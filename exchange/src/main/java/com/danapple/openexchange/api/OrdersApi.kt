@@ -30,7 +30,7 @@ class OrdersApi(
                 if (logger.isDebugEnabled) {
                     logger.debug("New Order for customerId ${customer.customerId}, clientOrderId ${submittedOrder.clientOrderId}: $submitOrders")
                 }
-                val createdOrder = orderFactory.createOrder(customer, submittedOrder.clientOrderId, submittedOrder)
+                val createdOrder = orderFactory.createOrder(customer, submittedOrder)
                 val engine = engines[createdOrder.instrument]
                 val orderState =
                     OrderState(

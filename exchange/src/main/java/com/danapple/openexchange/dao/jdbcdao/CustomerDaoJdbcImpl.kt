@@ -15,7 +15,8 @@ open class CustomerDaoJdbcImpl(@Qualifier("customerJdbcClient") private val jdbc
     init {
         setOf(
             Customer(0, "BrokerA"),
-            Customer(1, "BrokerB")
+            Customer(1, "BrokerB"),
+            Customer(1, "QuoterBST"),
         ).forEach { customer ->
             customersById[customer.customerId] = customer
             customersByKey[customer.customerKey] = customer

@@ -72,18 +72,20 @@ class Engine(
     }
 
     @Synchronized
-    internal fun cancelOrder(orderState: OrderState) {
+    internal fun cancelOrder(orderState: OrderState, publish: Boolean = true) {
         if (orderState.orderStatus.viability == OrderStatus.Viability.ALIVE) {
             book.cancelOrder(orderState)
             orderDao.updateOrder(orderState)
             customerUpdateSender.sendOrderState(orderState)
-            marketDataPublisher.publishTopOfBook(clock.millis(), book)
+            if (publish) {
+                marketDataPublisher.publishTopOfBook(clock.millis(), book)
+            }
         }
     }
 
     @Synchronized
     internal fun cancelReplace(originalOrderState: OrderState, newOrderState: OrderState) {
-        cancelOrder(originalOrderState)
+        cancelOrder(originalOrderState, false)
         newOrder(newOrderState)
     }
 

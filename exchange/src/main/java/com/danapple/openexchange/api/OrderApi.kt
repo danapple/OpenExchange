@@ -3,6 +3,7 @@ package com.danapple.openexchange.api
 import com.danapple.openexchange.dao.CustomerDao
 import com.danapple.openexchange.dao.OrderQueryDao
 import com.danapple.openexchange.dto.CancelReplace
+import com.danapple.openexchange.dto.Order
 import com.danapple.openexchange.dto.OrderStates
 import com.danapple.openexchange.dto.OrderStatus
 import com.danapple.openexchange.engine.Engine
@@ -14,7 +15,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import kotlin.math.absoluteValue
 import kotlin.math.min
+import kotlin.math.sign
 
 @RestController
 @RequestMapping("/orders")
@@ -23,12 +26,19 @@ class OrderApi(
     private val customerDao: CustomerDao, private val orderQueryDao: OrderQueryDao
 ) : BaseApi() {
 
-    @PutMapping("/{clientOrderId}")
-    fun cancelReplace(@PathVariable("clientOrderId") clientOrderId: String, @RequestBody cancelReplace: CancelReplace):
+    @PutMapping("/{originalClientOrderId}")
+    fun cancelReplace(@PathVariable("originalClientOrderId") originalClientOrderId: String, @RequestBody cancelReplace: CancelReplace):
             ResponseEntity<OrderStates> {
         val customer = getCustomer()
-        logger.debug("cancelReplace for customerId ${customer.customerId}, clientOrderId $clientOrderId: $cancelReplace")
-        val originalOrderState = orderQueryDao.getOrder(customer, cancelReplace.originalClientOrderId)
+        if (logger.isDebugEnabled) {
+            logger.debug(
+                "cancelReplace for customerId {}, originalClientOrderId {}: {}",
+                customer.customerId,
+                originalClientOrderId,
+                cancelReplace
+            )
+        }
+        val originalOrderState = orderQueryDao.getOrder(customer, originalClientOrderId)
             ?: return ResponseEntity(HttpStatus.NOT_FOUND)
 
         val engine = engines[originalOrderState.order.instrument]
@@ -39,7 +49,10 @@ class OrderApi(
         val originalOrderStatus = originalOrderState.orderStatus
 
         var newQuantity = when (cancelReplace.capping) {
-            CancelReplace.CAPPING.CAP_AT_REMAINING_QUANTITY -> min(remainingQuantity, cancelReplace.order.quantity)
+            CancelReplace.CAPPING.CAP_AT_REMAINING_QUANTITY -> min(
+                remainingQuantity.absoluteValue,
+                cancelReplace.order.quantity.absoluteValue
+            ) * remainingQuantity.sign
             CancelReplace.CAPPING.UNCAPPED -> cancelReplace.order.quantity
         }
 
@@ -49,7 +62,10 @@ class OrderApi(
         }
 
         if (newQuantity != 0) {
-            val createdOrder = orderFactory.createOrder(customer, clientOrderId, cancelReplace)
+            val order =
+                Order(cancelReplace.order.clientOrderId, cancelReplace.order.price, newQuantity, cancelReplace.order.legs)
+
+            val createdOrder = orderFactory.createOrder(customer, order)
 
             if (originalOrderState.order.instrument !== createdOrder.instrument) {
                 return createOrderStatesResponse(orderStates = arrayOf(originalOrderState), HttpStatus.BAD_REQUEST)
