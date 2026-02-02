@@ -1,10 +1,6 @@
 package com.danapple.openexchange.api
 
-import com.danapple.openexchange.ExchangeTest
-import com.danapple.openexchange.dao.CustomerDao
-import com.danapple.openexchange.dao.InstrumentDao
-import com.danapple.openexchange.dao.OrderDao
-import com.danapple.openexchange.dao.OrderQueryDao
+import com.danapple.openexchange.Constants
 import com.danapple.openexchange.orders.OrderFactory
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,16 +10,8 @@ import org.springframework.http.HttpRequest
 import org.springframework.http.client.ClientHttpRequestExecution
 import org.springframework.http.client.ClientHttpRequestInterceptor
 
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-abstract class AbstractRestTest(
-    orderDao: OrderDao,
-    orderQueryDao: OrderQueryDao,
-    customerDao: CustomerDao,
-    instrumentDao: InstrumentDao,
-    orderFactory: OrderFactory
-) :
-    ExchangeTest(orderDao, orderQueryDao, customerDao, instrumentDao, orderFactory) {
+abstract class AbstractRestTest(orderFactory: OrderFactory) : Constants(orderFactory) {
     protected var customerKey = "noKey"
 
     @Autowired

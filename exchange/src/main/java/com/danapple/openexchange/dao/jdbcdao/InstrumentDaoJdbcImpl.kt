@@ -50,14 +50,12 @@ open class InstrumentDaoJdbcImpl(@Qualifier("instrumentJdbcClient") private val 
     }
 }
 
-
 const val INSTRUMENT_QUERY = """
  SELECT instrument.instrumentId, status, symbol, assetClass, description, expirationTime, currencyCode, 
  underlyingInstrumentId, valueFactor,
  optionType, strike,
  deliverable.deliverableInstrumentId, deliverable.quantity,
  cash_deliverable.value
- 
  FROM instrument
  LEFT JOIN derivative on derivative.instrumentId = instrument.instrumentId
  LEFT JOIN option on option.instrumentId = derivative.instrumentId

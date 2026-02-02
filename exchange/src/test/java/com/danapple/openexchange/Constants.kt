@@ -1,9 +1,5 @@
 package com.danapple.openexchange
 
-import com.danapple.openexchange.dao.CustomerDao
-import com.danapple.openexchange.dao.InstrumentDao
-import com.danapple.openexchange.dao.OrderDao
-import com.danapple.openexchange.dao.OrderQueryDao
 import com.danapple.openexchange.dto.AssetClass
 import com.danapple.openexchange.dto.InstrumentStatus
 import com.danapple.openexchange.entities.customers.Customer
@@ -12,13 +8,7 @@ import com.danapple.openexchange.orders.OrderFactory
 import java.math.BigDecimal
 import java.time.Clock
 
-open class ExchangeTest constructor(
-    val orderDao: OrderDao,
-    val orderQueryDao: OrderQueryDao,
-    val customerDao: CustomerDao,
-    val instrumentDao: InstrumentDao,
-    val orderFactory: OrderFactory
-) {
+abstract class Constants(orderFactory: OrderFactory) {
 
     val CLOCK = Clock.systemDefaultZone()
     val now = CLOCK.millis()

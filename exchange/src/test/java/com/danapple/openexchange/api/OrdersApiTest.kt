@@ -1,9 +1,5 @@
 package com.danapple.openexchange.api
 
-import com.danapple.openexchange.dao.CustomerDao
-import com.danapple.openexchange.dao.InstrumentDao
-import com.danapple.openexchange.dao.OrderDao
-import com.danapple.openexchange.dao.OrderQueryDao
 import com.danapple.openexchange.dto.OrderStates
 import com.danapple.openexchange.dto.SubmitOrders
 import com.danapple.openexchange.entities.orders.toDto
@@ -17,13 +13,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 
 @Disabled
-class OrdersApiTest(
-    @Autowired orderDao: OrderDao,
-    @Autowired orderQueryDao: OrderQueryDao,
-    @Autowired customerDao: CustomerDao,
-    @Autowired instrumentDao: InstrumentDao,
-    @Autowired orderFactory: OrderFactory
-) : AbstractRestTest(orderDao, orderQueryDao, customerDao, instrumentDao, orderFactory) {
+class OrdersApiTest(@Autowired orderFactory: OrderFactory
+) : AbstractRestTest(orderFactory) {
 
     @BeforeEach
     fun beforeEach() {
