@@ -30,4 +30,4 @@ jobs:
 #        uses: advanced-security/maven-dependency-submission-action@v4
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag openexchange:$(date +%s)
+        run: docker build . --file Dockerfile --tag openexchange:$(date +%Y%m%d-%H%M%S)
