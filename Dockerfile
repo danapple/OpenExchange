@@ -7,6 +7,6 @@ WORKDIR /app
 WORKDIR /app
 # Copy the built JAR file from the previous stage to the container
 COPY ./exchange/target/openexchange-exchange-1.0-SNAPSHOT.jar /
-COPY ./dtos/target/openexchange-dtos-1.0-SNAPSHOT.jar /
+#COPY ./dtos/target/openexchange-dtos-1.0-SNAPSHOT.jar /
 # Set the command to run the application
 CMD ["java", "-jar", "/openexchange-exchange-1.0-SNAPSHOT.jar"]
