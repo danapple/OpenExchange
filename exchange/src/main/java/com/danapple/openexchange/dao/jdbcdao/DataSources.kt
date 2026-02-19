@@ -1,6 +1,7 @@
 package com.danapple.openexchange.dao
 
 import com.danapple.openexchange.dao.jdbcdao.DatabaseConfiguration
+import com.zaxxer.hikari.HikariDataSource
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -13,12 +14,6 @@ import javax.sql.DataSource
 
 @Configuration
 open class DataSources {
-    @Bean("orderDataSource")
-    @ConfigurationProperties("spring.datasource.order")
-    open fun orderDataSource(): DataSource {
-        return DataSourceBuilder.create().build()
-    }
-
     @Bean("orderDatabaseConfiguration")
     @ConfigurationProperties("openexchange.database.order")
     open fun getOrderDatabaseConfiguration(): DatabaseConfiguration {
@@ -28,17 +23,21 @@ open class DataSources {
     @Bean("orderJdbcClients")
     @ExperimentalStdlibApi
     open fun getOrderJdbcClients(
-        @Qualifier("orderDataSource") dataSource: DataSource,
         @Qualifier("orderDatabaseConfiguration") databaseConfiguration: DatabaseConfiguration,
         @Value("\${openexchange.database.order.jdbcUrlTemplate}") jdbcUrlTemplate: String
     ): List<JdbcClient> {
         val dataSources = ArrayList<DataSource>()
         for (i in 0..<databaseConfiguration.shardCount) {
-            val dataSourceBuilder = DataSourceBuilder.derivedFrom(dataSource)
-            dataSourceBuilder.url("${databaseConfiguration.jdbcUrlTemplate}$i")
-            val shardDataSource = dataSourceBuilder.build()
+            val hikariDataSource = HikariDataSource()
+            hikariDataSource.jdbcUrl = "${databaseConfiguration.jdbcUrlTemplate}$i"
+            hikariDataSource.username = "${databaseConfiguration.username}"
+            hikariDataSource.password = "${databaseConfiguration.password}"
+            hikariDataSource.maximumPoolSize = databaseConfiguration.maximumPoolSize
+            hikariDataSource.driverClassName = "${databaseConfiguration.driverClassName}"
+            hikariDataSource.initializationFailTimeout = databaseConfiguration.initializationFailTimeout
+            hikariDataSource.minimumIdle = databaseConfiguration.minimumIdle
 
-            dataSources.add(shardDataSource)
+            dataSources.add(hikariDataSource)
         }
         return dataSources.map { JdbcClient.create(it) }
     }

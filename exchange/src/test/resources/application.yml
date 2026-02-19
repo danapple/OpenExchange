@@ -17,17 +17,16 @@ spring:
         username: OE
         password: OEpassword
         driverClassname: org.h2.Driver
-    order:
-        username: OE
-        password: OEpassword
-        driverClassname: org.h2.Driver
     url: jdbc:h2:mem:testdb
 openexchange:
     database:
         order:
             jdbcUrlTemplate: jdbc:h2:mem:order
+            username: OE
+            password: OEpassword
+            driverClassname: org.h2.Driver
             shardCount: 4
-            migrationsLocation: database/migrations/order
+            maximumPoolSize: 2
         instrument:
             migrationsLocation: database/migrations/instrument
         id:

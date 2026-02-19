@@ -15,49 +15,39 @@ spring:
     instrument:
         jdbcUrl: jdbc:postgresql://127.0.0.1/instrument
         username: instrument_user
-        password: instrument_user_pwd
+        password: --instrument_user_pwd--
         driverClassname: org.postgresql.Driver
         hikari:
             initializationFailTimeout: -1
+            maximum-pool-size: 3
+            minimum-idle: 3
     id:
         jdbcUrl: jdbc:postgresql://127.0.0.1/id
         username: id_user
-        password: id_user_pwd
+        password: --id_user_pwd--
         driverClassname: org.postgresql.Driver
         hikari:
             initializationFailTimeout: -1
+            maximum-pool-size: 3
+            minimum-idle: 3
     customer:
         jdbcUrl: jdbc:postgresql://127.0.0.1/customer
         username: customer_user
-        password: customer_user_pwd
+        password: --customer_user_pwd--
         driverClassname: org.postgresql.Driver
         hikari:
             initializationFailTimeout: -1
-    order:
-        jdbcUrl: jdbc:postgresql://127.0.0.1/order
-        username: order_user
-        password: order_user_pwd
-        driverClassname: org.postgresql.Driver
-        hikari:
-            initializationFailTimeout: -1
-    hikari:
-      initializationFailTimeout: -1
+            maximum-pool-size: 3
+            minimum-idle: 3
 openexchange:
     database:
         order:
-            jdbcUrlTemplate: jdbc:postgresql://127.0.0.1/order
-            shardCount: 4
-            migrationsLocation: database/migrations/order
-           # repair: true
-        instrument:
-            migrationsLocation: database/migrations/instrument
-            repair: true
-        id:
-            migrationsLocation: database/migrations/id
-           # repair: true
-        customer:
-            migrationsLocation: database/migrations/customer
-           # repair: true
+          jdbcUrlTemplate: jdbc:postgresql://127.0.0.1/order
+          username: order_user
+          password: --order_user_pw--
+          driverClassname: org.postgresql.Driver
+          shardCount: 4
+          maximumPoolSize: 2
     marketDataPublisher:
         numberOfLevelsToPublish: 5
         multicastGroup: 227.3.3.3
