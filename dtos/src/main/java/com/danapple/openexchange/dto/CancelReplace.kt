@@ -3,7 +3,6 @@ package com.danapple.openexchange.dto
 data class CancelReplace (
     val behavior: BEHAVIOR,
     val capping: CAPPING,
-    val originalClientOrderId: String,
     val order: Order
 ) {
     enum class CAPPING {

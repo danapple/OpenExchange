@@ -52,7 +52,7 @@ class OrderApi(
             CancelReplace.CAPPING.CAP_AT_REMAINING_QUANTITY -> min(
                 remainingQuantity.absoluteValue,
                 cancelReplace.order.quantity.absoluteValue
-            ) * remainingQuantity.sign
+            ) * cancelReplace.order.quantity.sign
             CancelReplace.CAPPING.UNCAPPED -> cancelReplace.order.quantity
         }
 
