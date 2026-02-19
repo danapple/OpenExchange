@@ -13,45 +13,46 @@ spring:
     log-request-details: true
   datasource:
     instrument:
-        jdbcUrl: jdbc:postgresql://127.0.0.1/instrument
-        username: instrument_user
-        password: --instrument_user_pwd--
-        driverClassname: org.postgresql.Driver
-        hikari:
-            initializationFailTimeout: -1
-            maximum-pool-size: 3
-            minimum-idle: 3
+      jdbcUrl: jdbc:postgresql://${DB_INSTRUMENT_IP}/instrument
+      username: ${DB_INSTRUMENT_USERNAME}
+      password: ${DB_INSTRUMENT_PASSWORD}
+      driverClassname: org.postgresql.Driver
+      hikari:
+        initializationFailTimeout: -1
+        maximum-pool-size: ${DB_INSTRUMENT_MAX_POOL_SIZE}
+        minimum-idle: 3
     id:
-        jdbcUrl: jdbc:postgresql://127.0.0.1/id
-        username: id_user
-        password: --id_user_pwd--
-        driverClassname: org.postgresql.Driver
-        hikari:
-            initializationFailTimeout: -1
-            maximum-pool-size: 3
-            minimum-idle: 3
+      jdbcUrl: jdbc:postgresql://${DB_ID_IP}/id
+      username: ${DB_ID_USERNAME}
+      password: ${DB_ID_PASSWORD}
+      driverClassname: org.postgresql.Driver
+      hikari:
+        initializationFailTimeout: -1
+        maximum-pool-size: ${DB_ID_MAX_POOL_SIZE}
+        minimum-idle: 3
     customer:
-        jdbcUrl: jdbc:postgresql://127.0.0.1/customer
-        username: customer_user
-        password: --customer_user_pwd--
-        driverClassname: org.postgresql.Driver
-        hikari:
-            initializationFailTimeout: -1
-            maximum-pool-size: 3
-            minimum-idle: 3
+      jdbcUrl: jdbc:postgresql://${DB_CUSTOMER_IP}/customer
+      username: ${DB_CUSTOMER_USERNAME}
+      password: ${DB_CUSTOMER_PASSWORD}
+      driverClassname: org.postgresql.Driver
+      hikari:
+        initializationFailTimeout: -1
+        maximum-pool-size: ${DB_CUSTOMER_MAX_POOL_SIZE}
+        minimum-idle: 3
 openexchange:
-    database:
-        order:
-          jdbcUrlTemplate: jdbc:postgresql://127.0.0.1/order
-          username: order_user
-          password: --order_user_pw--
-          driverClassname: org.postgresql.Driver
-          shardCount: 4
-          maximumPoolSize: 2
-    marketDataPublisher:
-        numberOfLevelsToPublish: 5
-        multicastGroup: 227.3.3.3
-        depthPort: 3434
-        tradePort: 3436
-        interfaceAddress: wotke.danapple.com
+  database:
+    order:
+      jdbcUrlTemplate: jdbc:postgresql://${DB_ORDER_IP}/order
+      username: ${DB_ORDER_USERNAME}
+      password: ${DB_ORDER_PASSWORD}
+      driverClassname: org.postgresql.Driver
+      initializationFailTimeout: -1
+      shardCount: 4
+      maximumPoolSize: ${DB_ORDER_MAX_POOL_SIZE}
+  marketDataPublisher:
+    numberOfLevelsToPublish: 5
+    multicastGroup: 227.3.3.3
+    depthPort: 3434
+    tradePort: 3436
+    interfaceAddress: wotke.danapple.com
 
