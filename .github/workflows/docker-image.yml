@@ -15,6 +15,9 @@ jobs:
       contents: write
     environment: development
 
+    env:
+      TAG: ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-${IMAGE_TAG}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -48,7 +51,6 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
-          TAG: ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-$IMAGE_TAG
         run: |
-          docker build . --file Dockerfile --tag ${TAG}
-          docker push ${TAG}
+          docker build . --file Dockerfile --tag ${{ env.TAG }}
+          docker push ${{ env.TAG }}
