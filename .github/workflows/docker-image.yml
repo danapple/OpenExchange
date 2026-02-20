@@ -40,11 +40,14 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
+      - name: Set env
+        run: echo "IMAGE_TAG=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+
       - name: Build the Docker image
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: $(date +%Y%m%d-%H%M%S)
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
         run: |
-          docker build . --file Dockerfile --tag $ECR_REGISTRY/$ECR_REPOSITORY:openexchange-$IMAGE_TAG
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build . --file Dockerfile --tag ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-$IMAGE_TAG
+          docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:$IMAGE_TAG
