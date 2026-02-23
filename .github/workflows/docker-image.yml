@@ -15,11 +15,12 @@ jobs:
       contents: write
     environment: development
 
-    env:
-      TAG: ${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY}}:openexchange-$(date +%Y%m%d-%H%M%S)
-      TAG_LATEST: ${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:openexchange-latest
-
     steps:
+      - name: Set up env
+        run: |
+          echo "TAG=${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY}}:openexchange-$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
+          echo "TAG_LATEST=${{ vars.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY}}:openexchange-latest" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v4
 
