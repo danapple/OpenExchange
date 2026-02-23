@@ -49,11 +49,6 @@ jobs:
         id: build-image
         run: docker build --file Dockerfile --tag ${{ env.TAG }} .
 
-
-      - name: Log the tag
-        run: echo ${{ env.TAG }}
-
-
       - name: Push the Docker image
         run: docker push ${{ env.TAG }}
 
@@ -76,8 +71,8 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ env.IMAGE_TAG }} // ${{ needs.build-and-push.outputs.image-uri }}
+          container-name: ${{ vars.CONTAINER_NAME }}
+          image: ${{ env.TAG }} // ${{ needs.build-and-push.outputs.image-uri }}
 
       - name: Deploy to Amazon ECS service
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
