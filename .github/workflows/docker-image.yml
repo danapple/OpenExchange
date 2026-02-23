@@ -49,6 +49,11 @@ jobs:
         id: build-image
         run: docker build --file Dockerfile --tag ${{ env.TAG }} .
 
+
+      - name: Log the tag
+        run: echo ${{ env.TAG }}
+
+
       - name: Push the Docker image
         run: docker push ${{ env.TAG }}
 
@@ -56,7 +61,7 @@ jobs:
         run: docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
 
       - name: Push latest
-        run : docker push ${{ env.TAG_LATEST }}
+        run: docker push ${{ env.TAG_LATEST }}
 
       - name: Download current task definition
         env:
