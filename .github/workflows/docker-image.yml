@@ -16,8 +16,7 @@ jobs:
     environment: development
 
     env:
-      TAG: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY}}:openexchange-$(date +%Y%m%d-%H%M%S)
-      TAG_LATEST: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY}}:openexchange-latest
+
 
     steps:
       - name: Checkout
@@ -48,18 +47,11 @@ jobs:
         id: build-image
 
         run: |
+          TAG="${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-$(date +%Y%m%d-%H%M%S)"
+          TAG_LATEST="${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-latest"
           docker build --file Dockerfile --tag ${{ env.TAG }} .
-
-      - name: Push the Docer image
-        run: |
           docker push ${{ env.TAG }}
-
-      - name: Tag as latest
-        run: |
           docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
-
-      - name: Push latest
-        run : |
           docker push ${{ env.TAG_LATEST }}
 
       - name: Download current task definition
