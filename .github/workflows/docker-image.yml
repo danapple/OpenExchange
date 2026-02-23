@@ -16,9 +16,8 @@ jobs:
     environment: development
 
     env:
-      TAG: ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-${IMAGE_TAG}
+      TAG: ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-$(date +%Y%m%d-%H%M%S)
       TAG_LATEST: ${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-latest
-      
 
     steps:
       - name: Checkout
@@ -45,9 +44,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@62f4f872db3836360b72999f4b87f1ff13310f3a
 
-      # - name: Set env
-      #   run: echo "IMAGE_TAG=$(date +%Y%m%d-%H%M%S)" >> $GITHUB_ENV
-
       - name: Build the Docker image
         id: build-image
         env:
@@ -60,4 +56,26 @@ jobs:
           docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
           docker push ${{ env.TAG_LATEST }}
 
+      - name: Download current task definition
+        env:
+          TASK_DEFINITION: openexchange-task
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition $TASK_DEFINITION \
+            --query taskDefinition > task-definition.json
 
+      - name: Update task definition with new image
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ env.IMAGE_TAG }} // ${{ needs.build-and-push.outputs.image-uri }}
+
+      - name: Deploy to Amazon ECS service
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
