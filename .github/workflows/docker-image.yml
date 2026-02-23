@@ -46,12 +46,13 @@ jobs:
 
       - name: Build the Docker image
         id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+
         run: |
-          docker build . --file Dockerfile --tag ${{ env.TAG }}
+          docker build --file Dockerfile --tag ${{ env.TAG }} .
           docker push ${{ env.TAG }}
+          echo env.TAG = ${{ env.TAG }}
+          echo env.TAG = ${{ env.TAG_LATEST }}
+          echo +++ docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
 
           docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
           docker push ${{ env.TAG_LATEST }}
