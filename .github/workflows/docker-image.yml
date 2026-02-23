@@ -16,9 +16,9 @@ jobs:
     environment: development
 
     env:
-      TAG: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY}}:openexchange-$(date +%Y%m%d-%H%M%S)
-      TAG_LATEST: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY}}:openexchange-latest
- 
+      TAG: ${{ ECR_REGISTRY }}/${{ ECR_REPOSITORY}}:openexchange-$(date +%Y%m%d-%H%M%S)
+      TAG_LATEST: ${{ ECR_REGISTRY }}/${{ ECR_REPOSITORY}}:openexchange-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
