@@ -72,7 +72,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ vars.CONTAINER_NAME }}
-          image: ${{ needs.build-and-push.outputs.image-uri }}
+          image: ${{ env.TAG }}
 #          image: ${{ env.TAG }} // ${{ needs.build-and-push.outputs.image-uri }}
 
 
