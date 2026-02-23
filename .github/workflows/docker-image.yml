@@ -46,10 +46,10 @@ jobs:
         run: |
           TAG="${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-$(date +%Y%m%d-%H%M%S)"
           TAG_LATEST="${ECR_REGISTRY}/${ECR_REPOSITORY}:openexchange-latest"
-          docker build --file Dockerfile --tag ${{ env.TAG }} .
-          docker push ${{ env.TAG }}
-          docker tag ${{ env.TAG }} ${{ env.TAG_LATEST }}
-          docker push ${{ env.TAG_LATEST }}
+          docker build --file Dockerfile --tag ${{ TAG }} .
+          docker push ${{ TAG }}
+          docker tag ${{ TAG }} ${{ TAG_LATEST }}
+          docker push ${{ TAG_LATEST }}
 
       - name: Download current task definition
         env:
