@@ -39,6 +39,7 @@ spring:
     hikari:
       maximum-pool-size: 3 # ${DB_CUSTOMER_MAX_POOL_SIZE}
       maximumPoolSize: 4
+      minimumIdle: 1
 openexchange:
   database:
     order:
