@@ -17,32 +17,19 @@ spring:
       username: ${DB_INSTRUMENT_USERNAME}
       password: ${DB_INSTRUMENT_PASSWORD}
       driverClassname: org.postgresql.Driver
-      hikari:
-        initializationFailTimeout: -1
-        maximumPoolSize: 2 # ${DB_INSTRUMENT_MAX_POOL_SIZE}
-        minimumIdle: 1
+      maximumPoolSize: ${DB_INSTRUMENT_MAX_POOL_SIZE}
     id:
       jdbcUrl: jdbc:postgresql://${DB_ID_IP}/id
       username: ${DB_ID_USERNAME}
       password: ${DB_ID_PASSWORD}
       driverClassname: org.postgresql.Driver
-      hikari:
-        initializationFailTimeout: -1
-        maximumPoolSize: 2 # ${DB_ID_MAX_POOL_SIZE}
-        minimumIdle: 1
+      maximumPoolSize: ${DB_ID_MAX_POOL_SIZE}
     customer:
       jdbcUrl: jdbc:postgresql://${DB_CUSTOMER_IP}/customer
       username: ${DB_CUSTOMER_USERNAME}
       password: ${DB_CUSTOMER_PASSWORD}
       driverClassname: org.postgresql.Driver
-      hikari:
-        initializationFailTimeout: -1
-        maximumPoolSize: 2 # ${DB_CUSTOMER_MAX_POOL_SIZE}
-        minimumIdle: 1
-    hikari:
-      maximum-pool-size: 3 # ${DB_CUSTOMER_MAX_POOL_SIZE}
-      maximumPoolSize: 4
-      minimumIdle: 1
+      maximumPoolSize: ${DB_CUSTOMER_MAX_POOL_SIZE}
 openexchange:
   database:
     order:
