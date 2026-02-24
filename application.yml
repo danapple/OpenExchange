@@ -19,7 +19,7 @@ spring:
       driverClassname: org.postgresql.Driver
       hikari:
         initializationFailTimeout: -1
-        maximum-pool-size: ${DB_INSTRUMENT_MAX_POOL_SIZE}
+        maximum-pool-size: 2 # ${DB_INSTRUMENT_MAX_POOL_SIZE}
         minimum-idle: 3
     id:
       jdbcUrl: jdbc:postgresql://${DB_ID_IP}/id
@@ -28,7 +28,7 @@ spring:
       driverClassname: org.postgresql.Driver
       hikari:
         initializationFailTimeout: -1
-        maximum-pool-size: ${DB_ID_MAX_POOL_SIZE}
+        maximum-pool-size: 2 # ${DB_ID_MAX_POOL_SIZE}
         minimum-idle: 3
     customer:
       jdbcUrl: jdbc:postgresql://${DB_CUSTOMER_IP}/customer
@@ -37,7 +37,7 @@ spring:
       driverClassname: org.postgresql.Driver
       hikari:
         initializationFailTimeout: -1
-        maximum-pool-size: ${DB_CUSTOMER_MAX_POOL_SIZE}
+        maximum-pool-size: 2 # ${DB_CUSTOMER_MAX_POOL_SIZE}
         minimum-idle: 3
 openexchange:
   database:
@@ -48,7 +48,7 @@ openexchange:
       driverClassname: org.postgresql.Driver
       initializationFailTimeout: -1
       shardCount: 4
-      maximumPoolSize: ${DB_ORDER_MAX_POOL_SIZE}
+      maximumPoolSize: 2 # ${DB_ORDER_MAX_POOL_SIZE}
   marketDataPublisher:
     numberOfLevelsToPublish: 5
     multicastGroup: 227.3.3.3
