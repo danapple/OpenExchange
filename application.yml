@@ -39,8 +39,9 @@ spring:
         initializationFailTimeout: -1
         maximumPoolSize: ${DB_CUSTOMER_MAX_POOL_SIZE}
         minimum-idle: 3
-  hikari:
-    maximum-pool-size: 3 # ${DB_CUSTOMER_MAX_POOL_SIZE}
+    hikari:
+      maximum-pool-size: 3 # ${DB_CUSTOMER_MAX_POOL_SIZE}
+      maximumPoolSize: 4
 openexchange:
   database:
     order:
